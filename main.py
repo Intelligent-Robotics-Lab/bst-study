@@ -7,6 +7,8 @@ import child_behavior_components as child
 FURHAT_CHILD_IP = "141.210.88.11"
 
 async def main():
+    # bst()
+    
     furhat = await child.connect_furhat(FURHAT_CHILD_IP)
     await child_library.nr_problem_behavior(furhat=furhat)
     
