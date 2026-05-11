@@ -13,3 +13,25 @@ class ExpressionModuleInstruction:
         # In the future, this is where the logic for interpreting the instruction and determining the appropriate behavior will be implemented.
         print("In the execution of the expression module instruction")
         await agent_layer.agent_layer(text=self.instruction_text, nonverbals=self.nonverbals, agent_type="Furhat")
+
+class Behavior:
+    def __init__(self, verbal, nonverbals):
+        self.verbal = verbal
+        self.nonverbals = nonverbals
+
+
+class VerbalComponent:
+    def __init__(self, text, num_repeat, duration):
+        self.text = text
+        self.num_repeat = num_repeat
+        self.duration = duration
+
+
+class NonverbalComponent:
+    def __init__(self, name, intensity, duration, num_repeat):
+        self.name = name
+        self.intensity = intensity
+        self.duration = duration
+        self.num_repeat = num_repeat
+
+
