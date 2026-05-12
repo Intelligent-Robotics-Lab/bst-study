@@ -1,28 +1,13 @@
 import asyncio
-import agent_layer.Furhat.Exe.furhat_kid as kid
-import agent_layer.Furhat.Exe.furhat_trainer as trainer
-import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
+from agent_layer.Furhat.Exe.furhat_execute import FurhatBehavior as FurhatExe
+# Inputs required from the expression module:
+    # agent_type, embodiment (kid vs. trainer), text, text_duration, text_repeats, head_gesture, intensity, duration, num_repeats, attention_target, face_expression, voice, listening: bool, interrupt: bool, gesture_timing
 
-FURHAT_TRAINER_IP = "141.210.88.11"
-# FURHAT_KID_IP = "---.---.--.--"
+# Still need to research vocalization and how we can alter the voice sounds
 
-# Text and nonverbals are passed as the inputs to this stage and called into the agent layer
-async def agent_layer(text, nonverbals, agent_type):
-    if agent_type == "Furhat":  
-        print("Connecting to Furhat trainer")
-        furhat_trainer = await behavior.connect_furhat(FURHAT_TRAINER_IP)
-        print("Connected to Furhat trainer")
-        # furhat_kid = await behavior.connect_furhat(FURHAT_KID_IP)
-        # print("Connected to Furhat kid")
-
-        # Execute the behavior of the trainer based upon the text and nonverbals
-        await trainer.FurhatTrainer(furhat=furhat_trainer, text=text, nonverbals=nonverbals)
-        print("Executed trainer behavior")
-
-        # await kid.FurhatKid(furhat=furhat_trainer, text=text, nonverbals=nonverbals)
-        # print("Executed kid behavior")
-
-        # Disconnect from the furhat after executing the behavior    
-        furhat_trainer.disconnect()
-        print("Disconnected from Furhat")
-
+async def agent_layer(agent_type, embodiment, text, duration_text, text_repeats, head_gesture, intensity, duration, num_repeats, attention_target, face_expression, voice, listening: bool, interrupt: bool, gesture_timing):
+    if agent_type == "Furhat":
+        # Data transformation step required here once formats are decided upon, for now we will assume the paramters are passed in a format that can be directly used by the behavior library
+        
+        await FurhatExe(embodiment=embodiment, text=text, duration_text=duration_text, text_repeats=text_repeats, head_gesture=head_gesture, intensity=intensity, duration=duration, num_repeats=num_repeats, 
+            attention_target=attention_target, face_expression=face_expression, voice=voice, listening=listening, interrupt=interrupt, gesture_timing=gesture_timing).execute()
