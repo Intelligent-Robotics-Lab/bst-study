@@ -1,17 +1,116 @@
-[{
-    "id": "Instruction",
-    "sd": "This is how you perform DTT.",
-    "correctness": "Correct",
-    "challenge": "None",
-    "object": "None",
-    "emotion": "None"
-},
 {
-    "id": "SD_1",
-    "sd": "What do you want to work for?",
-    "correctness": "Correct",
-    "challenge": "None",
-    "object": "None",
-    "emotion": "None"
-    
-}]
+    "training_set": {
+        "Instruction": {
+            "sd": null,
+            "sd_type": null,
+            "correctness": "Correct",
+            "challenge": null,
+            "pb_response_type": null,
+            "action": null,
+            "object": null,
+            "emotion": null,
+            "verabals": [
+                "This is how you perform DTT.", 
+                "First you want to do this.",
+                "Next your gonna ask the child what they want to work for."
+            ],
+
+            "kid_correct_verbal": null
+        },
+
+        "SD_1": {
+            "sd": "What do you want to work for?",
+            "sd_type": "Manding",
+            "correctness": "Correct",
+            "challenge": null,
+            "pb_response_type": null,
+            "action": null,
+            "object": null,
+            "emotion": null
+        },
+
+        "SD_2": {
+            "sd": "Can you nod?",
+            "sd_type": "Reception",
+            "correctness": "No Response",
+            "challenge": "Medium",
+            "pb_response_type": "NR",
+            "action": null,
+            "object": null,
+            "emotion": null
+        },
+
+        "SD_3": {
+            "sd": "Can you do this?",
+            "sd_type": "Imitation",
+            "correctness": "Correct",
+            "challenge": null,
+            "pb_response_type": null,
+            "action": "Shake",
+            "object": null,
+            "emotion": null
+        },
+
+        "SD_4": {
+            "sd": "What is this?",
+            "sd_type": "Labeling",
+            "correctness": "No Response",
+            "challenge": "Medium",
+            "pb_response_type": "PR",
+            "action": null,
+            "object": "Ball",
+            "emotion": null
+        },
+
+        "SD_5": {
+            "sd": "How do I feel?",
+            "sd_type": "Emotion",
+            "correctness": "Correct",
+            "challenge": null,
+            "pb_response_type": null,
+            "action": null,
+            "object": null,
+            "emotion": "Happy"
+        },
+
+        "SD_6": {
+            "sd": "How do I feel?",
+            "sd_type": "Emotion",
+            "correctness": "No Response",
+            "challenge": "Medium",
+            "pb_response_type": "AR",
+            "action": null,
+            "object": null,
+            "emotion": "Surprise"
+        }
+    },
+
+    "behaviors": {
+        "PR": [
+            {
+                "name": "Smile",
+                "intensity": 2,
+                "duration": 2,
+                "repeats": 1
+            }
+        ],
+
+        "NR": [
+            {
+                "name": "Shake",
+                "intensity": 3,
+                "duration": 3,
+                "repeats": 2
+            }
+        ],
+
+        "AR": [
+            {
+                "name": "LookAway",
+                "intensity": 1,
+                "duration": 2,
+                "repeats": 1
+            }
+        ]
+    }
+}

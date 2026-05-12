@@ -1,0 +1,39 @@
+{
+  "type": "instruction_module",
+
+  "steps": [
+    {
+      "verbal": {
+        "text": "This is how you perform DTT."
+      },
+
+      "nonverbals": [
+        {
+          "type": "face",
+          "action": "smile"
+        }
+      ]
+    },
+
+    {
+      "verbal": {
+        "text": "First, you want to get the learner's attention."
+      },
+
+      "nonverbals": [
+        {
+          "type": "head",
+          "action": "nod"
+        }
+      ]
+    },
+
+    {
+      "verbal": {
+        "text": "Then you present the discriminative stimulus clearly."
+      },
+
+      "nonverbals": []
+    }
+  ]
+}
