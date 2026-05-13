@@ -45,21 +45,23 @@ class ExpressionModule:
     # ======================================
     # NONVERBALS (0–2 rule enforced here)
     # ======================================
-    def _build_nonverbals(self, nonverbals):
-
-        output = []
-
-        for nv in nonverbals:
-
-            output.append({
-                "channel": nv["type"],   # head / face / gaze
-                "action": nv["action"],
-                "intensity": 0.7,
-                "duration": 1.0,
-                "repeats": 1,
-                "timing": "during"
+    def _build_nonverbals(self, nonverbal):
+        nv = nonverbal
+        output = ({
+                # All Generic Inensities are 0-1
+                # All Generic Durations are 0-1
+                "gesture_action": nv["action"],
+                "gesture_intensity": 0.7,
+                "gesture_duration": 1.0,
+                "gesture_repeats": 1,
+                "gesture_timing": "during",
+                "face_expression": "Happy",
+                "face_emotion_intensity": 0.7,
+                "face_timing": "during",
+                "gaze_look_at_user": True,
+                "gaze_duration": 1.0,
+                "gaze_timing": "during"
             })
-
         return output
 
     # ======================================

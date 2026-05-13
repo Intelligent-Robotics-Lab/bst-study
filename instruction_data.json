@@ -3,6 +3,8 @@
 
   "steps": [
     {
+      "embodiement": "trainer",
+
       "verbal": {
         "text": "This is how you perform DTT."
       },
@@ -16,6 +18,8 @@
     },
 
     {
+      "embodiement": "trainer",
+
       "verbal": {
         "text": "First, you want to get the learner's attention."
       },
@@ -29,6 +33,8 @@
     },
 
     {
+      "embodiement": "trainer",
+
       "verbal": {
         "text": "Then you present the discriminative stimulus clearly."
       },
