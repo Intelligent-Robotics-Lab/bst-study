@@ -1,54 +1,5 @@
 import asyncio
-#import agent_layer.agent_layer as agent_layer
-
-PR_BEHAVIORS = [
-    {
-        "name": "Smile",
-        "intensity": 2,
-        "duration": 2.0,
-        "repeats": 1
-    },
-    {
-        "name": "Nod",
-        "intensity": 1,
-        "duration": 1.5,
-        "repeats": 2
-    }
-]
-
-NR_BEHAVIORS = [
-    {
-        "name": "Shake",
-        "intensity": 3,
-        "duration": 3.0,
-        "repeats": 2
-    },
-    {
-        "name": "Frown",
-        "intensity": 2,
-        "duration": 2.0,
-        "repeats": 1
-    }
-]
-
-AR_BEHAVIORS = [
-    {
-        "name": "LookAway",
-        "intensity": 1,
-        "duration": 2.5,
-        "repeats": 1
-    }
-]
-
-
-BEHAVIOR_LIBRARY = {
-    "positive_response": PR_BEHAVIORS,
-    "negative_response": NR_BEHAVIORS,
-    "attention_redirect": AR_BEHAVIORS
-}
-
-
-import asyncio
+import agent_layer.agent_layer as agent_layer
 
 
 class ExpressionModule:
@@ -121,7 +72,7 @@ class ExpressionModule:
 
         # THIS is where agent layer eventually plugs in:
         # await agent_layer.execute(packet)
-
+        await agent_layer.agent_layer(agent_type="Furhat", embodiment="trainer", packet=packet)
         await self.fake_agent(packet)
 
     async def fake_agent(self, packet):

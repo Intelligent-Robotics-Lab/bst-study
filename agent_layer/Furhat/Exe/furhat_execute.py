@@ -2,8 +2,8 @@ import asyncio
 import agent_layer.Furhat.Lib.furhat_behavior_library as behavior
 import agent_layer.Furhat.Lib.furhat_behavior_components as components
 
-FURHAT_KID_IP = "localhost"
-FURHAT_TRAINER_IP = "localhost"
+FURHAT_KID_IP = "141.210.88.254"
+FURHAT_TRAINER_IP = "141.210.88.254"
 
 class FurhatBehavior:
     def __init__(self, embodiment, text, duration_text, text_repeats, head_gesture, intensity, duration, num_repeats, attention_target, face_expression, voice, listening: bool, interrupt: bool, gesture_timing):
