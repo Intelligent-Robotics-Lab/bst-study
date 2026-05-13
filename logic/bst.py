@@ -4,10 +4,10 @@ from logic.instruction import Instruction
 # from modeling import Modeling
 # from dtt import DTT
 
-FURHAT_TRAINER_IP = "141.210.88.11"
+AGENT_TYPE = "furhat"
 
 async def BST():
-    await Instruction().execute()
+    await Instruction(agent=AGENT_TYPE).execute()
     print("Executed instruction")
     # Modeling
     # DTT

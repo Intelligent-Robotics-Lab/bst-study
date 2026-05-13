@@ -22,12 +22,11 @@ async def speak_text(furhat, message, duration, number_repeat):
         await furhat.request_speak_text(message)
         await asyncio.sleep(duration)
 
-# Facial paramter mapping for facial expressiveness
-# Needs expansion and researching into more parameters that can be used
+# Facial paramter mapping for facial expressiveness, expand once we find more parameters
 face_param_mapping = {
     "Happy": {
-        "JAW_OPEN": 0.5,
-        "EYEBROW_LARGER": 0.5,
+        "JAW_OPEN": 1.5,
+        "EYEBROW_LARGER": 1.5,
     },
     "Angry": {
         "JAW_OPEN": 0.5,
@@ -50,8 +49,7 @@ face_param_mapping = {
 def resolve_face_params(face_expression: str):
     return face_param_mapping.get(
         face_expression,
-        face_param_mapping["Neutral"]
-    )
+        face_param_mapping["Neutral"])
 
 async def hold_face_expressions(furhat, face_params, duration=5):
     end_time = asyncio.get_event_loop().time() + duration

@@ -8,7 +8,7 @@ async def main():
     print("STARTING EXPRESSION PIPELINE TEST")
     print("==============================\n")
 
-    instruction_system = Instruction()
+    instruction_system = Instruction(agent="Furhat")
 
     await instruction_system.execute()
 

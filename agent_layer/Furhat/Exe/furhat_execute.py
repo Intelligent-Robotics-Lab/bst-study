@@ -2,7 +2,7 @@ import asyncio
 import agent_layer.Furhat.Lib.furhat_behavior_library as behavior
 import agent_layer.Furhat.Lib.furhat_behavior_components as components
 
-FURHAT_KID_IP = "141.210.88.254"
+FURHAT_KID_IP = "141.210.88.11"
 FURHAT_TRAINER_IP = "141.210.88.254"
 
 class FurhatBehavior:
@@ -24,9 +24,11 @@ class FurhatBehavior:
 
     async def execute(self):
         if self.embodiment == "kid":
+            print("Connecting to Furhat kid")
             furhat = await components.connect_furhat(FURHAT_KID_IP)
             print("Connected to Furhat kid")
         elif self.embodiment  == "trainer":
+            print("Connecting to Furhat trainer")
             furhat = await components.connect_furhat(FURHAT_TRAINER_IP)
             print("Connected to Furhat trainer")
         
