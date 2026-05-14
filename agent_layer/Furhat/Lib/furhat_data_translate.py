@@ -28,20 +28,19 @@ def translate_packet_furhat(packet):
 
         "head_gesture": None,
         "head_intensity": 0.5,
-        "head_duration": 1,
+        "head_duration": 0,
         "head_repeats": 1,
         "head_timing": "during",
 
         "face_expression": None,
         "face_intensity": 0.5,
-        "face_duration": 1,
+        "face_duration": 0,
         "face_timing": "during",
 
         "gaze_target": "user",
         "gaze_duration": 1.0,
         "gaze_timing": "during",
 
-        "voice": "Gregory-Neural (en-US) - Amazon Polly",
         "listening": False
     }
 

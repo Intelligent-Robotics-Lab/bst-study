@@ -40,7 +40,7 @@ class ExpressionModule:
             output.append({
                 "channel": nv.get("channel"),
                 "action": nv.get("action"),
-                "intensity": nv.get("intensity", 1.0),
+                "intensity": nv.get("intensity", 1.0), # Intensity for gestures sets the actual intensity, while it is a scalar for facial expressions 0-1
                 "duration": nv.get("duration", 1.0),
                 "repeats": nv.get("repeats", 1),
                 "timing": nv.get("timing", "during")

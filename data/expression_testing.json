@@ -3,7 +3,7 @@
 
   "steps": [
     {
-      "embodiment": "trainer",
+      "embodiment": "kid",
 
       "verbal": {
           "text": "This is a test of a happy face... full intensity.",
@@ -52,7 +52,7 @@
       ]
     },
     {
-      "embodiment": "trainer",
+      "embodiment": "kid",
 
       "verbal": {
           "text": "This is a test of a angry face... full intensity."
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "embodiment": "trainer",
+      "embodiment": "kid",
 
       "verbal": {
           "text": "This is a test of a neutral face."

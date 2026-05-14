@@ -9,5 +9,5 @@ async def agent_layer(agent_type, embodiment, packet):
         furhat_args = translate_packet_furhat(packet)
 
         await FurhatExe(embodiment=embodiment, text=furhat_args["text"], duration_text=furhat_args["duration_text"], text_repeats=furhat_args["text_repeats"], head_gesture=furhat_args["head_gesture"], intensity=furhat_args["head_intensity"],
-            duration=furhat_args["head_duration"], num_repeats=furhat_args["head_repeats"], attention_target=furhat_args["gaze_target"], face_expression=furhat_args["face_expression"], voice=furhat_args["voice"], listening=furhat_args["listening"],
+            duration=furhat_args["head_duration"], num_repeats=furhat_args["head_repeats"], attention_target=furhat_args["gaze_target"], face_expression=furhat_args["face_expression"], face_intensity=furhat_args["face_intensity"], listening=furhat_args["listening"],
             interrupt=furhat_args["interrupt"], gesture_timing=furhat_args["head_timing"]).execute()

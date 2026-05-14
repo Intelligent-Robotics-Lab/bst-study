@@ -2,7 +2,7 @@ import asyncio
 import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
 
 """This file contains the behavior library for the Furhat agent. At its present state"""
-async def generic_behavior(furhat, text, duration_text, text_repeats, head_gesture, intensity, duration, num_repeats, attention_target, face_expression, voice, listening: bool, interrupt: bool, gesture_timing):
+async def generic_behavior(furhat, text, duration_text, text_repeats, head_gesture, intensity, duration, num_repeats, attention_target, face_expression, face_intensity, listening: bool, interrupt: bool, gesture_timing):
     if interrupt: 
         await furhat.request_speak_stop()
 
@@ -11,25 +11,23 @@ async def generic_behavior(furhat, text, duration_text, text_repeats, head_gestu
     else:
         await furhat.request_listen_stop()
 
-    if voice is not None:
-        await furhat.request_voice_config(voice_id=voice)
+    gaze_task = None
+    gaze_stop = None
 
     if attention_target == "user":
-        await furhat.request_attend_user()
+        gaze_stop = asyncio.Event()
+        gaze_task = asyncio.create_task(
+            behavior.follow_user_gaze(furhat, gaze_stop)
+        )
     elif isinstance(attention_target, str):
         await furhat.request_attend_user(attention_target)
     else:
         await furhat.request_attend_user()
         
-    face_task = None
-
     # Set face before speech
     if face_expression is not None:
-        face_params = behavior.resolve_face_params(face_expression)
-
-        # Address the duration variable
-        face_task = asyncio.create_task(
-            behavior.hold_face_expressions(furhat=furhat, face_params=face_params, duration=duration_text + 1))
+        new_face_params = behavior.resolve_face_params(face_expression)
+        await behavior.switch_face(furhat, new_face_params, intensity=face_intensity)
                                  
     gesture_task = None
 
@@ -53,8 +51,10 @@ async def generic_behavior(furhat, text, duration_text, text_repeats, head_gestu
     if gesture_timing == "after" and head_gesture is not None:
         await behavior.start_gesture(furhat=furhat, gesture=head_gesture, intensity=intensity, duration=duration, number_repeat=num_repeats)
 
-    if face_task is not None:
-        await face_task
+    # Stop the gaze behavior
+    if gaze_task is not None:
+        gaze_stop.set()
+        await gaze_task
 
 # Will be deleted in future updates, placeholders for now but the generic function above will likely be the only handler for the agent layer
 async def nr_problem_behavior(furhat):

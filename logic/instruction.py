@@ -27,7 +27,7 @@ class Instruction:
 
         print("Executing instruction module")
 
-        with open("data/instruction_data.json", "r") as f:
+        with open("data/expression_testing.json", "r") as f:
             data = json.load(f)
 
         steps = data["steps"]
