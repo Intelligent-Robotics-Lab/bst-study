@@ -1,8 +1,8 @@
 {
   "type": "instruction_module",
+
   "steps": [
     {
-      "chapter": "Introduction",
       "embodiment": "trainer",
 
       "verbal": {
@@ -17,6 +17,15 @@
           "channel": "face",
           "action": "Happy",
           "intensity": 0.8,
+          "duration": 1.0,
+          "timing": "during"
+        },
+        {
+          "channel": "head",
+          "action": "Nod",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "repeats": 1,
           "timing": "during"
         },
         {
@@ -28,11 +37,10 @@
     },
 
     {
-      "chapter": "DTT",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "Discrete Trial Training, also known as DTT, is a teaching procedure used in ABA with a clear beginning and end. A trial typically starts with a demand, followed by a response, and then reinforcement. Instructions should be brief and concise, such as 'Touch head,' rather than using unnecessary additional words that may create confusion.",
+        "text": "Discrete Trial Training, also known as DTT, is a teaching procedure used in ABA with a clear beginning and end. A trial typically starts with a demand, followed by a response, and then reinforcement.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -40,20 +48,54 @@
 
       "nonverbals": [
         {
+          "channel": "face",
+          "action": "Neutral",
+          "intensity": 0.8,
+          "duration": 1.0,
+          "timing": "during"
+        },
+        {
           "channel": "head",
           "action": "Nod",
-          "intensity": 0.5,
+          "intensity": 0.4,
+          "duration": 1.0,
+          "repeats": 1,
           "timing": "during"
         }
       ]
     },
 
     {
-      "chapter": "SD",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "An SD, or discriminative stimulus, is a signal that indicates a response is needed. It is usually delivered as a clear instruction or event that tells the learner a task is available. For example, when a phone rings, you know a response is expected because past experiences have taught you that answering may lead to reinforcement or consequences.",
+        "text": "Instructions should be brief and concise, such as 'Touch head,' rather than using unnecessary additional words that may create confusion.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "gesture",
+          "action": "Point",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "An SD, or discriminative stimulus, is a signal that indicates a response is needed. It is usually delivered as a clear instruction or event that tells the learner a task is available.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -64,17 +106,38 @@
           "channel": "face",
           "action": "Neutral",
           "intensity": 0.7,
+          "duration": 1.0,
           "timing": "during"
         }
       ]
     },
 
     {
-      "chapter": "Discrete Trial Example",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "Here is an example of a discrete trial. If I say, 'Touch Play-Doh,' that instruction is the SD. If the learner touches the Play-Doh, that is the response. I would then provide reinforcement by saying, 'Awesome job touching the Play-Doh. Thank you for listening.'",
+        "text": "For example, when a phone rings, you know a response is expected because past experiences have taught you that answering may lead to reinforcement or consequences.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "head",
+          "action": "Tilt",
+          "intensity": 0.4,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Here is an example of a discrete trial. If I say, 'Touch Play-Doh,' that instruction is the SD. If the learner touches the Play-Doh, that is the response.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -84,59 +147,18 @@
         {
           "channel": "gesture",
           "action": "Point",
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "chapter": "Response",
-      "embodiment": "trainer",
-
-      "verbal": {
-        "text": "A response is the behavior a learner engages in after an SD is delivered. Responses should generally occur within three to five seconds. Correct responses should immediately contact reinforcement, while incorrect responses may require error correction procedures.",
-        "style": "instructional",
-        "volume": 0.85,
-        "interrupt": false
-      },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
           "intensity": 0.6,
+          "duration": 1.0,
           "timing": "during"
         }
       ]
     },
 
     {
-      "chapter": "Prompting",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "Prompting is the use of assistance or cues to help a learner perform the correct response. Prompts occur between the SD and the response. Examples include full physical prompting, such as hand-over-hand guidance, partial physical prompts at the elbow or shoulder, and gestural prompts like tapping near the correct item.",
-        "style": "instructional",
-        "volume": 0.85,
-        "interrupt": false
-      },
-
-      "nonverbals": [
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.4,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "chapter": "Reinforcement",
-      "embodiment": "trainer",
-
-      "verbal": {
-        "text": "Reinforcement encourages behavior and increases the likelihood that it will occur again in the future. Reinforcement should follow correct responses within three to five seconds. Examples include verbal praise, tangible rewards, edible rewards, physical affection, or token systems. Descriptive praise should always explain the behavior being reinforced.",
+        "text": "Reinforcement may then follow with descriptive praise such as, 'Awesome job touching the Play-Doh. Thank you for listening.'",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -147,17 +169,124 @@
           "channel": "face",
           "action": "Happy",
           "intensity": 1.0,
+          "duration": 1.0,
           "timing": "during"
         }
       ]
     },
 
     {
-      "chapter": "Motivation",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "Motivation involves identifying items or activities that are reinforcing for the learner. Capturing motivation before placing demands helps increase engagement and successful responding. For example, offering a choice between preferred items can create motivation while also teaching communication and decision-making skills.",
+        "text": "A response is the behavior a learner engages in after an SD is delivered. Responses should generally occur within three to five seconds.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Neutral",
+          "intensity": 0.6,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Correct responses should immediately contact reinforcement, while incorrect responses may require error correction procedures.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "head",
+          "action": "Nod",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "repeats": 1,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Prompting is the use of assistance or cues to help a learner perform the correct response. Prompts occur between the SD and the response.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "gesture",
+          "action": "Point",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Examples include full physical prompting, partial physical prompting, and gestural prompts such as tapping near the correct item.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "head",
+          "action": "Nod",
+          "intensity": 0.4,
+          "duration": 1.0,
+          "repeats": 1,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Reinforcement encourages behavior and increases the likelihood that it will occur again in the future. Reinforcement should follow correct responses within three to five seconds.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 0.9,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Examples of reinforcement include verbal praise, tangible rewards, edible rewards, physical affection, and token systems.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -173,11 +302,52 @@
     },
 
     {
-      "chapter": "High Probability Behavior",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "High probability behaviors are easy or previously mastered tasks used to increase compliance and motivation. These maintenance tasks may include simple imitation skills like touching your head, nodding yes, or tapping the table. Using mastered skills can help re-engage the learner before introducing more difficult tasks.",
+        "text": "Motivation involves identifying items or activities that are reinforcing for the learner before demands are presented.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Neutral",
+          "intensity": 0.7,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Offering choices between preferred items can increase engagement while also teaching communication and decision-making skills.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "gesture",
+          "action": "Point",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "High probability behaviors are easy or previously mastered tasks used to increase compliance and motivation before introducing more difficult tasks.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -187,18 +357,19 @@
         {
           "channel": "head",
           "action": "Nod",
-          "intensity": 0.6,
+          "intensity": 0.5,
+          "duration": 1.0,
+          "repeats": 1,
           "timing": "during"
         }
       ]
     },
 
     {
-      "chapter": "Error Correction",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "Error correction is used when a learner gives an incorrect response. The therapist first models or prompts the correct response, then presents a high probability demand, and finally re-presents the original SD to allow another opportunity for independent responding. After reinforcement is delivered, the therapist moves on to the next task.",
+        "text": "Error correction is used when a learner gives an incorrect response. The therapist models or prompts the correct response before re-presenting the original SD.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -209,17 +380,17 @@
           "channel": "face",
           "action": "Neutral",
           "intensity": 0.8,
+          "duration": 1.0,
           "timing": "during"
         }
       ]
     },
 
     {
-      "chapter": "Conclusion",
       "embodiment": "trainer",
 
       "verbal": {
-        "text": "Thank you for your help and support in this research. These ABA principles provide the foundation for effective instruction, reinforcement, and skill development during therapy sessions.",
+        "text": "After reinforcement is delivered, the therapist moves on to the next task to maintain momentum and engagement.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -229,7 +400,34 @@
         {
           "channel": "face",
           "action": "Happy",
-          "intensity": 0.9,
+          "intensity": 0.8,
+          "duration": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Thank you for your help and support in this research. These ABA principles provide the foundation for effective instruction and skill development during therapy sessions.",
+        "style": "instructional",
+        "volume": 0.85,
+        "interrupt": false
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 1.0,
+          "duration": 1.0,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "user",
           "timing": "during"
         }
       ]
