@@ -1,0 +1,286 @@
+{
+  "type": "modeling_module",
+
+  "steps": [
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "In this module, I am going to demonstrate what an interaction with the kid would look like from presenting the SD, awaiting response, and providing reinforcement or error correction."
+      },
+
+      "nonverbals": [{}]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "In this section we will demonstrate the independent response level of the training. In this type of response we will only provide reinforcement or error correction depending on the kid response. We will go through examples of each of the SDs described in the introduction. Are you ready to begin?"
+      },
+
+      "nonverbals": [{}]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "The first SD we will go through is the manding and motivation SD. This interaction would proceed as follows."
+      },
+
+      "nonverbals": [{}]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "What do you want to work for?"
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 0.5,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "kid",
+
+      "verbal": {
+          "text": "I want the ball."
+      },
+
+      "nonverbals": [
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "Awesome, lets work for the ball today!"
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 1.0,
+          "timing": "during"
+        },
+        {
+          "channel": "head",
+          "action": "Nod",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "repeats": 2,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "Did that interaction make sense? At any time, you can stop and ask to repeat the previous SD. Once you say, we can finish the remaining SD's"
+      },
+
+      "nonverbals": [{}]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "Did that interaction make sense? At any time, you can stop and ask to repeat the previous SD. Once you say, we can finish the remaining SD's"
+      },
+
+      "nonverbals": [{}]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "Do this"
+      },
+
+      "nonverbals": [{
+          "channel": "head",
+          "action": "Nod",
+          "intensity": 1.5,
+          "duration": 1.0,
+          "repeats": 2,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }]
+    },
+    {
+      "embodiment": "kid",
+
+      "verbal": {},
+
+      "nonverbals": [{
+          "channel": "head",
+          "action": "Nod",
+          "intensity": 1.0,
+          "duration": 0.75,
+          "repeats": 3,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "That's nodding your head! Good job nodding your head!"
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 1.0,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Shake your head"
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 0.5,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "kid",
+
+      "verbal": {},
+
+      "nonverbals": [{
+          "channel": "head",
+          "action": "GazeAway",
+          "intensity": 2.0,
+          "duration": 2,
+          "repeats": 1,
+          "timing": "during"
+        },
+        {
+          "channel": "face",
+          "action": "Sad",
+          "intensity": 0.5,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Lets try that again. Can you shake your head?"
+      },
+
+      "nonverbals": [{
+          "channel": "head",
+          "action": "Shake",
+          "intensity": 1.5,
+          "duration": 1,
+          "repeats": 3,
+          "timing": "after"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "kid",
+
+      "verbal": {},
+
+      "nonverbals": [{
+          "channel": "head",
+          "action": "Shake",
+          "intensity": 1.5,
+          "duration": 0.75,
+          "repeats": 4,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+        "text": "Good job shaking your head for me!"
+      },
+
+      "nonverbals": [{
+          "channel": "face",
+          "action": "Sad",
+          "intensity": 0.5,
+          "timing": "during"
+        },
+        {
+          "channel": "gaze",
+          "action": "robot",
+          "timing": "during"
+        }
+      ]
+    }
+  ]
+}

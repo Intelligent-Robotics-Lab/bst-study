@@ -1,7 +1,7 @@
 import asyncio
 import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
 from logic.instruction import Instruction
-# from modeling import Modeling
+from logic.modeling import Modeling
 # from dtt import DTT
 
 AGENT_TYPE = "Furhat"
@@ -9,6 +9,7 @@ AGENT_TYPE = "Furhat"
 async def BST():
     await Instruction(agent=AGENT_TYPE).execute()
     print("Executed instruction")
-    # Modeling
+    await Modeling(agent=AGENT_TYPE).execute()
+    print("Executed modeling")
     # DTT
 

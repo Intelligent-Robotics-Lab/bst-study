@@ -7,8 +7,8 @@ FURHAT_TRAINER_IP = "141.210.88.11"
 
 EMBODIMENT_PROFILE = {
     "trainer": {
-        "voice": "Gregory-Neural (en-US) - Amazon Polly",
-        "face_id": "adult - James"
+        "voice": "Danielle-Neural (en-US) - Amazon Polly",
+        "face_id": "adult - Rene"
     },
     "kid": {
         "voice": "Ivy-Neural (en-US) - Amazon Polly",
@@ -68,5 +68,5 @@ class FurhatBehavior:
 
         await behavior.generic_behavior(furhat=furhat, text=self.text, duration_text=self.duration_text, text_repeats=self.text_repeats, head_gesture=self.head_gesture, intensity=self.intensity, duration=self.duration, num_repeats=self.num_repeats, attention_target=self.attention_target, face_expression=self.face_expression, face_intensity=self.face_intensity, listening=self.listening, interrupt=self.interrupt, gesture_timing=self.gesture_timing)
 
-        furhat.disconnect()
+        await furhat.disconnect()
         print(f"Disconnected from Furhat ({self.embodiment})")

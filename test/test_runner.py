@@ -1,5 +1,6 @@
 import asyncio
 from logic.instruction import Instruction
+from logic.modeling import Modeling
 
 
 async def main():
@@ -8,7 +9,7 @@ async def main():
     print("STARTING EXPRESSION PIPELINE TEST")
     print("==============================\n")
 
-    instruction_system = Instruction(agent="Furhat")
+    instruction_system = Modeling(agent="Furhat")
 
     await instruction_system.execute()
 

@@ -39,7 +39,6 @@ async def generic_behavior(furhat, text, duration_text, text_repeats, head_gestu
             behavior.start_gesture(furhat=furhat, gesture=head_gesture, intensity=intensity, duration=duration, number_repeat=num_repeats))
     
     elif gesture_timing == "after" and head_gesture is not None:
-        # IMPORTANT: defer execution until after speech
         pass
 
     await behavior.speak_text(furhat=furhat, message=text, duration=duration_text, number_repeat=text_repeats)
