@@ -39,7 +39,7 @@ class Instruction:
         for step in steps:
 
             packet = expr.build(step)
-
+            #From Perception check to see if user wants to repeat the last step for clarity if the ASR ever picks up user audio that says to stop or repeat or something similar have it replay the current step in the insturction phase
             await expr.execute(agent_type=self.agent, embodiment=step["embodiment"],packet=packet)
 
             # optional pacing between teaching steps

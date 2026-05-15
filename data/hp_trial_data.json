@@ -1,0 +1,51 @@
+{
+    "trial_data": {
+        "SD_1": {
+            "sd": "Can yoo nod?",
+            "sd_type": "Reception",
+            "correctness": "Correct",
+            "challenge": null,
+            "pb_response_type": null,
+            "action": null,
+            "object": null,
+            "emotion": null,
+
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
+            
+            
+        }
+    }
+}

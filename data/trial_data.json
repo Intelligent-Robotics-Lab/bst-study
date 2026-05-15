@@ -1,23 +1,5 @@
 {
-    "training_set": {
-        "Instruction": {
-            "sd": null,
-            "sd_type": null,
-            "correctness": "Correct",
-            "challenge": null,
-            "pb_response_type": null,
-            "action": null,
-            "object": null,
-            "emotion": null,
-            "verabals": [
-                "This is how you perform DTT.", 
-                "First you want to do this.",
-                "Next your gonna ask the child what they want to work for."
-            ],
-
-            "kid_correct_verbal": null
-        },
-
+    "trial_data": {
         "SD_1": {
             "sd": "What do you want to work for?",
             "sd_type": "Manding",
@@ -26,7 +8,44 @@
             "pb_response_type": null,
             "action": null,
             "object": null,
-            "emotion": null
+            "emotion": null,
+
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "I want stickers!",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
+            
+            
         },
 
         "SD_2": {
@@ -37,7 +56,41 @@
             "pb_response_type": "NR",
             "action": null,
             "object": null,
-            "emotion": null
+            "emotion": null,
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "NO NO NO I DON'T WANT TO!",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Angry",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "Shake",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
         },
 
         "SD_3": {
@@ -48,7 +101,41 @@
             "pb_response_type": null,
             "action": "Shake",
             "object": null,
-            "emotion": null
+            "emotion": null,
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "Shake",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
         },
 
         "SD_4": {
@@ -59,7 +146,41 @@
             "pb_response_type": "PR",
             "action": null,
             "object": "Ball",
-            "emotion": null
+            "emotion": null,
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "OH OH OH GIVE ME GIVE ME THE BALL!",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
         },
 
         "SD_5": {
@@ -70,7 +191,41 @@
             "pb_response_type": null,
             "action": null,
             "object": null,
-            "emotion": "Happy"
+            "emotion": "Happy",
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "Happy!",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
         },
 
         "SD_6": {
@@ -81,36 +236,41 @@
             "pb_response_type": "AR",
             "action": null,
             "object": null,
-            "emotion": "Surprise"
+            "emotion": "Surprise",
+            "child_behavior": 
+                {
+                    "embodiment": "trainer",
+
+                    "verbal": {
+                        "text": "",
+                        "style": "instructional",
+                        "volume": 0.85,
+                        "interrupt": false
+                    },
+
+                    "nonverbals": [
+                        {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.8,
+                        "duration": 1.0,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.5,
+                        "duration": 1.0,
+                        "repeats": 1,
+                        "timing": "during"
+                        },
+                        {
+                        "channel": "gaze",
+                        "action": "user",
+                        "timing": "during"
+                        }
+                    ]
+                }
         }
-    },
-
-    "behaviors": {
-        "PR": [
-            {
-                "name": "Smile",
-                "intensity": 2,
-                "duration": 2,
-                "repeats": 1
-            }
-        ],
-
-        "NR": [
-            {
-                "name": "Shake",
-                "intensity": 3,
-                "duration": 3,
-                "repeats": 2
-            }
-        ],
-
-        "AR": [
-            {
-                "name": "LookAway",
-                "intensity": 1,
-                "duration": 2,
-                "repeats": 1
-            }
-        ]
     }
 }
