@@ -1,132 +1,133 @@
-
 import json
 import asyncio
 from expression_module.expression_module import ExpressionModule
+from logic.feedback import Feedback
 
 
 class DTT:
 
     def __init__(self, agent=None):
         self.agent = agent
+        self.hp_index = 0
 
     async def wait_for_input(self, prompt="> "):
         return await asyncio.to_thread(input, prompt)
 
     async def wait_for_sd(self):
-        print("\n[WAITING FOR SD]")
+        print("\n[WAIT FOR SD]")
         await self.wait_for_input("Press ENTER when SD is delivered ")
 
     async def wait_for_reinforcement(self):
-        print("\n[WAITING FOR REINFORCEMENT]")
+        print("\n[WAIT FOR REINFORCEMENT]")
         await self.wait_for_input("Press ENTER when reinforcement is delivered ")
 
     async def wait_for_prompt(self):
-        print("\n[WAITING FOR PROMPT]")
+        print("\n[WAIT FOR PROMPT]")
         await self.wait_for_input("Press ENTER when prompt is delivered ")
 
     async def execute(self):
         await self.main_dtt_loop()
 
     async def main_dtt_loop(self):
+
         expr = ExpressionModule()
+        feedback = Feedback(self.agent)
 
         with open("data/trial_data.json", "r") as f:
-            trial_data = json.load(f)
+            trial_data = json.load(f)["trial_data"]
 
-        trial_data = trial_data["trial_data"]
         current_sd_id = 1
         max_id = 6
 
-        while current_sd_id < max_id:
+        while current_sd_id <= max_id:
 
             await self.wait_for_sd()
 
-            current_trial = trial_data[f"SD_{current_sd_id}"]
+            trial = trial_data[f"SD_{current_sd_id}"]
+            correctness = trial["correctness"]
 
-            correctness = current_trial["correctness"]
+            print(f"\n[SD {current_sd_id}] Correctness: {correctness}")
 
-            print(f"\nCurrent Trial Correctness: {correctness}")
-
-            # Child behavior
-            packet = expr.build(current_trial["child_behavior"])
+            packet = expr.build(trial["child_behavior"])
 
             await expr.execute(
-                agent_type=self.agent,
-                embodiment=current_trial["child_behavior"]["embodiment"],
-                packet=packet
+                self.agent,
+                trial["child_behavior"]["embodiment"],
+                packet
             )
 
-            # CORRECT RESPONSE
             if correctness == "Correct":
 
                 await self.wait_for_reinforcement()
 
-            # NO RESPONSE
+                fb_packet = feedback.build("Correct", phase="reinforcement")
+
+                packet = expr.build(fb_packet)
+
+                await expr.execute(
+                    self.agent,
+                    fb_packet["embodiment"],
+                    packet
+                )
+
+
             elif correctness == "No Response":
 
                 await self.wait_for_prompt()
+                await self.hp_sd_protocol()
 
-                print("Child receives prompt...")
+                fb_packet = feedback.build("No Response", phase="prompt")
 
-                await asyncio.sleep(1)
+                packet = expr.build(fb_packet)
 
-                print("Running High Probability SD protocol...")
-
-                await asyncio.sleep(1)
-
-                print("Child gives correct answer")
-
-                await self.wait_for_reinforcement()
-
-            # INCORRECT RESPONSE
-            elif correctness == "Incorrect":
-
-                print("Waiting for error correction...")
-
-                await self.wait_for_input(
-                    "Press ENTER when error correction occurs "
+                await expr.execute(
+                    self.agent,
+                    fb_packet["embodiment"],
+                    packet
                 )
 
-                print("Child acknowledges correction")
 
-                await asyncio.sleep(1)
+            elif correctness == "Incorrect":
 
-                print("Running High Probability SD protocol...")
+                await self.wait_for_input("Press ENTER for error correction ")
+                await self.hp_sd_protocol()
 
-                await asyncio.sleep(1)
+                fb_packet = feedback.build("Incorrect", phase="correction")
 
-                print("Child gives correct answer")
+                packet = expr.build(fb_packet)
 
-                await self.wait_for_reinforcement()
+                await expr.execute(
+                    self.agent,
+                    fb_packet["embodiment"],
+                    packet
+                )
 
             current_sd_id += 1
 
-        print("\nDTT SESSION COMPLETE")
+        print("\nDTT COMPLETE")
 
     async def hp_sd_protocol(self):
+
         expr = ExpressionModule()
 
-
         with open("data/hp_trial_data.json", "r") as f:
-            hp_data = json.load(f)
-        hp_data = hp_data["trial_data"]
+            hp_data = json.load(f)["trial_data"]
 
+        hp_list = list(hp_data.values())
 
-        correctness = hp_data["correctness"]
+        trial = hp_list[self.hp_index]
 
-        print(f"\nCurrent Trial Correctness: {correctness}")
+        print("\n[HIGH PROBABILITY SD]")
 
-        # Child behavior
-        packet = expr.build(hp_data["child_behavior"])
+        packet = expr.build(trial["child_behavior"])
 
         await expr.execute(
-                agent_type=self.agent,
-                embodiment=hp_data["child_behavior"]["embodiment"],
-                packet=packet
-            )
+            self.agent,
+            trial["child_behavior"]["embodiment"],
+            packet
+        )
 
-        # CORRECT RESPONSE
-        if correctness == "Correct":
-
+        if trial["correctness"] == "Correct":
             await self.wait_for_reinforcement()
-        
+
+        self.hp_index = (self.hp_index + 1) % len(hp_list)

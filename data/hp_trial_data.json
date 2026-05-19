@@ -12,7 +12,7 @@
 
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "",

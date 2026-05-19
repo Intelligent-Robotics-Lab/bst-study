@@ -12,7 +12,7 @@
 
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "I want stickers!",
@@ -59,7 +59,7 @@
             "emotion": null,
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "NO NO NO I DON'T WANT TO!",
@@ -104,7 +104,7 @@
             "emotion": null,
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "",
@@ -149,7 +149,7 @@
             "emotion": null,
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "OH OH OH GIVE ME GIVE ME THE BALL!",
@@ -194,7 +194,7 @@
             "emotion": "Happy",
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "Happy!",
@@ -239,7 +239,7 @@
             "emotion": "Surprise",
             "child_behavior": 
                 {
-                    "embodiment": "trainer",
+                    "embodiment": "kid",
 
                     "verbal": {
                         "text": "",

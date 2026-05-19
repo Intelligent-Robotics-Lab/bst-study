@@ -1,41 +1,52 @@
 {
   "type": "modeling_module",
-
   "steps": [
+
     {
+      "section": "intro",
       "embodiment": "trainer",
-
       "verbal": {
-          "text": "In this module, I am going to demonstrate what an interaction with the kid would look like from presenting the SD, awaiting response, and providing reinforcement or error correction."
+        "text": "In this module, I am going to demonstrate what an interaction with the kid would look like from presenting the SD, awaiting response, and providing reinforcement or error correction."
       },
-
-      "nonverbals": [{}]
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 0.5,
+          "timing": "during"
+        }
+      ]
     },
+
     {
+      "section": "intro",
       "embodiment": "trainer",
-
       "verbal": {
-          "text": "In this section we will demonstrate the independent response level of the training. In this type of response we will only provide reinforcement or error correction depending on the kid response. We will go through examples of each of the SDs described in the introduction. Are you ready to begin?"
+        "text": "We will demonstrate independent responding, including reinforcement and error correction across SDs."
       },
-
-      "nonverbals": [{}]
+      "nonverbals": []
     },
+
     {
-      "embodiment": "trainer",
-
-      "verbal": {
-          "text": "The first SD we will go through is the manding and motivation SD. This interaction would proceed as follows."
-      },
-
-      "nonverbals": [{}]
+      "type": "checkpoint",
+      "section": "intro"
     },
+
     {
+      "section": "manding",
       "embodiment": "trainer",
-
       "verbal": {
-          "text": "What do you want to work for?"
+        "text": "The first SD is manding and motivation."
       },
+      "nonverbals": []
+    },
 
+    {
+      "section": "manding",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "What do you want to work for?"
+      },
       "nonverbals": [
         {
           "channel": "face",
@@ -50,13 +61,13 @@
         }
       ]
     },
+
     {
+      "section": "manding",
       "embodiment": "kid",
-
       "verbal": {
-          "text": "I want the ball."
+        "text": "I want the ball."
       },
-
       "nonverbals": [
         {
           "channel": "gaze",
@@ -65,222 +76,183 @@
         }
       ]
     },
+
     {
+      "section": "manding",
       "embodiment": "trainer",
-
       "verbal": {
-          "text": "Awesome, lets work for the ball today!"
+        "text": "Awesome, let's work for the ball today!"
       },
-
       "nonverbals": [
         {
           "channel": "face",
           "action": "Happy",
           "intensity": 1.0,
           "timing": "during"
-        },
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.5,
-          "duration": 1.0,
-          "repeats": 2,
-          "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
         }
       ]
     },
+
     {
-      "embodiment": "trainer",
-
-      "verbal": {
-          "text": "Did that interaction make sense? At any time, you can stop and ask to repeat the previous SD. Once you say, we can finish the remaining SD's"
-      },
-
-      "nonverbals": [{}]
+      "type": "checkpoint",
+      "section": "manding"
     },
+
     {
+      "section": "receptive",
       "embodiment": "trainer",
-
       "verbal": {
-          "text": "Did that interaction make sense? At any time, you can stop and ask to repeat the previous SD. Once you say, we can finish the remaining SD's"
+        "text": "Do this"
       },
-
-      "nonverbals": [{}]
-    },
-    {
-      "embodiment": "trainer",
-
-      "verbal": {
-          "text": "Do this"
-      },
-
-      "nonverbals": [{
+      "nonverbals": [
+        {
           "channel": "head",
           "action": "Nod",
           "intensity": 1.5,
           "duration": 1.0,
           "repeats": 2,
           "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
-        }]
+        }
+      ]
     },
+
     {
+      "section": "receptive",
       "embodiment": "kid",
-
       "verbal": {},
-
-      "nonverbals": [{
+      "nonverbals": [
+        {
           "channel": "head",
           "action": "Nod",
           "intensity": 1.0,
           "duration": 0.75,
           "repeats": 3,
           "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
-        }]
+        }
+      ]
     },
+
     {
+      "section": "receptive",
       "embodiment": "trainer",
-
       "verbal": {
-        "text": "That's nodding your head! Good job nodding your head!"
+        "text": "That's nodding your head! Good job!"
       },
-
       "nonverbals": [
         {
           "channel": "face",
           "action": "Happy",
           "intensity": 1.0,
           "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
         }
       ]
     },
-    {
-      "embodiment": "trainer",
 
+    {
+      "type": "checkpoint",
+      "section": "receptive"
+    },
+
+    {
+      "section": "receptive_second",
+      "embodiment": "trainer",
       "verbal": {
         "text": "Shake your head"
       },
+      "nonverbals": []
+    },
 
+    {
+      "section": "receptive_second",
+      "embodiment": "kid",
+      "verbal": {},
       "nonverbals": [
         {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 0.5,
-          "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
-        }
-      ]
-    },
-    {
-      "embodiment": "kid",
-
-      "verbal": {},
-
-      "nonverbals": [{
           "channel": "head",
           "action": "GazeAway",
           "intensity": 2.0,
           "duration": 2,
           "repeats": 1,
           "timing": "during"
-        },
-        {
-          "channel": "face",
-          "action": "Sad",
-          "intensity": 0.5,
-          "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
         }
       ]
     },
+
     {
+      "section": "receptive_second",
       "embodiment": "trainer",
-
       "verbal": {
-        "text": "Lets try that again. Can you shake your head?"
+        "text": "Let's try that again. Can you shake your head?"
       },
-
-      "nonverbals": [{
-          "channel": "head",
-          "action": "Shake",
-          "intensity": 1.5,
-          "duration": 1,
-          "repeats": 3,
-          "timing": "after"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
-        }
-      ]
+      "nonverbals": []
     },
+
     {
+      "type": "checkpoint",
+      "section": "receptive_second"
+    },
+
+    {
+      "section": "tacting",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Now, what is in front of me?"
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "tacting",
       "embodiment": "kid",
-
-      "verbal": {},
-
-      "nonverbals": [{
-          "channel": "head",
-          "action": "Shake",
-          "intensity": 1.5,
-          "duration": 0.75,
-          "repeats": 4,
-          "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
-        }
-      ]
-    },
-    {
-      "embodiment": "trainer",
-
       "verbal": {
-        "text": "Good job shaking your head for me!"
+        "text": "Car"
       },
+      "nonverbals": []
+    },
 
-      "nonverbals": [{
-          "channel": "face",
-          "action": "Sad",
-          "intensity": 0.5,
-          "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "robot",
-          "timing": "during"
-        }
-      ]
+    {
+      "section": "tacting",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Good job, that is a car!"
+      },
+      "nonverbals": []
+    },
+
+    {
+      "type": "checkpoint",
+      "section": "tacting"
+    },
+
+    {
+      "section": "emotion",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "How do I feel?"
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "emotion",
+      "embodiment": "kid",
+      "verbal": {},
+      "nonverbals": []
+    },
+
+    {
+      "section": "emotion",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Great job!"
+      },
+      "nonverbals": []
+    },
+
+    {
+      "type": "checkpoint",
+      "section": "emotion"
     }
+
   ]
 }

@@ -1,9 +1,5 @@
-import asyncio
 import agent_layer.Furhat.Lib.furhat_behavior_library as behavior
-import agent_layer.Furhat.Lib.furhat_behavior_components as components
-
-FURHAT_KID_IP = "141.210.88.254"
-FURHAT_TRAINER_IP = "141.210.88.11"
+import agent_layer.Furhat.Lib.furhat_manager as FurhatManager
 
 EMBODIMENT_PROFILE = {
     "trainer": {
@@ -16,57 +12,36 @@ EMBODIMENT_PROFILE = {
     }
 }
 
-# This should be reduced down to packet later
 class FurhatBehavior:
-    def __init__(self, embodiment, text, duration_text, text_repeats, head_gesture, intensity, duration, num_repeats, attention_target, face_expression, face_intensity, listening: bool, interrupt: bool, gesture_timing, voice=None, face_id=None):
+
+    def __init__(self, embodiment, packet):
         self.embodiment = embodiment
-        self.text = text
-        self.duration_text = duration_text
-        self.text_repeats = text_repeats
-        self.head_gesture = head_gesture
-        self.intensity = intensity
-        self.duration = duration
-        self.num_repeats = num_repeats
-        self.attention_target = attention_target
-        self.face_expression = face_expression
-        self.face_intensity = face_intensity
-        self.voice = voice
-        self.listening = listening
-        self.interrupt = interrupt
-        self.gesture_timing = gesture_timing
-        self.face_id = face_id
+        self.packet = packet
 
     async def execute(self):
-        print(f"Connecting to Furhat ({self.embodiment})")
 
-        ip = (
-            FURHAT_KID_IP if self.embodiment == "kid"
-            else FURHAT_TRAINER_IP
-        )
+        furhat = FurhatManager.get_furhat(self.embodiment)
 
-        furhat = await components.connect_furhat(ip)
+        if furhat is None:
+            raise RuntimeError(f"No robot for {self.embodiment}")
 
-        print(f"Connected to Furhat ({self.embodiment})")
-
-        await asyncio.sleep(0.1)
+        print(f"Executing on Furhat ({self.embodiment})")
+        print("[PACKET]", self.packet)
 
         profile = EMBODIMENT_PROFILE.get(self.embodiment, {})
 
-        voice = self.voice or profile.get("voice")
-        face_id = self.face_id or profile.get("face_id")
+        voice = profile.get("voice")
+        face_id = profile.get("face_id")
 
         try:
             await furhat.request_voice_config(voice_id=voice)
         except Exception as e:
-            print(f"[WARN] Voice config failed, continuing default voice: {e}")
+            print("[WARN] voice:", e)
 
         try:
             if face_id:
                 await furhat.request_face_config(face_id)
         except Exception as e:
-            print(f"[WARN] Face config failed: {e}")
+            print("[WARN] face:", e)
 
-        await behavior.generic_behavior(furhat=furhat, text=self.text, duration_text=self.duration_text, text_repeats=self.text_repeats, head_gesture=self.head_gesture, intensity=self.intensity, duration=self.duration, num_repeats=self.num_repeats, attention_target=self.attention_target, face_expression=self.face_expression, face_intensity=self.face_intensity, listening=self.listening, interrupt=self.interrupt, gesture_timing=self.gesture_timing)
-
-        await furhat.disconnect()
-        print(f"Disconnected from Furhat ({self.embodiment})")
+        await behavior.generic_behavior(furhat=furhat, embodiment=self.embodiment, packet=self.packet)
