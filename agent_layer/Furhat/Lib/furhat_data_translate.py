@@ -1,3 +1,4 @@
+"""Function to translate the data packets from the expression module into a usable format for the Furhat robot."""
 def translate_packet_furhat(packet):
 
     speech = packet.get("speech") or {}    
@@ -9,11 +10,13 @@ def translate_packet_furhat(packet):
     style = speech.get("style", "neutral")
     volume = speech.get("volume", 1)
 
+    # This implementation guesses the text length to pass this variable. The parameter was removed from the function.
     if text:
         duration_text = max(len(text.split()) * 0.45, 1.0)
     else:
         duration_text = 0
 
+    # Default outputs and format
     output = {
         "speech": {
             "text": text,
@@ -30,7 +33,7 @@ def translate_packet_furhat(packet):
             "gaze": []
         },
 
-        "attention_target": "user",  # default
+        "attention_target": "user",  # Defaults to user
         "listening": listening
     }
 

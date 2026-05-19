@@ -15,33 +15,33 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "I want stickers!",
+                        "text": "I want to work for the ball!",
                         "style": "instructional",
                         "volume": 0.85,
                         "interrupt": false
                     },
 
                     "nonverbals": [
-                        {
+                      {
                         "channel": "face",
                         "action": "Happy",
                         "intensity": 0.8,
                         "duration": 1.0,
                         "timing": "during"
-                        },
-                        {
+                      },
+                      {
                         "channel": "head",
                         "action": "Nod",
                         "intensity": 0.5,
                         "duration": 1.0,
                         "repeats": 1,
                         "timing": "during"
-                        },
-                        {
+                      },
+                      {
                         "channel": "gaze",
                         "action": "user",
                         "timing": "during"
-                        }
+                      }
                     ]
                 }
             
@@ -49,7 +49,7 @@
         },
 
         "SD_2": {
-            "sd": "Can you nod?",
+            "sd": "Nod your head.",
             "sd_type": "Reception",
             "correctness": "No Response",
             "challenge": "Medium",
@@ -62,33 +62,28 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "NO NO NO I DON'T WANT TO!",
+                        "text": "NO! NO, I DON'T WANT TO!",
                         "style": "instructional",
                         "volume": 0.85,
                         "interrupt": false
                     },
 
                     "nonverbals": [
-                        {
+                      {
                         "channel": "face",
                         "action": "Angry",
                         "intensity": 0.8,
                         "duration": 1.0,
                         "timing": "during"
-                        },
-                        {
+                      },
+                      {
                         "channel": "head",
                         "action": "Shake",
-                        "intensity": 0.5,
+                        "intensity": 1.5,
                         "duration": 1.0,
-                        "repeats": 1,
+                        "repeats": 2,
                         "timing": "during"
-                        },
-                        {
-                        "channel": "gaze",
-                        "action": "user",
-                        "timing": "during"
-                        }
+                      }
                     ]
                 }
         },
@@ -107,33 +102,25 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "",
-                        "style": "instructional",
-                        "volume": 0.85,
-                        "interrupt": false
+                        "text": ""
                     },
 
                     "nonverbals": [
-                        {
+                      {
                         "channel": "face",
                         "action": "Happy",
                         "intensity": 0.8,
                         "duration": 1.0,
                         "timing": "during"
-                        },
-                        {
+                      },
+                      {
                         "channel": "head",
                         "action": "Shake",
-                        "intensity": 0.5,
-                        "duration": 1.0,
-                        "repeats": 1,
+                        "intensity": 1.5,
+                        "duration": 0.75,
+                        "repeats": 3,
                         "timing": "during"
-                        },
-                        {
-                        "channel": "gaze",
-                        "action": "user",
-                        "timing": "during"
-                        }
+                      }
                     ]
                 }
         },
@@ -152,33 +139,25 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "OH OH OH GIVE ME GIVE ME THE BALL!",
-                        "style": "instructional",
-                        "volume": 0.85,
-                        "interrupt": false
+                        "text": "OH! OH GIVE ME THE BALL! I want the ball."
                     },
 
                     "nonverbals": [
-                        {
+                      {
                         "channel": "face",
                         "action": "Happy",
                         "intensity": 0.8,
                         "duration": 1.0,
                         "timing": "during"
-                        },
-                        {
+                      },
+                      {
                         "channel": "head",
                         "action": "Nod",
-                        "intensity": 0.5,
-                        "duration": 1.0,
-                        "repeats": 1,
+                        "intensity": 1.0,
+                        "duration": 0.75,
+                        "repeats": 2,
                         "timing": "during"
-                        },
-                        {
-                        "channel": "gaze",
-                        "action": "user",
-                        "timing": "during"
-                        }
+                      }
                     ]
                 }
         },
@@ -197,33 +176,17 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "Happy!",
-                        "style": "instructional",
-                        "volume": 0.85,
-                        "interrupt": false
+                        "text": "Happy!"
                     },
 
                     "nonverbals": [
-                        {
+                      {
                         "channel": "face",
                         "action": "Happy",
                         "intensity": 0.8,
                         "duration": 1.0,
                         "timing": "during"
-                        },
-                        {
-                        "channel": "head",
-                        "action": "",
-                        "intensity": 0.5,
-                        "duration": 1.0,
-                        "repeats": 1,
-                        "timing": "during"
-                        },
-                        {
-                        "channel": "gaze",
-                        "action": "user",
-                        "timing": "during"
-                        }
+                      }
                     ]
                 }
         },
@@ -242,33 +205,25 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "",
-                        "style": "instructional",
-                        "volume": 0.85,
-                        "interrupt": false
+                        "text": ""
                     },
 
                     "nonverbals": [
-                        {
+                      {
                         "channel": "face",
                         "action": "Happy",
                         "intensity": 0.8,
                         "duration": 1.0,
                         "timing": "during"
-                        },
-                        {
+                      },
+                      {
                         "channel": "head",
                         "action": "Nod",
                         "intensity": 0.5,
                         "duration": 1.0,
                         "repeats": 1,
                         "timing": "during"
-                        },
-                        {
-                        "channel": "gaze",
-                        "action": "user",
-                        "timing": "during"
-                        }
+                      }
                     ]
                 }
         }

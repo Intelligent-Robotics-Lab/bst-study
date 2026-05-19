@@ -2,6 +2,8 @@ from furhat_realtime_api import AsyncFurhatClient
 import asyncio
 import random
 
+"""This file contains all of the helper functions that get called into the generic behavior function"""
+
 async def connect_furhat(IP_ADDRESS):
     furhat = AsyncFurhatClient(IP_ADDRESS)
     await furhat.connect()
@@ -18,13 +20,17 @@ async def start_gesture(furhat, gesture, intensity, duration, number_repeat):
         )
         await asyncio.sleep(duration)
 
-async def speak_text(furhat, message, duration, number_repeat):
-    for _ in range(number_repeat):
-        await furhat.request_speak_text(message)
-        await asyncio.sleep(duration)
+async def speak_text(furhat, message):
+    try:
+        await furhat.request_speak_text(text=message, wait=True, abort=False)
+
+        await asyncio.sleep(0.5)
+
+    except Exception as e:
+        print("[WARN] speak_text:", e)
 
 # Facial paramter mapping for facial expressiveness
-# "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP": 1.5
+# "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP"
 face_param_mapping = {
     "Happy": {
         "SMILE_CLOSED": 1.25,
@@ -65,11 +71,13 @@ face_param_mapping = {
     }
 }
 
+"""Maps the emotion label to the face parameters above."""
 def resolve_face_params(face_expression: str):
     return face_param_mapping.get(
         face_expression,
         face_param_mapping["Neutral"])
 
+"""Function to hold the face expression for the duration listed."""
 async def hold_face_expressions(furhat, face_params, duration=5):
     end_time = asyncio.get_event_loop().time() + duration
 
@@ -78,6 +86,7 @@ async def hold_face_expressions(furhat, face_params, duration=5):
 
         await asyncio.sleep(0.25)
 
+"""Scales the facial parameters by a percentage factor. For example an intensity of 0.5 represents 50% of the max features found above."""
 def scale_face_params(face_params, intensity: float):
     # Scales all face parameters by intensity (0-1)
     return{
@@ -85,6 +94,7 @@ def scale_face_params(face_params, intensity: float):
         for k, v in face_params.items()
     }
 
+"""Function to smoothly switch facial expression without snapping. Still a work in progress."""
 async def switch_face(furhat, face_params, intensity=1.0):
     # Clear the previous expression by setting everything to neutral
     reset_face_parms = {
@@ -103,22 +113,19 @@ async def switch_face(furhat, face_params, intensity=1.0):
 
     await furhat.request_face_params(scaled)
 
-async def follow_user_gaze(furhat, stop_event):
+"""Function to follow the user gaze continuously. Refresh rate can be updated."""
+async def follow_user_gaze(furhat, stop_event, refresh_rate=0.5):
     while not stop_event.is_set():
         await furhat.request_attend_user()
-        await asyncio.sleep(1.0) # refresh rate
+        await asyncio.sleep(refresh_rate)
 
+"""Function to add in active listening when listening is set. Still a work in progress."""
 async def active_listening_loop(furhat, embodiment, stop_event):
     try:
         while not stop_event.is_set():
 
             try:
-                await furhat.request_gesture(
-                    name="Nod",
-                    intensity=0.25,
-                    duration=0.5,
-                    repetitions=1
-                )
+                await furhat.request_gesture(name="Nod", intensity=0.25, duration=0.5, repetitions=1)
             except:
                 pass
 
@@ -136,10 +143,9 @@ async def active_listening_loop(furhat, embodiment, stop_event):
     except asyncio.CancelledError:
         pass
 
+"""Function to map keywords to fixed positions, just robot as of now. Allows them to attend to each other reliably."""
 def resolve_look_target(embodiment, target):
-    """
-    Fixed gaze map (NO user detection needed for robot/trainer split)
-    """
+    """Fixed gaze map (NO user detection needed for robot/trainer split)"""
 
     LOOK_MAP = {
         "trainer": {
@@ -154,22 +160,17 @@ def resolve_look_target(embodiment, target):
 
     return LOOK_MAP.get(embodiment, LOOK_MAP["trainer"]).get(target, LOOK_MAP["trainer"]["neutral"])
 
-import asyncio
-
+"""Track user function for gaze. Some of these will be cleaned up and deleted... faced issues when accidently losing progress."""
 async def track_user_loop(furhat, embodiment, stop_event):
-    """
-    Active gaze tracking loop (user only)
-    """
+    """Active gaze tracking loop (user only)"""
 
     print(f"[TRACK LOOP STARTED] {embodiment}")
 
     try:
         while not stop_event.is_set():
 
-            # keeps attention on detected user
             await furhat.request_attend_user()
 
-            # small interval = smooth but not spammy
             await asyncio.sleep(3.5)
 
     except asyncio.CancelledError:

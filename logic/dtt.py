@@ -5,6 +5,8 @@ from logic.feedback import Feedback
 from logic.feedback import evaluate_dtt_session
 from logic.sd_recognizer import SDRecognizer
 
+
+"""This class contains the logic to perform the rehearsal and feedback phases (DTT) for BST"""
 class DTT:
 
     def __init__(self, agent=None):
@@ -134,7 +136,7 @@ class DTT:
         expr = ExpressionModule()
 
         with open("data/hp_trial_data.json", "r") as f:
-            hp_data = json.load(f)["trial_data"]
+            hp_data = json.load(f)["hp_trial_data"]
 
         hp_list = list(hp_data.values())
 

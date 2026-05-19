@@ -1,6 +1,8 @@
 import agent_layer.Furhat.Lib.furhat_behavior_library as behavior
 import agent_layer.Furhat.Lib.furhat_manager as FurhatManager
 
+"""Class for executing all Furhat related behaviors. This is getting called in the agent_layer top file."""
+
 EMBODIMENT_PROFILE = {
     "trainer": {
         "voice": "Danielle-Neural (en-US) - Amazon Polly",
@@ -13,7 +15,7 @@ EMBODIMENT_PROFILE = {
 }
 
 class FurhatBehavior:
-
+    # Accepts just embodiment and packet for decision making
     def __init__(self, embodiment, packet):
         self.embodiment = embodiment
         self.packet = packet

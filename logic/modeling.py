@@ -2,12 +2,13 @@ import json
 import asyncio
 from expression_module.expression_module import ExpressionModule
 
-
+"""This class contains the logic to complete the modeling phase of BST"""
 class Modeling:
 
     def __init__(self, agent=None):
         self.agent = agent
 
+    """Dummy function used to simulate moving through the logic before the full logic and perception pipeline is integrated."""
     async def wait_for_input(self, prompt="> "):
         return await asyncio.to_thread(input, prompt)
 
@@ -50,6 +51,7 @@ class Modeling:
 
         print("\nMODELING COMPLETE")
 
+    """Function to handle the logic for moving around checkpoints. Currently uses user input but will eventually use user response."""
     async def handle_checkpoint(self, step):
 
         section = step["section"]
@@ -75,6 +77,7 @@ class Modeling:
 
         return "continue"
 
+    """Helper function to find the start of a section in the case that we are asked to repeat it by the user."""
     def find_section_start(self, steps, section):
 
         for i, step in enumerate(steps):
