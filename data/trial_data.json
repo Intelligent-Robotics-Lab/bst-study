@@ -361,6 +361,27 @@
                       }
                     ]
                 }
+        },
+        "SD_7": {
+          "sd": "Session complete",
+          "sd_type": "Conclusion",
+          "correctness": "Correct",
+
+          "child_behavior": {
+            "embodiment": "trainer",
+            "verbal": {
+              "text": "That concludes today’s session. Thank you for your participation."
+            },
+            "nonverbals": [
+              {
+                "channel": "face",
+                "action": "Happy",
+                "intensity": 0.8,
+                "duration": 1.0,
+                "timing": "during"
+              }
+            ]
+          }
         }
     }
 }

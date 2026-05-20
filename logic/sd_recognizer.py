@@ -8,7 +8,7 @@ class SDRecognizer:
         self.trial_data = trial_data
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
-        # 🔥 minimum similarity required to trigger an SD
+        # Minimum level of similarity required to trigger the SD
         self.threshold = threshold
 
         self.sd_ids = []
@@ -46,7 +46,7 @@ class SDRecognizer:
 
         best_score, best_sd = scores[0]
 
-        # 🔥 REJECTION LOGIC (IMPORTANT)
+        # REJECTION LOGIC (IMPORTANT)
         if best_score < self.threshold:
             return {
                 "matched_sd_id": None,
