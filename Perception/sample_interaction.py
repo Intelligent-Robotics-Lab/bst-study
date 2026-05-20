@@ -69,7 +69,7 @@ class SampleInteractionAgent:
         if label:
             self.state.latest_emotion = label
             self.state.latest_emotion_confidence = confidence
-            print(f"[EMOTION] {label} ({confidence})")
+            #print(f"[EMOTION] {label} ({confidence})")
 
     def _react(self):
         transcript = (self.state.latest_transcript or "").lower()
