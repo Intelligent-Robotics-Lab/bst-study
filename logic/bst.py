@@ -17,14 +17,14 @@ async def BST():
         _furhats = await FurhatManager.initialize_furhat()
         print("[CONNECTED TO FURHAT]")
 
-    #await Instruction(agent=AGENT_TYPE).execute()
+    await Instruction(agent=AGENT_TYPE).execute()
     print("Executed instruction")
 
-    #await Modeling(agent=AGENT_TYPE).execute()
+    await Modeling(agent=AGENT_TYPE).execute()
     print("Executed modeling")
 
-    await DTT(agent=AGENT_TYPE).execute()
-    print("Executed DTT")
+    # await DTT(agent=AGENT_TYPE).execute()
+    # print("Executed DTT")
 
     # Should probably add some kind of conclusionary statements
 

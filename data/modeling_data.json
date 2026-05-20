@@ -151,7 +151,7 @@
       "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The next SD we will go through is the receptive SD. This builds listening and comprehension skills by teaching the learner how to respond appropriately when given directions. With these prompts, it is our job to teach the learner to understand and respond to spoken instruction. An example of this is as follows."
+        "text": "The next SD we will go through is the imitative SD. This SD focuses on teaching the learner to copy modeled actions, helping them build foundational skills in attending, motor imitation, and following demonstrated behavior. With these prompts, our goal is to show an action and have the learner reproduce it as accurately as possible. An example of this is as follows."
       },
       "nonverbals": []
     },
@@ -182,7 +182,9 @@
     {
       "section": "receptive",
       "embodiment": "kid",
-      "verbal": {},
+      "verbal": {
+        "text": ""
+      },
       "nonverbals": [
         {
           "channel": "head",
@@ -224,7 +226,7 @@
       "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Does the interaction help make it clear the purpose and flow of this SD? We can either repeat this interaction or move onto another example of the same SD. What would you like to do?"
+        "text": "Does the interaction help make it clear the purpose and flow of this SD? We can either repeat this interaction or move onto another SD. What would you like to do?"
       },
       "nonverbals": [
         {
@@ -244,7 +246,7 @@
       "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "As I mentioned, this is another example of the receptive SD delivery but from a different angle. Instead of having the learner copy your actions, you will simply ask them to perform an action they already know. This again reinforces the learner's capability to respond appropriately."
+        "text": "The next SD we will go through is the receptive SD. This builds listening and comprehension skills by teaching the learner how to respond appropriately when given directions. With these prompts, it is our job to teach the learner to understand and respond to spoken instruction. An example of this is as follows."
       },
       "nonverbals": []
     },
@@ -267,7 +269,9 @@
     {
       "section": "receptive_second",
       "embodiment": "kid",
-      "verbal": {},
+      "verbal": {
+        "text": ""
+      },
       "nonverbals": [
         {
           "channel": "head",
@@ -298,7 +302,7 @@
           "intensity": 2.0,
           "duration": 1,
           "repeats": 2,
-          "timing": "after"
+          "timing": "during"
         },
         {
           "channel": "gaze",
@@ -311,7 +315,9 @@
     {
       "section": "receptive_second",
       "embodiment": "kid",
-      "verbal": {},
+      "verbal": {
+        "text": ""
+      },
       "nonverbals": [
         {
           "channel": "head",
@@ -570,7 +576,7 @@
       "section": "error_correction",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Remember error correction is performed as follows. Following the incorrect response, we will re-prompt the learner while giving some form assistance, such as nodding your head while asking to nod head. After the child response, it is our job to reinforce if correct and move into asking a high-probability SD. These will be predetermined and are based upon what the learner has already mastered."
+        "text": "Remember error correction is performed as follows. Following the incorrect response, we will re-prompt the learner while giving some form of assistance, such as nodding your head while asking to nod head. After the child response, it is our job to reinforce if correct, and move into asking a high-probability SD. These will be predetermined and are based upon what the learner has already mastered."
       },
       "nonverbals": []
     },
@@ -630,7 +636,7 @@
       "section": "emotion",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Not quite, let's try again. How do I feel?"
+        "text": "Not quite, let's try again. How do I feel? Happy!"
       },
       "nonverbals": [
         {

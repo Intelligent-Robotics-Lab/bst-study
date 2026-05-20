@@ -10,7 +10,7 @@ face_task = {}
 One singular function is used to control the behavior of both robots."""
 async def generic_behavior(furhat, embodiment, packet):
     # Clean up the packet to make it usable
-    speech = packet.get("speech", {})
+    speech = packet.get("speech") or {}
     nonverbals = packet.get("nonverbals", {})
     attention_target = packet.get("attention_target", "user")
     listening = packet.get("listening", False)
