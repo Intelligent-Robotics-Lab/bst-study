@@ -1,142 +1,69 @@
-import json
-import requests
+from sentence_transformers import SentenceTransformer
+import numpy as np
 
 
 class SDRecognizer:
-    """
-    Maps observed multimodal input (speech + optional behavior text)
-    to SD_X entries in your DTT trial_data.
 
-    Outputs:
-    - SD ID match
-    - confidence
-    - semantic + emotional interpretation
-    """
+    def __init__(self, trial_data, threshold=0.55):
+        self.trial_data = trial_data
+        self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
-    def __init__(self, trial_data, model="llama3.1"):
-        self.trial_data = trial_data["trial_data"] # Fix this compile error
-        self.model = model
-        self.url = "http://localhost:11434/api/chat"
+        # 🔥 minimum similarity required to trigger an SD
+        self.threshold = threshold
 
-    # -----------------------------
-    # PUBLIC ENTRY POINT
-    # -----------------------------
+        self.sd_ids = []
+        self.sd_embeddings = []
+
+        for sd_id, sd in trial_data.items():
+            text = self._build_sd_text(sd)
+            embedding = self.model.encode(text)
+
+            self.sd_ids.append(sd_id)
+            self.sd_embeddings.append(embedding)
+
+    def _build_sd_text(self, sd):
+        parts = [
+            sd.get("sd", ""),
+            sd.get("sd_type", ""),
+            sd.get("object", "") or "",
+            sd.get("action", "") or "",
+            sd.get("emotion", "") or ""
+        ]
+        return " ".join(parts)
+
     def recognize(self, observed_input: dict):
-        """
-        observed_input example:
-        {
-            "verbal_text": "...",
-            "nonverbals": {... optional ...}
-        }
-        """
 
-        candidates = self._build_candidate_map()
+        query = self._build_query(observed_input)
+        query_emb = self.model.encode(query)
 
-        prompt = self._build_prompt(observed_input, candidates)
+        scores = []
 
-        response = self._call_llm(prompt)
+        for i, sd_emb in enumerate(self.sd_embeddings):
+            score = self._cosine(query_emb, sd_emb)
+            scores.append((score, self.sd_ids[i]))
 
-        parsed = self._safe_parse(response)
+        scores.sort(reverse=True)
 
-        # Attach resolved SD data
-        sd_id = parsed.get("matched_sd_id")
-        parsed["resolved_sd"] = self.trial_data.get(sd_id, None)
+        best_score, best_sd = scores[0]
 
-        return parsed
-
-    # -----------------------------
-    # BUILD CANDIDATES FROM YOUR SCHEMA
-    # -----------------------------
-    def _build_candidate_map(self):
-        candidates = {}
-
-        for sd_id, sd in self.trial_data.items():
-            candidates[sd_id] = {
-                "sd": sd["sd"],
-                "sd_type": sd["sd_type"],
-                "object": sd.get("object"),
-                "action": sd.get("action"),
-                "emotion": sd.get("emotion")
+        # 🔥 REJECTION LOGIC (IMPORTANT)
+        if best_score < self.threshold:
+            return {
+                "matched_sd_id": None,
+                "confidence": float(best_score),
+                "resolved_sd": None,
+                "rejected": True
             }
 
-        return candidates
-
-    # -----------------------------
-    # PROMPT ENGINEERING
-    # -----------------------------
-    def _build_prompt(self, observed_input, candidates):
-        return f"""
-You are an SD recognizer for a DTT (Discrete Trial Training) system.
-
-Your job is to match an observed learner response to the correct SD entry.
-
-You must:
-1. Match based on meaning, not exact wording
-2. Consider SD type (Manding, Imitation, Labeling, Emotion, Reception)
-3. Extract object/action/emotion if present
-4. Return ONLY valid JSON
-
----
-
-OBSERVED INPUT:
-{json.dumps(observed_input, indent=2)}
-
----
-
-CANDIDATE SDs:
-{json.dumps(candidates, indent=2)}
-
----
-
-RETURN FORMAT (STRICT):
-{{
-  "matched_sd_id": "SD_1",
-  "confidence": 0.0 to 1.0,
-
-  "match_type": "exact | paraphrase | expanded | partial | unclear",
-
-  "interpretation": {{
-    "intent": "string (e.g. manding, imitation, labeling, emotion, reception)",
-    "object": "string or null",
-    "action": "string or null",
-    "emotion": "string or null"
-  }},
-
-  "reasoning_brief": "short explanation"
-}}
-"""
-
-    # -----------------------------
-    # OLLAMA CALL
-    # -----------------------------
-    def _call_llm(self, prompt):
-        payload = {
-            "model": self.model,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a strict structured-output JSON system. Output ONLY valid JSON."
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            "stream": False
+        return {
+            "matched_sd_id": best_sd,
+            "confidence": float(best_score),
+            "resolved_sd": self.trial_data[best_sd],
+            "rejected": False
         }
 
-        r = requests.post(self.url, json=payload)
+    def _build_query(self, observed):
+        return f"{observed.get('verbal_text','')} {observed.get('emotion','')}"
 
-        return r.json()["message"]["content"]
-
-    # -----------------------------
-    # SAFE JSON PARSE
-    # -----------------------------
-    def _safe_parse(self, text):
-        try:
-            return json.loads(text)
-        except Exception:
-            # fallback if model adds extra text
-            start = text.find("{")
-            end = text.rfind("}")
-            return json.loads(text[start:end])
+    def _cosine(self, a, b):
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
