@@ -30,6 +30,7 @@ async def generic_behavior(furhat, embodiment, packet):
             asyncio.create_task(furhat.request_listen_start())
         else:
             asyncio.create_task(furhat.request_listen_stop())
+
     except Exception as e:
         print("[WARN] listen toggle failed:", e)
 
@@ -97,27 +98,24 @@ async def generic_behavior(furhat, embodiment, packet):
     except Exception as e:
         print("[WARN] attention failed:", e)
 
+    # Facial expressions
     if nonverbals.get("face"):
-        if embodiment in face_task:
-
-            old_face = face_task[embodiment]
-
-            old_face.cancel()
-
-            try:
-                await old_face
-            except asyncio.CancelledError:
-                pass
-            except Exception as e:
-                print("[WARN] face cleanup:", e)
 
         f = nonverbals["face"][0]
-
         params = behavior.resolve_face_params(f["action"])
 
-        face_task[embodiment] = asyncio.create_task(
-            behavior.switch_face(furhat, params, intensity=f.get("intensity", 1.0)))
+        try:
+            if embodiment in face_task:
+                old = face_task[embodiment]
+                old.cancel()
 
+            face_task[embodiment] = asyncio.create_task(
+                behavior.switch_face(furhat, params, duration=speech.get("duration_text", 2.0), intensity=f.get("intensity", 1.0)))
+
+        except Exception as e:
+            print("[WARN] face failed:", e)
+
+    # Head gestures
     gesture_task = None
 
     if nonverbals.get("head"):

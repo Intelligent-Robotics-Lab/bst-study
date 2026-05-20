@@ -32,21 +32,42 @@ class ExpressionModule:
             "interrupt": verbal.get("interrupt", False)
         }
 
-    def _build_nonverbals(self, nonverbal):
-        output = []
+    def _build_nonverbals(self, nonverbals):
 
-        for nv in nonverbal:
+        # Handle missing or None safely
+        if not nonverbals:
+            return []
 
-            output.append({
-                "channel": nv.get("channel"),
-                "action": nv.get("action"),
-                "intensity": nv.get("intensity", 1.0), # Intensity for gestures sets the actual intensity, while it is a scalar for facial expressions 0-1
-                "duration": nv.get("duration", 1.0),
-                "repeats": nv.get("repeats", 1),
-                "timing": nv.get("timing", "during")
-            })
-        
-        return output
+        # If old dict format is ever passed, flatten it safely
+        if isinstance(nonverbals, dict):
+            flattened = []
+            for channel in ["face", "head", "gaze", "gesture"]:
+                items = nonverbals.get(channel, [])
+                if isinstance(items, list):
+                    flattened.extend(items)
+            return flattened
+
+        # Expected new format: list of events
+        if isinstance(nonverbals, list):
+            output = []
+
+            for nv in nonverbals:
+                if not isinstance(nv, dict):
+                    continue
+
+                output.append({
+                    "channel": nv.get("channel"),
+                    "action": nv.get("action"),
+                    "intensity": nv.get("intensity", 1.0),
+                    "duration": nv.get("duration", 1.0),
+                    "repeats": nv.get("repeats", 1),
+                    "timing": nv.get("timing", "during")
+                })
+
+            return output
+
+        # Fallback safety
+        return []
 
     # Execution of the agent
     async def execute(self, agent_type, embodiment, packet):

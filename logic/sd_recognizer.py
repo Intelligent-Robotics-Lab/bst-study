@@ -14,7 +14,7 @@ class SDRecognizer:
     """
 
     def __init__(self, trial_data, model="llama3.1"):
-        self.trial_data = trial_data["trial_data"]
+        self.trial_data = trial_data["trial_data"] # Fix this compile error
         self.model = model
         self.url = "http://localhost:11434/api/chat"
 

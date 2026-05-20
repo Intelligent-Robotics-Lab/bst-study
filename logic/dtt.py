@@ -1,9 +1,9 @@
 import json
 import asyncio
 from expression_module.expression_module import ExpressionModule
-from logic.feedback import Feedback
-from logic.feedback import evaluate_dtt_session
-from logic.sd_recognizer import SDRecognizer
+# from logic.feedback import Feedback
+# from logic.feedback import evaluate_dtt_session
+# from logic.sd_recognizer import SDRecognizer
 
 
 """This class contains the logic to perform the rehearsal and feedback phases (DTT) for BST"""
@@ -28,18 +28,76 @@ class DTT:
         print("\n[WAIT FOR PROMPT]")
         await self.wait_for_input("Press ENTER when prompt is delivered ")
 
+    async def run_behavior(self, expr, behavior_data):
+
+        packet = expr.build(behavior_data)
+
+        await expr.execute(self.agent, behavior_data["embodiment"], packet)
+
+    def get_feedback_placeholder(self, correctness):
+
+        if correctness == "Correct":
+
+            return {
+                "embodiment": "trainer",
+
+                "verbal": {
+                    "text": "Nice job reinforcing the correct response."
+                },
+
+                "nonverbals": [
+                    {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.7,
+                        "duration": 1.0,
+                        "timing": "during"
+                    }
+                ]
+            }
+
+        elif correctness in ["Incorrect", "No Response"]:
+
+            return {
+                "embodiment": "trainer",
+
+                "verbal": {
+                    "text": "Nice recovery using prompting and redelivery."
+                },
+
+                "nonverbals": [
+                    {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.7,
+                        "duration": 1.0,
+                        "timing": "during"
+                    }
+                ]
+            }
+
+        return {
+            "embodiment": "trainer",
+
+            "verbal": {
+                "text": "Good work."
+            },
+
+            "nonverbals": []
+        }
+
     async def execute(self):
         await self.main_dtt_loop()
 
     async def main_dtt_loop(self):
 
         expr = ExpressionModule()
-        feedback = Feedback(self.agent)
+        # feedback = Feedback(self.agent)
 
         with open("data/trial_data.json", "r") as f:
             trial_data = json.load(f)["trial_data"]
 
-        recognizer = SDRecognizer(trial_data)
+        # recognizer = SDRecognizer(trial_data)
 
         # Observed will be defined by the Perception Layer
         observed = {
@@ -50,10 +108,10 @@ class DTT:
             }
         }
 
-        result = recognizer.recognize(observed)
+        # result = recognizer.recognize(observed)
 
-        print(result["matched_sd_id"])
-        print(result["confidence"])
+        # print(result["matched_sd_id"])
+        # print(result["confidence"])
 
         current_sd_id = 1
         max_id = 6
@@ -69,57 +127,31 @@ class DTT:
 
             packet = expr.build(trial["child_behavior"])
 
-            await expr.execute(
-                self.agent,
-                trial["child_behavior"]["embodiment"],
-                packet
-            )
+            await expr.execute(self.agent, trial["child_behavior"]["embodiment"], packet)
 
             if correctness == "Correct":
 
                 await self.wait_for_reinforcement()
 
-                fb_packet = feedback.build("Correct", phase="reinforcement")
+                await self.run_behavior(expr, self.get_feedback_placeholder(correctness))
 
-                packet = expr.build(fb_packet)
-
-                await expr.execute(
-                    self.agent,
-                    fb_packet["embodiment"],
-                    packet
-                )
-
-
-            elif correctness == "No Response":
+            elif correctness in ["No Response", "Incorrect"]:
 
                 await self.wait_for_prompt()
+
+                await self.run_behavior(expr, trial["prompted_behavior"])
+
+                await self.wait_for_reinforcement()
+
                 await self.hp_sd_protocol()
 
-                fb_packet = feedback.build("No Response", phase="prompt")
+                await self.wait_for_sd()
 
-                packet = expr.build(fb_packet)
+                await self.run_behavior(expr, trial["retry_behavior"])
 
-                await expr.execute(
-                    self.agent,
-                    fb_packet["embodiment"],
-                    packet
-                )
+                await self.wait_for_reinforcement()
 
-
-            elif correctness == "Incorrect":
-
-                await self.wait_for_input("Press ENTER for error correction ")
-                await self.hp_sd_protocol()
-
-                fb_packet = feedback.build("Incorrect", phase="correction")
-
-                packet = expr.build(fb_packet)
-
-                await expr.execute(
-                    self.agent,
-                    fb_packet["embodiment"],
-                    packet
-                )
+                await self.run_behavior(expr, self.get_feedback_placeholder(correctness))
 
             current_sd_id += 1
 

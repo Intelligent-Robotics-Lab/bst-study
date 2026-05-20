@@ -25,7 +25,7 @@
                       {
                         "channel": "face",
                         "action": "Happy",
-                        "intensity": 0.8,
+                        "intensity": 1.0,
                         "duration": 1.0,
                         "timing": "during"
                       },
@@ -72,7 +72,7 @@
                       {
                         "channel": "face",
                         "action": "Angry",
-                        "intensity": 0.8,
+                        "intensity": 1.0,
                         "duration": 1.0,
                         "timing": "during"
                       },
@@ -82,6 +82,51 @@
                         "intensity": 1.5,
                         "duration": 1.0,
                         "repeats": 2,
+                        "timing": "during"
+                      }
+                    ]
+                },
+            "prompted_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 1.0,
+                        "duration": 0.75,
+                        "repeats": 2,
+                        "timing": "during"
+                      }
+                    ]
+                },
+            "retry_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.75,
+                        "duration": 1.0,
+                        "timing": "during"
+                      },
+                      {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 1.5,
+                        "duration": 0.75,
+                        "repeats": 3,
                         "timing": "during"
                       }
                     ]
@@ -159,6 +204,51 @@
                         "timing": "during"
                       }
                     ]
+                },
+            "prompted_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": "Ball"
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.5,
+                        "duration": 0.75,
+                        "repeats": 1,
+                        "timing": "during"
+                      }
+                    ]
+                },
+            "retry_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": "Ball!"
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.75,
+                        "duration": 1.0,
+                        "timing": "during"
+                      },
+                      {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.75,
+                        "duration": 0.75,
+                        "repeats": 2,
+                        "timing": "during"
+                      }
+                    ]
                 }
         },
 
@@ -205,7 +295,7 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": ""
+                        "text": "Happy"
                     },
 
                     "nonverbals": [
@@ -222,6 +312,51 @@
                         "intensity": 0.5,
                         "duration": 1.0,
                         "repeats": 1,
+                        "timing": "during"
+                      }
+                    ]
+                },
+            "prompted_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": "Suprised"
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "head",
+                        "action": "GazeAway",
+                        "intensity": 1.0,
+                        "duration": 1.5,
+                        "repeats": 1,
+                        "timing": "during"
+                      }
+                    ]
+                },
+            "retry_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": "Suprised!"
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Suprised",
+                        "intensity": 0.75,
+                        "duration": 1.0,
+                        "timing": "during"
+                      },
+                      {
+                        "channel": "head",
+                        "action": "Nod",
+                        "intensity": 0.75,
+                        "duration": 0.75,
+                        "repeats": 2,
                         "timing": "during"
                       }
                     ]

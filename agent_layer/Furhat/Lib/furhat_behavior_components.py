@@ -32,42 +32,63 @@ async def speak_text(furhat, message):
 # Facial paramter mapping for facial expressiveness
 # "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP"
 face_param_mapping = {
+    # High positive affect, closed-mouth smile, raised brows
     "Happy": {
-        "SMILE_CLOSED": 1.25,
-        "EYEBROW_UP": 1.0,
-        "BROW_IN_LEFT": 0.1,
-        "BROW_IN_RIGHT": 0.1,
+        "SMILE_CLOSED": 1.0,
+        "SMILE_OPEN": 0.3,
+        "EYEBROW_UP": 0.8,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
+        "JAW_OPEN": 0.1
     },
 
+    # Very high arousal positive emotion (big expressive joy)
+    "VeryHappy": {
+        "SMILE_CLOSED": 0.6,
+        "SMILE_OPEN": 1.0,
+        "EYEBROW_UP": 1.0,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
+        "JAW_OPEN": 0.8
+    },
+
+    # High tension negative affect
     "Angry": {
         "BROW_IN_LEFT": 1.0,
         "BROW_IN_RIGHT": 1.0,
+        "EYEBROW_UP": 0.2,
         "SMILE_CLOSED": 0.0,
-        "EYEBROW_UP": 0.5,
-        "JAW_OPEN": 0.5,
+        "SMILE_OPEN": 0.0,
+        "JAW_OPEN": 0.4
     },
 
+    # Low energy negative affect
     "Sad": {
-        "BROW_IN_LEFT": 0.75,
-        "BROW_IN_RIGHT": 0.75,
+        "BROW_IN_LEFT": 0.8,
+        "BROW_IN_RIGHT": 0.8,
         "EYEBROW_UP": 0.0,
-        "SMILE_CLOSED": 0.05,
-        "JAW_OPEN": 0.25,
+        "SMILE_CLOSED": 0.1,
+        "SMILE_OPEN": 0.0,
+        "JAW_OPEN": 0.2
     },
 
+    # Baseline neutral face
     "Neutral": {
         "SMILE_CLOSED": 0.0,
+        "SMILE_OPEN": 0.0,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
         "EYEBROW_UP": 0.0,
-        "JAW_OPEN": 0.0,
+        "JAW_OPEN": 0.0
     },
 
+    # High arousal surprise (wide eyes, open jaw, raised brows)
     "Suprised": {
-        "JAW_OPEN": 0.75,
+        "JAW_OPEN": 1.0,
         "EYEBROW_UP": 1.0,
-        "BROW_IN_LEFT": 0.25,
-        "BROW_IN_RIGHT": 0.25,
+        "BROW_IN_LEFT": 0.2,
+        "BROW_IN_RIGHT": 0.2,
+        "SMILE_OPEN": 0.2
     }
 }
 
@@ -95,23 +116,24 @@ def scale_face_params(face_params, intensity: float):
     }
 
 """Function to smoothly switch facial expression without snapping. Still a work in progress."""
-async def switch_face(furhat, face_params, intensity=1.0):
-    # Clear the previous expression by setting everything to neutral
-    reset_face_parms = {
-        "SMILE_CLOSED": 0.0,
-        "SMILE_OPEN": 0.0,
-        "JAW_OPEN": 0.0,
-        "EYEBROW_UP": 0.0,
-        "BROW_IN_LEFT": 0.0,
-        "BROW_IN_RIGHT": 0.0
-    }
-
-    await furhat.request_face_params(reset_face_parms)
-    await asyncio.sleep(0.1)
+async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
+    """
+    Holds a facial expression for a fixed duration.
+    This replaces the old persistent loop without reintroducing global state complexity.
+    """
 
     scaled = scale_face_params(face_params, intensity)
 
-    await furhat.request_face_params(scaled)
+    end_time = asyncio.get_event_loop().time() + duration
+
+    while asyncio.get_event_loop().time() < end_time:
+        try:
+            await furhat.request_face_params(scaled)
+        except Exception as e:
+            print("[WARN] face update failed:", e)
+            break
+
+        await asyncio.sleep(0.25)
 
 """Function to follow the user gaze continuously. Refresh rate can be updated."""
 async def follow_user_gaze(furhat, stop_event, refresh_rate=0.5):
