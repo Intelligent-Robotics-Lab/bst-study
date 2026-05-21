@@ -27,7 +27,7 @@ class SampleInteractionAgent:
         if not transcript:
             return
 
-        print(f"[ASR PARTIAL] {transcript}")
+        #print(f"[ASR PARTIAL] {transcript}")
 
         # append new chunk
         self.partial_buffer.append(transcript)
@@ -53,7 +53,7 @@ class SampleInteractionAgent:
             if full_transcript:
                 self.state.latest_transcript = full_transcript
 
-                print(f"\n[FINAL TRANSCRIPT] {full_transcript}\n")
+                #print(f"\n[FINAL TRANSCRIPT] {full_transcript}\n")
 
                 self._react()
 
