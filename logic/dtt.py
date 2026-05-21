@@ -320,7 +320,7 @@ class DTT:
                             packet
                         )
 
-                        sleep_time = (len(hp_trial["child_behavior"]["verbal"]["text"]) / 14) * 1.15
+                        sleep_time = (len(trial["child_behavior"]["verbal"]["text"]) / 14) * 1.15
 
                         # wait for reinforcement
                         await asyncio.sleep(sleep_time + 0.3)
@@ -348,7 +348,7 @@ class DTT:
                             packet
                         )
 
-                        sleep_time = (len(hp_trial["prompted_behavior"]["verbal"]["text"]) / 14) * 1.15
+                        sleep_time = (len(trial["prompted_behavior"]["verbal"]["text"]) / 14) * 1.15
 
                         # wait for reinforcement
                         await asyncio.sleep(sleep_time + 0.3)
@@ -402,7 +402,7 @@ class DTT:
                             packet
                         )
 
-                        sleep_time = (len(hp_trial["retry_behavior"]["verbal"]["text"]) / 14) * 1.15
+                        sleep_time = (len(trial["retry_behavior"]["verbal"]["text"]) / 14) * 1.15
 
                         # wait for reinforcement
                         await asyncio.sleep(sleep_time + 0.3)
@@ -419,7 +419,10 @@ class DTT:
 
                         #This is where all Feedback Calculations will be considered
                         
-                        self.get_feedback_placeholder("Correct")
+                        feedback_placeholder = self.get_feedback_placeholder("Correct")
+
+                        packet = expr.build(feedback_placeholder)
+                        await expr.execute(agent_type=self.agent, embodiment=feedback_placeholder["embodiment"], packet=packet)
                         print("Feedback Delivered")
                         state = CurrentState.USER
                         trial_state = TrialState.SD
