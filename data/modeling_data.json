@@ -6,7 +6,7 @@
       "section": "intro",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In this module, I am going to demonstrate what an interaction with the learner would look like from presenting the SD, awaiting response, and providing reinforcement or error correction."
+        "text": "In this next module, the modeling phase, I am going to demonstrate what an interaction with the learner would look like from presenting the SD, awaiting response, and providing reinforcement or error correction."
       },
       "nonverbals": [
         {
@@ -31,7 +31,7 @@
       "section": "intro",
       "embodiment": "trainer",
       "verbal": {
-        "text": "As we progress through these interactions, I will ask you questions to determine your level of understanding and you will be given the option to replay interactions after they are completed, or ask for extra clarification before moving on."
+        "text": "As we progress through these interactions, I will ask you questions to determine your level of understanding and you will be given the option to replay interactions after they are completed, or ask for me to continue as we did previously. Shall I continue or repeat?"
       },
       "nonverbals": [{
           "channel": "head",
@@ -92,7 +92,7 @@
       "embodiment": "kid",
 
       "verbal": {
-        "text": "I want to work for the ball."
+        "text": "... I want to work for the ball."
       },
       "nonverbals": [
         {
@@ -120,7 +120,7 @@
         {
           "channel": "head",
           "action": "Roll",
-          "intensity": 0.75,
+          "intensity": 0.3,
           "duration": 1.5,
           "repeats": 1,
           "timing": "during"
@@ -160,7 +160,7 @@
       "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Do this"
+        "text": "... Do this"
       },
       "nonverbals": [
         {
@@ -226,7 +226,7 @@
       "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Does the interaction help make it clear the purpose and flow of this SD? We can either repeat this interaction or move onto another SD. What would you like to do?"
+        "text": "Does the interaction help make it clear the purpose and flow of this SD? We can either repeat this interaction or continue onto another SD. What would you like to do?"
       },
       "nonverbals": [
         {
@@ -255,7 +255,7 @@
       "section": "receptive_second",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Shake your head."
+        "text": "... Shake your head."
       },
       "nonverbals": [
         {
@@ -457,7 +457,7 @@
       "section": "tacting",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Is this clear? We want to ensure that the learner knows how to put words to what they see or experience. We can move on if you are ready?"
+        "text": "Is this clear? We want to ensure that the learner knows how to put words to what they see or experience. We can continue if you are ready, or shall I repeat?"
       },
       "nonverbals": []
     },
@@ -480,7 +480,7 @@
       "section": "emotion",
       "embodiment": "trainer",
       "verbal": {
-        "text": "How do I feel?"
+        "text": "... How do I feel?"
       },
       "nonverbals": [
         {
@@ -537,7 +537,7 @@
       "section": "emotion",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We have now succesfully introduced all of the SDs necessary for this study! If you would like me to repeat the emotion labeling SD I am happy to do so, otherwise let's move onto the final stage of modeling."
+        "text": "We have now succesfully introduced all of the SDs necessary for this study! If you would like me to repeat the emotion labeling SD I am happy to do so, otherwise let's cotninue onto the final stage of modeling. Which would you prefer?"
       },
       "nonverbals": []
     },

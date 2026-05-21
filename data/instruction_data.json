@@ -27,7 +27,7 @@
       "section": "intro_1",
 
       "verbal": {
-        "text": "In this insturctional module, you will learn about ABA principles and examples used when delivering services. We will cover Discrete Trial Training, discriminative stimuli, responses, prompting, reinforcement, motivation, and error correction. To aid in your understanding, I will periodically check in and see if you would like for me to repeat the previous section. Let me know when you are ready to proceed",
+        "text": "In this insturctional module, you will learn about ABA principles and examples used when delivering services. We will cover Discrete Trial Training, discriminative stimuli, responses, prompting, reinforcement, motivation, and error correction. To aid in your understanding, I will periodically check in and see if you would like for me to repeat the previous section or cotinue on to the next section. Let me know which you would prefer by saying, continue, or repeat.",
         "style": "instructional",
         "volume": 0.85,
         "interrupt": false
@@ -181,7 +181,7 @@
       "section": "intro_2",
 
       "verbal": {
-        "text": "Do these subjects make sense up until this point? Please ask me to repeat if there is any confusion. It is vital that you comprehend these basics before attempting the later phases. Are you good to proceed?"
+        "text": "Do these subjects make sense up until this point? Please ask me to repeat if there is any confusion. It is vital that you comprehend these basics before attempting the later phases. Shall I continue, or repeat?"
       },
 
       "nonverbals": []
@@ -297,7 +297,7 @@
       "section": "intro_3",
 
       "verbal": {
-        "text": "Are the ideas of responding, reinforcement, and error correction familiar? If not please ask me to repeat. These skills will also be practiced in a modeling phase before the actual rehearsal. Shall we proceed?"
+        "text": "Are the ideas of responding, reinforcement, and error correction familiar? If not, we can go over them again. These skills will also be practiced in a modeling phase before the actual rehearsal. Shall I continue, or repeat this section?"
       },
 
       "nonverbals": []
@@ -396,7 +396,7 @@
       "section": "intro_4",
 
       "verbal": {
-        "text": "Do you have questions on any of these steps? If so I can repeat this section or go back and repeat the entire instruction if you feel necessary. Your comprehension of these topics is important for the coming phases. Let me know when you would like to continue or go back."
+        "text": "Do you have questions on any of these steps? If so I can repeat this section or go back and repeat the entire instruction if you feel necessary. Your comprehension of these topics is important for the coming phases. Let me know when you would like to continue or repeat."
       },
 
       "nonverbals": [

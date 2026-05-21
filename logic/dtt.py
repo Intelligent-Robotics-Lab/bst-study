@@ -144,8 +144,8 @@ class DTT:
         expr = ExpressionModule()
         sd_recognizer = SDRecognizer(trial_data=trial_data)
         hp_recognizer = SDRecognizer(trial_data=hp_trial_data)
-        agent = SampleInteractionAgent(silence_timeout=1.0)
-        feedback = FeedbackHolder()
+        agent = SampleInteractionAgent(silence_timeout=2.0)
+        feedback = FeebackHolder()
         client = PerceptionClient(
             server_host="141.210.88.210",
             server_port=8000
@@ -161,6 +161,10 @@ class DTT:
         try:
 
             while DTT_IN_PROGRESS:
+                
+                # Debug print
+                print(f"\n[STATE] {state} | {trial_state}")
+                print(f"[TRACK] trial_sd={trial_sd} current_sd={current_sd}")
 
                 # -------------------------
                 # USER STATE
@@ -172,6 +176,7 @@ class DTT:
                         trial_sd = None
                         transcript = agent.state.latest_transcript
                         emotion = agent.state.latest_emotion
+                        print(f"[USER INPUT] transcript={transcript}")
 
                         if transcript and transcript != last_processed:
 

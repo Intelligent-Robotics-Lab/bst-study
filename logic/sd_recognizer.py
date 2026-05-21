@@ -4,7 +4,7 @@ import numpy as np
 
 class SDRecognizer:
 
-    def __init__(self, trial_data, threshold=0.45):
+    def __init__(self, trial_data, threshold=0.35):
         self.trial_data = trial_data
         self.model = SentenceTransformer("all-MiniLM-L6-v2")
 
