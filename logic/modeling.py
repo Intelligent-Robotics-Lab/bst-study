@@ -100,9 +100,6 @@ class Modeling:
                     embodiment=embodiment,
                     packet=packet
                 )
-
-                await asyncio.sleep(0.5)
-
                 # Speech lock-end
                 self.is_speaking = False
                 print("[SPEAKING] OFF")
@@ -171,8 +168,6 @@ class Modeling:
                 agent.state.latest_transcript = None
                 self.last_transcript = None
 
-                await asyncio.sleep(0.3)
-
                 timeout += 1
 
         finally:
@@ -209,8 +204,6 @@ class Modeling:
             embodiment="trainer",
             packet=expr.build(packet)
         )
-
-        await asyncio.sleep(0.5)
 
         self.is_speaking = False
 
@@ -252,7 +245,5 @@ class Modeling:
             embodiment="trainer",
             packet=expr.build(packet)
         )
-
-        await asyncio.sleep(0.3)
 
         self.is_speaking = False

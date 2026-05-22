@@ -96,8 +96,6 @@ class Instruction:
 
                 await expr.execute(agent_type=self.agent, embodiment=embodiment, packet=packet)
 
-                await asyncio.sleep(0.5)
-
                 # Speech lock-end
                 self.is_speaking = False
                 print("[SPEAKING] OFF")
@@ -165,8 +163,6 @@ class Instruction:
                 agent.state.latest_transcript = None
                 self.last_transcript = None
 
-                await asyncio.sleep(0.3)
-
                 timeout += 1
 
         finally:
@@ -200,8 +196,6 @@ class Instruction:
 
         # Should this be agent or self.agent?
         await expr.execute(agent_type=self.agent, embodiment="trainer", packet=expr.build(packet))
-
-        await asyncio.sleep(0.5)
 
         self.is_speaking = False
 
@@ -244,7 +238,5 @@ class Instruction:
             embodiment="trainer",
             packet=expr.build(packet)
         )
-
-        await asyncio.sleep(0.3)
 
         self.is_speaking = False
