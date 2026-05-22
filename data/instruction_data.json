@@ -1,75 +1,12 @@
 {
   "type": "instruction_module",
-
   "steps": [
-  {
-      "section": "intro_1",
-      "embodiment": "trainer",
-
-      "verbal": {
-        "text": "Hello! And welcome to our study covering discrete trial training for behavior skills training. We are very glad to have you here and participating!"
-      },
-
-      "nonverbals": [
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.4,
-          "duration": 1.5,
-          "repeats": 1,
-          "timing": "during"
-        }
-      ]
-    }, 
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_1",
-
-      "verbal": {
-        "text": "In this insturctional module, you will learn about ABA principles and examples used when delivering services. We will cover Discrete Trial Training, discriminative stimuli, responses, prompting, reinforcement, motivation, and error correction. To aid in your understanding, I will periodically check in and see if you would like for me to repeat the previous section or cotinue on to the next section. Let me know which you would prefer by saying, continue, or repeat.",
-        "style": "instructional",
-        "volume": 0.85,
-        "interrupt": false
-      },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 0.75,
-          "duration": 1.0,
-          "timing": "during"
-        },
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.5,
-          "duration": 1.0,
-          "repeats": 1,
-          "timing": "during"
-        },
-        {
-          "channel": "gaze",
-          "action": "user",
-          "timing": "during"
-        }
-      ]
-    },
-
     {
       "section": "intro_1",
-      "type" : "checkpoint"
-    },
-
-    {
       "embodiment": "trainer",
-      "section": "intro_2",
-
       "verbal": {
-        "text": "Discrete Trial Training, also known as DTT, is a teaching procedure used in ABA with a clear beginning and end. A trial typically starts with a demand, followed by a response, and then reinforcement."
+        "text": "Hello, and welcome to our study on skills training for teaching interactions. We are glad to have you here and participating."
       },
-
       "nonverbals": [
         {
           "channel": "head",
@@ -81,136 +18,12 @@
         }
       ]
     },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_2",
-
-      "verbal": {
-        "text": "Instructions should be brief and concise, such as 'Touch head,' rather than using unnecessary additional words that may create confusion."
-      },
-
-      "nonverbals": [
-        {
-          "channel": "gesture",
-          "action": "Roll",
-          "intensity": 0.75,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_2",
-
-      "verbal": {
-        "text": "An SD, or discriminative stimulus, is a signal that indicates a response is needed. It is usually delivered as a clear instruction or event that tells the learner a task is available."
-      },
-
-      "nonverbals": []
-    },
-
     {
       "embodiment": "trainer",
       "section": "intro_1",
-
       "verbal": {
-        "text": "For example, when a phone rings, you know a response is expected because past experiences have taught you that answering may lead to reinforcement or consequences."
+        "text": "This study has 3 main phases: instruction, modeling, and rehearsal. In each phase, you will learn about the process and also practice parts of the interaction yourself."
       },
-
-      "nonverbals": [
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.4,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_2",
-
-      "verbal": {
-        "text": "Here is an example of a discrete trial. If I say, 'Touch Play-Doh,' that instruction is the SD. If the learner touches the Play-Doh, that is the response."
-      },
-
-      "nonverbals": [
-        {
-          "channel": "gesture",
-          "action": "Shake",
-          "intensity": 0.3,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_2",
-
-      "verbal": {
-        "text": "Reinforcement may then follow with descriptive praise such as, 'Awesome job touching the Play-Doh. Thank you for listening.'"
-      },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 1.0,
-          "duration": 1.0,
-          "timing": "during"
-        },
-        {
-          "channel": "gesture",
-          "action": "Nod",
-          "intensity": 1.0,
-          "duration": 1.0,
-          "timing": "after"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_2",
-
-      "verbal": {
-        "text": "Do these subjects make sense up until this point? Please ask me to repeat if there is any confusion. It is vital that you comprehend these basics before attempting the later phases. Shall I continue, or repeat?"
-      },
-
-      "nonverbals": []
-    },
-
-    {
-      "section": "intro_2",
-      "type": "checkpoint"
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_3",
-
-      "verbal": {
-        "text": "A response is the behavior a learner engages in after an SD is delivered. Responses should generally occur within three to five seconds."
-      },
-
-      "nonverbals": []
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_3",
-
-      "verbal": {
-        "text": "Correct responses should immediately contact reinforcement, while incorrect responses may require error correction procedures."
-      },
-
       "nonverbals": [
         {
           "channel": "head",
@@ -222,216 +35,369 @@
         }
       ]
     },
-
     {
       "embodiment": "trainer",
-      "section": "intro_3",
-
+      "section": "intro_1",
       "verbal": {
-        "text": "Prompting is the use of assistance or cues to help a learner perform the correct response. Prompts occur between the SD and the response."
+        "text": "During the instructional phases, I will pause at different points to check your understanding. You can ask me to continue or repeat a section at these times."
       },
-
-      "nonverbals": [
-        {
-          "channel": "gesture",
-          "action": "Roll",
-          "intensity": 0.5,
-          "duration": 0.75,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_3",
-
-      "verbal": {
-        "text": "Examples include full physical prompting, partial physical prompting, and gestural prompts such as tapping near the correct item."
-      },
-
-      "nonverbals": [
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.4,
-          "duration": 1.0,
-          "repeats": 1,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_3",
-
-      "verbal": {
-        "text": "Reinforcement encourages behavior and increases the likelihood that it will occur again in the future. Reinforcement should follow correct responses within three to five seconds."
-      },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 0.75,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_3",
-
-      "verbal": {
-        "text": "Examples of reinforcement include verbal praise, tangible rewards, edible rewards, physical affection, and token systems."
-      },
-
       "nonverbals": []
     },
-
+    {
+      "embodiment": "trainer",
+      "section": "intro_1",
+      "verbal": {
+        "text": "Throughout this training, we will focus on how to guide a child through structured learning interactions and help them build social and learning skills."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_1",
+      "verbal": {
+        "text": "Before we begin, please follow along using the content sheet in front of you. The flowchart on that sheet will help you to understand how all parts connect together."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_1",
+      "verbal": {
+        "text": "When you are ready to begin the instruction module, please say continue"
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "intro_1"
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_2",
+      "verbal": {
+        "text": "In this instructional module, you will learn the basic parts of skills training for teaching interactions and how the teaching process works."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_2",
+      "verbal": {
+        "text": "We will talk about instructions, responses, prompting, reinforcement, motivation, and error correction."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_2",
+      "verbal": {
+        "text": "These are the key steps we use to help a learner understand what to do, respond, and learn from feedback."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_2",
+      "verbal": {
+        "text": "You can also follow along using the content sheet in front of you."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_2",
+      "verbal": {
+        "text": "We will go through each concept one at a time, and I will let you know when we are moving to a new idea."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_2",
+      "verbal": {
+        "text": "Let me know when you are ready by saying, continue."
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "intro_2"
+    },
     {
       "embodiment": "trainer",
       "section": "intro_3",
-
       "verbal": {
-        "text": "Are the ideas of responding, reinforcement, and error correction familiar? If not, we can go over them again. These skills will also be practiced in a modeling phase before the actual rehearsal. Shall I continue, or repeat this section?"
+        "text": "The skills training used is step-by-step teaching method used in ABA, where learning is broken into smaller, clear teaching moments that are easy to follow and repeat."
       },
-
       "nonverbals": []
     },
-
     {
+      "embodiment": "trainer",
       "section": "intro_3",
-      "type": "checkpoint"
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_4",
-
       "verbal": {
-        "text": "Motivation involves identifying items or activities that are reinforcing for the learner before demands are presented."
+        "text": "In this method, the teacher gives an instruction, the learner responds, and reinforcement follows the response."
       },
-
       "nonverbals": []
     },
-
     {
       "embodiment": "trainer",
-      "section": "intro_4",
-
+      "section": "intro_3",
       "verbal": {
-        "text": "Offering choices between preferred items can increase engagement while also teaching communication and decision-making skills."
+        "text": "The instruction given to the learner is called the SD, which simply means the instruction we ask the learner to do."
       },
-
-      "nonverbals": [
-        {
-          "channel": "gesture",
-          "action": "Roll",
-          "intensity": 0.5,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_4",
-
-      "verbal": {
-        "text": "High probability behaviors are easy or previously mastered tasks used to increase compliance and motivation before introducing more difficult tasks.",
-        "style": "instructional",
-        "volume": 0.85,
-        "interrupt": false
-      },
-
-      "nonverbals": [
-        {
-          "channel": "head",
-          "action": "Nod",
-          "intensity": 0.5,
-          "duration": 1.0,
-          "repeats": 1,
-          "timing": "during"
-        }
-      ]
-    },
-
-    {
-      "embodiment": "trainer",
-      "section": "intro_4",
-
-      "verbal": {
-        "text": "Error correction is used when a learner gives an incorrect response. The therapist models or prompts the correct response before re presenting the original SD."
-      },
-
       "nonverbals": []
     },
-
+    {
+      "embodiment": "trainer",
+      "section": "intro_3",
+      "verbal": {
+        "text": "For example, if I say, Touch Play-Doh, that instruction is the SD. If the learner touches the Play-Doh, that is the response, meaning what the learner does after the instruction."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_3",
+      "verbal": {
+        "text": "After a correct response, reinforcement is given. This could be praise, a toy, a snack, or another preferred item."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_3",
+      "verbal": {
+        "text": "You can also follow this exact sequence on the flowchart on your content sheet."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_3",
+      "verbal": {
+        "text": "Let me know if you would like to repeat this section, or continue."
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "intro_3"
+    },
     {
       "embodiment": "trainer",
       "section": "intro_4",
-
       "verbal": {
-        "text": "After reinforcement is delivered, the therapist moves on to the next task to maintain momentum and engagement."
+        "text": "Now we are moving into prompting and error correction where we help the learner when they are unsure or make a mistake."
       },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 0.8,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
+      "nonverbals": []
     },
-
     {
       "embodiment": "trainer",
       "section": "intro_4",
-
       "verbal": {
-        "text": "Do you have questions on any of these steps? If so I can repeat this section or go back and repeat the entire instruction if you feel necessary. Your comprehension of these topics is important for the coming phases. Let me know when you would like to continue or repeat."
+        "text": "Sometimes a learner may need help giving the correct response. That help is called a prompt, or simply support to help them try again and succeed."
       },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 0.8,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
+      "nonverbals": []
     },
-
     {
+      "embodiment": "trainer",
       "section": "intro_4",
-      "type": "checkpoint"
+      "verbal": {
+        "text": "Prompts can include repeating the instruction, modeling the correction action, or giving physical assistance."
+      },
+      "nonverbals": []
     },
-
+    {
+      "embodiment": "trainer",
+      "section": "intro_4",
+      "verbal": {
+        "text": "For example, the trainer may show the correct action or physically guide the learner to the correct response."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_4",
+      "verbal": {
+        "text": "If the learner gives an incorrect response, the trainer helps them practice the correct response and then tries the instruction again."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_4",
+      "verbal": {
+        "text": "This process will be demonstrated clearly in the modeling phase so you can see it in action."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_4",
+      "verbal": {
+        "text": "Let me know if you would like to continue or repeat this section."
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "intro_4"
+    },
     {
       "embodiment": "trainer",
       "section": "intro_5",
-
       "verbal": {
-        "text": "Thank you for your help and support in this research. These ABA principles provide the foundation for effective instruction and skill development during therapy sessions."
+        "text": "We are now going to talk about reinforcement and motivation."
       },
-
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 1.0,
-          "duration": 1.0,
-          "timing": "during"
-        }
-      ]
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "Reinforcement is something positive given after a correct response."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "Examples include praise, toys, snacks, token systems, or preferred activities."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "Motivation is important during teaching. Learners are often more engaged when preferred items or activities are included in the interaction."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "Sometimes learners need a little more support to stay motivated and engaged during learning tasks."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "Teachers may also begin with easier tasks to help build momentum before moving to more difficult tasks."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "An example of reinforcement would be saying, great job, after a correct response."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_5",
+      "verbal": {
+        "text": "Let me know if you would like to repeat this section or continue."
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "intro_5"
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "Let’s now put everything together and walk through the full process using your flowchart."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "First, the teacher gives the instruction, or SD."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "Next, the learner responds."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "If the response is correct, reinforcement is given and the teacher moves on to the next task."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "If the response is incorrect, prompting or error correction is used to help guide the learner toward the correct response. After the learner responds correctly, reinforcement is given. The teacher may then move to an easier task the learner has already mastered before presenting the original instruction again."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "You can follow each of these steps directly on the flowchart on your content sheet."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "This process repeats throughout the interaction and creates a clear and structured teaching sequence."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "After each trial, feedback will also be provided by myself to help guide the learner before moving on to the next instruction."
+      },
+      "nonverbals": []
+    },
+    {
+      "embodiment": "trainer",
+      "section": "intro_6",
+      "verbal": {
+        "text": "Is this clear? Should I repeat this section or continue on?"
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "intro_6"
+    },
+    {
+      "embodiment": "trainer",
+      "section": "final_checkpoint",
+      "verbal": {
+        "text": "Before we move to rehearsal, take a moment to look back at the flowchart on your content sheet. Make sure you understand how each step connects from instruction, to response, to reinforcement or help if needed. If anything is unclear, we can review it again now. Otherwise, we are ready to move into rehearsal. Please say continue when you are ready."
+      },
+      "nonverbals": []
+    },
+    {
+      "type": "checkpoint",
+      "section": "final_checkpoint"
     }
   ]
 }

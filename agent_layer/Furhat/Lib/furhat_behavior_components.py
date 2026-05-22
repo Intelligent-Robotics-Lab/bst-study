@@ -175,7 +175,7 @@ def resolve_look_target(embodiment, target):
             "neutral": {"x": 0.0,  "y": 0.0, "z": 1.0},
         },
         "kid": {
-            "robot":   {"x": 1.0,  "y": 0.0, "z": 1.0},
+            "robot":   {"x": 1.25,  "y": 0.0, "z": 1.0},
             "neutral": {"x": 0.0,  "y": 0.0,  "z": 1.0},
         }
     }

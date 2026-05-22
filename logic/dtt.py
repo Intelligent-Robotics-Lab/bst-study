@@ -145,7 +145,7 @@ class DTT:
         sd_recognizer = SDRecognizer(trial_data=trial_data)
         hp_recognizer = SDRecognizer(trial_data=hp_trial_data)
         agent = SampleInteractionAgent(silence_timeout=2.0)
-        feedback = FeebackHolder()
+        feedback = FeedbackHolder()
         client = PerceptionClient(
             server_host="141.210.88.210",
             server_port=8000

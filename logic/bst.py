@@ -24,7 +24,7 @@ async def BST():
     print("Executed modeling")
 
     await DTT(agent=AGENT_TYPE).execute()
-    # print("Executed DTT")
+    print("Executed DTT")
 
     # Should probably add some kind of conclusionary statements
 
