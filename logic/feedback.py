@@ -1,61 +1,60 @@
-import requests
 import json
+import os
 import re
 import time
+from typing import Any
 
+import requests
+from dotenv import load_dotenv
 
-OLLAMA_URL = "http://localhost:11434/api/chat"
+# =====================================================
+# IRL2LLM CONFIGURATION
+# =====================================================
 
+load_dotenv()
+
+IRL2LLM_URL = os.getenv(
+    "IRL2LLM_URL",
+    "http://141.210.88.210:8015",
+)
+
+IRL2LLM_API_KEY = os.getenv("IRL2LLM_API_KEY")
+
+DEFAULT_MODEL = os.getenv(
+    "LOCAL_LLM_MODEL",
+    "llama3.3:70b",
+)
+
+# =====================================================
+# SYSTEM PROMPT
+# =====================================================
 
 SYSTEM_PROMPT = """
 You are evaluating trainer fidelity in a DTT session.
 
-You will receive:
-- trial_type
-- protocol_expectations
-- precomputed_analysis
-- trainer_behavior
-- child_behavior
-
 IMPORTANT:
-Only evaluate behaviors REQUIRED by protocol_expectations.
+The DTT engine has ALREADY determined:
+- the trial type
+- the child response
+- the required trainer actions
 
-If:
-"requires_prompting": false
-then:
-- do NOT penalize missing prompting
-- do NOT penalize missing error correction
+Your ONLY task is to evaluate whether the trainer:
+1. Performed the required actions
+2. Performed them in the correct order
+3. Used appropriate trainer behavior
+4. Delivered reinforcement appropriately
 
-If:
-"requires_error_correction": false
-then:
-- do NOT penalize missing retry SD
-- do NOT penalize missing HP sequence
+DO NOT:
+- infer child behavior
+- infer protocol requirements
+- invent missing requirements
+- penalize optional strategies
 
-If:
-"requires_reinforcement": true
-then reinforcement MUST occur.
+Evaluate ONLY against:
+- expected trainer sequence
+- observed trainer behavior
 
-IMPORTANT:
-- Reinforcement may repeat the SD.
-- Repeating the SD during reinforcement is NOT an error.
-- Evaluate ONLY the trainer.
-- Do NOT hallucinate missing actions.
-- Use precomputed_analysis heavily.
-- Trust deterministic scoring over assumptions.
-
-Scoring:
-- 100 = perfect fidelity
-- 70-90 = minor procedural issues
-- below 70 = meaningful protocol violations
-
-Output ONLY valid raw JSON.
-
-No markdown.
-No explanations.
-No code fences.
-
-Required JSON schema:
+Return ONLY valid JSON matching this schema:
 
 {
   "overall_score": int,
@@ -71,6 +70,10 @@ Required JSON schema:
 }
 """
 
+# =====================================================
+# FEEDBACK HOLDER
+# =====================================================
+
 
 class FeedbackHolder:
 
@@ -80,255 +83,240 @@ class FeedbackHolder:
     def reset(self):
 
         self.trial_id = None
-        self.expected_sd = None
-        self.correctness = None
+
+        # Determined by DTT engine/state machine
+        self.trial_context = {
+            "trial_type": None,
+            "child_response": None,
+            "expected_trainer_sequence": [],
+        }
 
         self.trainer_events = []
-        self.child_events = []
 
     # =====================================================
-    # EVENT RECORDING
+    # TRAINER EVENT RECORDING
     # =====================================================
 
-    def add_trainer_event(self, event_type, text, t=None):
+    def add_trainer_event(
+        self,
+        event_type: str,
+        text: str,
+        t: float | None = None,
+    ):
 
-        self.trainer_events.append({
-            "type": event_type,
-            "text": text,
-            "time": t if t else time.time()
-        })
-
-    def add_child_event(self, text, correct=None, t=None):
-
-        self.child_events.append({
-            "text": text,
-            "correct": correct,
-            "time": t if t else time.time()
-        })
+        self.trainer_events.append(
+            {
+                "type": event_type,
+                "text": text,
+                "time": (
+                    t
+                    if t is not None
+                    else time.time()
+                ),
+            }
+        )
 
     # =====================================================
-    # PAYLOAD GENERATION
+    # ACTUAL TRAINER SEQUENCE
     # =====================================================
 
-    def build_evaluation_payload(self):
+    def get_actual_sequence(self):
 
-        # -------------------------------------------------
-        # DETERMINE TRIAL TYPE
-        # -------------------------------------------------
-
-        is_correct_trial = self.correctness == "Correct"
-
-        if is_correct_trial:
-
-            trial_type = "correct_response_trial"
-
-            expected_sequence = [
-                "sd",
-                "child_correct_response",
-                "reinforcement"
-            ]
-
-        else:
-
-            trial_type = "error_correction_trial"
-
-            expected_sequence = [
-                "sd",
-                "child_incorrect_or_no_response",
-                "prompt",
-                "prompted_response",
-                "high_probability_sd",
-                "retry_sd",
-                "reinforcement"
-            ]
-
-        # -------------------------------------------------
-        # DETECT TRAINER EVENTS
-        # -------------------------------------------------
-
-        prompt_detected = any(
-            e["type"] == "prompt"
-            for e in self.trainer_events
+        ordered_events = sorted(
+            self.trainer_events,
+            key=lambda x: x["time"],
         )
 
-        reinforcement_detected = any(
-            e["type"] == "reinforcement"
-            for e in self.trainer_events
+        return [
+            event["type"]
+            for event in ordered_events
+        ]
+
+    # =====================================================
+    # ORDER VALIDATION
+    # =====================================================
+
+    @staticmethod
+    def sequence_score(
+        expected_sequence,
+        actual_sequence,
+    ):
+
+        if not expected_sequence:
+            return 100
+
+        idx = 0
+
+        for item in actual_sequence:
+
+            if (
+                idx < len(expected_sequence)
+                and item == expected_sequence[idx]
+            ):
+                idx += 1
+
+        return int(
+            (idx / len(expected_sequence)) * 100
         )
 
-        hp_detected = any(
-            e["type"] == "high_probability_sd"
-            for e in self.trainer_events
+    # =====================================================
+    # RULE-BASED PRELIMINARY SCORING
+    # =====================================================
+
+    def compute_preliminary_scores(self):
+
+        expected_sequence = self.trial_context[
+            "expected_trainer_sequence"
+        ]
+
+        actual_sequence = self.get_actual_sequence()
+
+        trainer_types = set(actual_sequence)
+
+        # ==========================================
+        # DETECTIONS
+        # ==========================================
+
+        sd_detected = "sd" in trainer_types
+
+        prompt_detected = (
+            "prompt" in trainer_types
         )
 
-        retry_detected = any(
-            e["type"] == "retry_sd"
-            for e in self.trainer_events
+        reinforcement_detected = (
+            "reinforcement" in trainer_types
         )
 
-        sd_detected = any(
-            e["type"] == "sd"
-            for e in self.trainer_events
+        hp_detected = (
+            "high_probability_sd"
+            in trainer_types
         )
 
-        # -------------------------------------------------
-        # DETERMINE REQUIREMENTS
-        # -------------------------------------------------
-
-        requires_prompting = not is_correct_trial
-
-        requires_error_correction = not is_correct_trial
-
-        requires_reinforcement = True
-
-        # -------------------------------------------------
-        # DETERMINISTIC PROCEDURAL SCORING
-        # -------------------------------------------------
-
-        sd_fidelity_preliminary = (
-            100 if sd_detected else 0
+        retry_detected = (
+            "retry_sd"
+            in trainer_types
         )
 
-        prompt_fidelity_preliminary = 100
+        # ==========================================
+        # EXPECTATION DETECTION
+        # ==========================================
 
-        if requires_prompting:
+        prompt_expected = (
+            "prompt" in expected_sequence
+        )
 
-            if not prompt_detected:
-                prompt_fidelity_preliminary = 0
+        reinforcement_expected = (
+            "reinforcement"
+            in expected_sequence
+        )
 
-        else:
+        hp_expected = (
+            "high_probability_sd"
+            in expected_sequence
+        )
 
-            if prompt_detected:
-                prompt_fidelity_preliminary = 50
+        retry_expected = (
+            "retry_sd"
+            in expected_sequence
+        )
 
-        reinforcement_fidelity_preliminary = (
+        # ==========================================
+        # INDIVIDUAL SCORES
+        # ==========================================
+
+        sd_score = (
             100
-            if reinforcement_detected == requires_reinforcement
+            if sd_detected
             else 0
         )
 
-        error_correction_fidelity_preliminary = 100
+        prompt_score = 100
 
-        if requires_error_correction:
+        if prompt_expected:
+            prompt_score = (
+                100
+                if prompt_detected
+                else 0
+            )
 
-            if not hp_detected:
-                error_correction_fidelity_preliminary -= 50
+        reinforcement_score = 100
 
-            if not retry_detected:
-                error_correction_fidelity_preliminary -= 50
+        if reinforcement_expected:
+            reinforcement_score = (
+                100
+                if reinforcement_detected
+                else 0
+            )
 
-        # -------------------------------------------------
-        # SEQUENCE ANALYSIS
-        # -------------------------------------------------
+        error_correction_score = 100
 
-        actual_sequence = []
+        if hp_expected and not hp_detected:
+            error_correction_score -= 50
 
-        for e in self.trainer_events:
+        if retry_expected and not retry_detected:
+            error_correction_score -= 50
 
-            actual_sequence.append(e["type"])
-
-        sequence_match_count = 0
-
-        for expected_step in expected_sequence:
-
-            if expected_step in actual_sequence:
-                sequence_match_count += 1
-
-        sequencing_score_preliminary = int(
-            (sequence_match_count / len(expected_sequence)) * 100
+        error_correction_score = max(
+            0,
+            error_correction_score,
         )
 
-        # -------------------------------------------------
-        # OVERALL PRELIMINARY SCORE
-        # -------------------------------------------------
-
-        preliminary_scores = [
-            sd_fidelity_preliminary,
-            prompt_fidelity_preliminary,
-            reinforcement_fidelity_preliminary,
-            sequencing_score_preliminary,
-            error_correction_fidelity_preliminary
-        ]
-
-        overall_preliminary_score = int(
-            sum(preliminary_scores) / len(preliminary_scores)
+        sequencing_score = self.sequence_score(
+            expected_sequence,
+            actual_sequence,
         )
 
-        # -------------------------------------------------
-        # FINAL PAYLOAD
-        # -------------------------------------------------
+        overall_score = int(
+            (
+                sd_score
+                + prompt_score
+                + reinforcement_score
+                + sequencing_score
+                + error_correction_score
+            )
+            / 5
+        )
 
         return {
+            "sd_score": sd_score,
+            "prompt_score": prompt_score,
+            "reinforcement_score": reinforcement_score,
+            "sequencing_score": sequencing_score,
+            "error_correction_score": (
+                error_correction_score
+            ),
+            "overall_preliminary_score": (
+                overall_score
+            ),
+            "actual_sequence": actual_sequence,
+        }
 
+    # =====================================================
+    # BUILD PAYLOAD
+    # =====================================================
+
+    def build_evaluation_payload(
+        self,
+    ) -> dict[str, Any]:
+
+        ordered_events = sorted(
+            self.trainer_events,
+            key=lambda x: x["time"],
+        )
+
+        preliminary_scores = (
+            self.compute_preliminary_scores()
+        )
+
+        return {
             "trial_id": self.trial_id,
-
-            "trial_type": trial_type,
-
-            "protocol_expectations": {
-
-                "expected_sd": self.expected_sd,
-
-                "child_response_type": self.correctness,
-
-                "requires_prompting": requires_prompting,
-
-                "requires_error_correction": (
-                    requires_error_correction
-                ),
-
-                "requires_reinforcement": (
-                    requires_reinforcement
-                ),
-
-                "expected_sequence": expected_sequence
-            },
-
-            "precomputed_analysis": {
-
-                "sd_detected": sd_detected,
-
-                "prompt_detected": prompt_detected,
-
-                "reinforcement_detected": (
-                    reinforcement_detected
-                ),
-
-                "high_probability_sd_detected": (
-                    hp_detected
-                ),
-
-                "retry_sd_detected": retry_detected,
-
-                "actual_sequence": actual_sequence,
-
-                "sd_fidelity_preliminary": (
-                    sd_fidelity_preliminary
-                ),
-
-                "prompt_fidelity_preliminary": (
-                    prompt_fidelity_preliminary
-                ),
-
-                "reinforcement_fidelity_preliminary": (
-                    reinforcement_fidelity_preliminary
-                ),
-
-                "error_correction_fidelity_preliminary": (
-                    error_correction_fidelity_preliminary
-                ),
-
-                "sequencing_score_preliminary": (
-                    sequencing_score_preliminary
-                ),
-
-                "overall_preliminary_score": (
-                    overall_preliminary_score
-                )
-            },
-
-            "trainer_behavior": self.trainer_events,
-
-            "child_behavior": self.child_events
+            "trial_context": self.trial_context,
+            "precomputed_analysis": (
+                preliminary_scores
+            ),
+            "trainer_behavior": (
+                ordered_events
+            ),
         }
 
 
@@ -336,195 +324,218 @@ class FeedbackHolder:
 # JSON EXTRACTION
 # =====================================================
 
-def extract_json(text):
 
-    match = re.search(r"\{.*\}", text, re.DOTALL)
+def extract_json(
+    text: str,
+) -> str | None:
 
-    if match:
-        return match.group(0)
+    match = re.search(
+        r"\{.*\}",
+        text,
+        re.DOTALL,
+    )
 
-    return None
+    return (
+        match.group(0)
+        if match
+        else None
+    )
 
 
 # =====================================================
-# MAIN EVALUATOR
+# IRL2LLM CHAT
 # =====================================================
 
-def evaluate_dtt_session(
-    event_log,
-    model="llama3.1:8b"
-):
 
-    payload = {
+def call_irl2llm_chat(
+    messages: list[dict[str, str]],
+    model: str = DEFAULT_MODEL,
+    temperature: float = 0.2,
+    max_context_tokens: int = 4096,
+    timeout: int = 300,
+) -> str:
 
-        "model": model,
+    if not IRL2LLM_API_KEY:
 
-        "messages": [
-            {
-                "role": "system",
-                "content": SYSTEM_PROMPT
-            },
-            {
-                "role": "user",
-                "content": json.dumps(
-                    event_log,
-                    indent=2
-                )
-            }
-        ],
-
-        "stream": False,
-
-        # VERY IMPORTANT
-        # Forces structured JSON output
-        "format": {
-            "type": "object",
-            "properties": {
-
-                "overall_score": {
-                    "type": "integer"
-                },
-
-                "sd_score": {
-                    "type": "integer"
-                },
-
-                "prompt_score": {
-                    "type": "integer"
-                },
-
-                "reinforcement_score": {
-                    "type": "integer"
-                },
-
-                "sequencing_score": {
-                    "type": "integer"
-                },
-
-                "error_correction_score": {
-                    "type": "integer"
-                },
-
-                "strengths": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-
-                "improvements": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-
-                "protocol_violations": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-
-                "feedback_statement": {
-                    "type": "string"
-                }
-            },
-
-            "required": [
-                "overall_score",
-                "sd_score",
-                "prompt_score",
-                "reinforcement_score",
-                "sequencing_score",
-                "error_correction_score",
-                "strengths",
-                "improvements",
-                "protocol_violations",
-                "feedback_statement"
-            ]
-        }
-    }
+        raise RuntimeError(
+            "IRL2LLM_API_KEY is not set."
+        )
 
     response = requests.post(
-        OLLAMA_URL,
-        json=payload
+        f"{IRL2LLM_URL}/chat",
+        headers={
+            "Content-Type": "application/json",
+            "X-API-Key": IRL2LLM_API_KEY,
+        },
+        json={
+            "model": model,
+            "messages": messages,
+            "temperature": temperature,
+            "max_context_tokens": (
+                max_context_tokens
+            ),
+        },
+        timeout=timeout,
     )
 
     if response.status_code != 200:
 
-        raise Exception(
-            f"Ollama Error: {response.text}"
+        raise RuntimeError(
+            f"irl2llm request failed "
+            f"with status "
+            f"{response.status_code}: "
+            f"{response.text}"
         )
 
     result = response.json()
 
-    content = result["message"]["content"]
+    if "response" not in result:
+
+        raise RuntimeError(
+            f"Unexpected response format: "
+            f"{result}"
+        )
+
+    return result["response"]
+
+
+# =====================================================
+# DTT SESSION EVALUATION
+# =====================================================
+
+
+def evaluate_dtt_session(
+    event_log: dict[str, Any],
+    model: str = DEFAULT_MODEL,
+) -> dict[str, Any]:
+
+    messages = [
+        {
+            "role": "system",
+            "content": SYSTEM_PROMPT,
+        },
+        {
+            "role": "user",
+            "content": json.dumps(
+                event_log,
+                indent=2,
+            ),
+        },
+    ]
+
+    content = call_irl2llm_chat(
+        messages=messages,
+        model=model,
+        temperature=0.2,
+        max_context_tokens=4096,
+        timeout=300,
+    )
 
     print("\n===== RAW LLM OUTPUT =====")
     print(content)
 
     json_text = extract_json(content)
 
-    if json_text is None:
+    if not json_text:
 
-        print("\nFAILED TO EXTRACT JSON")
-
-        return {
-
-            "overall_score": 0,
-            "sd_score": 0,
-            "prompt_score": 0,
-            "reinforcement_score": 0,
-            "sequencing_score": 0,
-            "error_correction_score": 0,
-
-            "strengths": [],
-
-            "improvements": [
-                "Failed to extract JSON from model output"
-            ],
-
-            "protocol_violations": [
-                "Invalid model output"
-            ],
-
-            "feedback_statement": (
-                "Unable to generate feedback."
-            )
-        }
+        raise RuntimeError(
+            "No valid JSON object "
+            "returned by model."
+        )
 
     try:
 
-        parsed = json.loads(json_text)
+        return json.loads(json_text)
 
-        return parsed
+    except json.JSONDecodeError as exc:
 
-    except Exception as e:
+        raise RuntimeError(
+            f"Model returned invalid JSON: "
+            f"{exc}\n\n"
+            f"RAW OUTPUT:\n{content}"
+        )
 
-        print("\nJSON PARSE ERROR")
-        print(e)
 
-        return {
+# =====================================================
+# OPTIONAL TEST
+# =====================================================
 
-            "overall_score": 0,
-            "sd_score": 0,
-            "prompt_score": 0,
-            "reinforcement_score": 0,
-            "sequencing_score": 0,
-            "error_correction_score": 0,
+if __name__ == "__main__":
 
-            "strengths": [],
+    holder = FeedbackHolder()
 
-            "improvements": [
-                "JSON parsing failed"
-            ],
+    holder.trial_id = "trial_001"
 
-            "protocol_violations": [
-                str(e)
-            ],
+    # ==========================================
+    # PROVIDED BY DTT ENGINE
+    # ==========================================
 
-            "feedback_statement": (
-                "Unable to generate feedback."
-            )
-        }
+    holder.trial_context = {
+        "trial_type": "error_correction",
+
+        "child_response": "no_response",
+
+        "expected_trainer_sequence": [
+            "sd",
+            "prompt",
+            "reinforcement",
+        ],
+    }
+
+    # ==========================================
+    # TEST EVENTS
+    # ==========================================
+
+    base = time.time()
+
+    holder.add_trainer_event(
+        "sd",
+        "Do this: clap hands",
+        base + 0.0,
+    )
+
+    holder.add_trainer_event(
+        "prompt",
+        "Clap hands like this",
+        base + 1.0,
+    )
+
+    holder.add_trainer_event(
+        "reinforcement",
+        "Great job clapping!",
+        base + 2.0,
+    )
+
+    # ==========================================
+    # BUILD PAYLOAD
+    # ==========================================
+
+    event_log = (
+        holder.build_evaluation_payload()
+    )
+
+    print("\n===== EVENT LOG =====")
+
+    print(
+        json.dumps(
+            event_log,
+            indent=2,
+        )
+    )
+
+    # ==========================================
+    # EVALUATE
+    # ==========================================
+
+    result = evaluate_dtt_session(
+        event_log
+    )
+
+    print("\n===== PARSED EVALUATION =====")
+
+    print(
+        json.dumps(
+            result,
+            indent=2,
+        )
+    )
