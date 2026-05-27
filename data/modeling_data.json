@@ -1,7 +1,6 @@
 {
   "type": "modeling_module",
   "steps": [
-
     {
       "section": "intro",
       "embodiment": "trainer",
@@ -40,21 +39,17 @@
       "section": "intro",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Let me know when you are ready by saying continue."
+        "text": "You can still pause or ask me to repeat sections at any time during this phase."
       },
       "nonverbals": []
     },
 
-    {
-      "type": "checkpoint",
-      "section": "intro"
-    },
 
     {
       "section": "intro_watch",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Before we begin, here is what you should focus on while watching each example: how the instruction is delivered, how the learner responds, when reinforcement is given, what happens if the response is incorrect, and how prompting or correction is used."
+        "text": "Before we begin, here is what you should focus on: how the instruction is delivered, how the learner responds, when reinforcement is given, what happens if the response is incorrect, and how prompting or correction is used."
       },
       "nonverbals": []
     },
@@ -63,7 +58,7 @@
       "section": "intro_watch",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You can follow each interaction step-by-step using the flowchart on your content sheet to help understand the process."
+        "text": "These same points can be found on the top right corner of your content sheet so you can refresh your memory throughout the interaction."
       },
       "nonverbals": []
     },
@@ -72,21 +67,35 @@
       "section": "intro_watch",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Let me know if you would like me to repeat these points or continue."
+        "text": "Again, remember you can follow each interaction step-by-step using the flowchart on your content sheet to help understand the process."
       },
       "nonverbals": []
     },
 
+
     {
-      "type": "checkpoint",
-      "section": "intro_watch"
+      "section": "manding",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "The first SD we will cover is the manding and motivation SD."
+      },
+      "nonverbals": []
     },
 
     {
       "section": "manding",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The first SD is the manding and motivation SD. This SD teaches the learner to ask for something they want to work for. Watch how reinforcement is provided after the learner responds."
+        "text": "This SD is always delivered first as it allows the trainer to establish what motivates the learner and what can be used as reinforcement during future instruction."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "manding",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Additionally, this instruction teaches the learner to ask for something they want in a functional way."
       },
       "nonverbals": []
     },
@@ -160,30 +169,34 @@
       "section": "manding",
       "embodiment": "trainer",
       "verbal": {
-        "text": "This demonstrates a correct response. Reinforcement is given immediately after the learner responds. Shall we continue, or repeat?"
+        "text": "In this interaction, a correct response was given, so reinforcement was delivered right away without the need for prompting or error correction."
       },
       "nonverbals": []
     },
 
     {
-      "type": "checkpoint",
-      "section": "manding"
-    },
-
-    {
-      "section": "receptive",
+      "section": "imitative",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The next SD is the imitative SD. This SD focuses on teaching the learner to copy modeled actions, helping them build foundational skills in attending and motor imitation. The goal is to show an action and have the learner reproduce it."
+        "text": "The next instruction is the imitative SD."
       },
       "nonverbals": []
     },
 
     {
-      "section": "receptive",
+      "section": "imitative",
       "embodiment": "trainer",
       "verbal": {
-        "text": "... Do this"
+        "text": "This SD teaches the learner to copy an action shown by the trainer, so rather than relying on verbal instruction alone, you have them copy an action you do."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "imitative",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "... Do this."
       },
       "nonverbals": [
         {
@@ -203,7 +216,7 @@
     },
 
     {
-      "section": "receptive",
+      "section": "imitative",
       "embodiment": "kid",
       "verbal": {
         "text": ""
@@ -226,10 +239,10 @@
     },
 
     {
-      "section": "receptive",
+      "section": "imitative",
       "embodiment": "trainer",
       "verbal": {
-        "text": "That's nodding your head! Good job nodding your head!"
+        "text": "That's nodding your head! Good job!"
       },
       "nonverbals": [
         {
@@ -247,10 +260,10 @@
     },
 
     {
-      "section": "receptive",
+      "section": "imitative",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Does the interaction make the purpose and flow of this SD clear? We can either repeat this interaction or continue. What would you like to do?"
+        "text": "Because the learner responded correctly, reinforcement was delivered immediately."
       },
       "nonverbals": [
         {
@@ -263,21 +276,25 @@
     },
 
     {
-      "type": "checkpoint",
-      "section": "receptive"
-    },
-
-    {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The next SD is the receptive SD. This teaches the learner to follow spoken instructions."
+        "text": "Next up is the receptive SD."
       },
       "nonverbals": []
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Unlike the imitative SD, the receptive SD relies on spoken instruction rather than copying an observed action."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
         "text": "... Shake your head."
@@ -292,7 +309,7 @@
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "kid",
       "verbal": {
         "text": ""
@@ -315,7 +332,7 @@
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
         "text": "Let's try that again. Can you shake your head?"
@@ -338,7 +355,7 @@
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "kid",
       "verbal": {
         "text": ""
@@ -361,7 +378,7 @@
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
         "text": "Nice job shaking your head! Thank you for letting me help you!"
@@ -381,33 +398,37 @@
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "As you could see, when the learner does not respond, we repeat the instruction and provide assistance."
+        "text": "In this example, the learner initially did not respond, so prompting was used to guide the correct behavior."
       },
       "nonverbals": []
     },
 
     {
-      "section": "receptive_second",
+      "section": "receptive",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Is it clear what to do when the learner doesn't respond? We can repeat or continue."
+        "text": "Although the trainer demonstrated the action during prompting, this is still considered a receptive SD because the gesture was part of the correction procedure rather than the original instruction."
       },
       "nonverbals": []
     },
 
     {
-      "type": "checkpoint",
-      "section": "receptive_second"
+      "section": "receptive",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "While this example shows prompting support, it does not go through the entire error correction sequence. This full sequence, including returning to the original SD, will be shown later on."
+      },
+      "nonverbals": []
     },
 
     {
       "section": "tacting",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Next is tacting. This teaches the learner to label or describe things in their environment."
+        "text": "Next is the tacting SD. This instruction teaches the learner to label items or objects in their environment."
       },
       "nonverbals": []
     },
@@ -439,7 +460,7 @@
       "section": "tacting",
       "embodiment": "kid",
       "verbal": {
-        "text": "Car"
+        "text": "Car."
       },
       "nonverbals": [
         {
@@ -483,21 +504,17 @@
       "section": "tacting",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Would you like to continue or repeat?"
+        "text": "This shows correct labeling followed by reinforcement due to the correct learner response."
       },
       "nonverbals": []
     },
 
-    {
-      "type": "checkpoint",
-      "section": "tacting"
-    },
 
     {
       "section": "emotion",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Next is emotion labeling. This teaches the learner to identify and name emotions."
+        "text": "We will now present the emotion labeling SD. This instruction teaches the learner to identify emotional context and map these observations to labels."
       },
       "nonverbals": []
     },
@@ -542,7 +559,7 @@
       "section": "emotion",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Great job! I do feel happy right now!"
+        "text": "Great job! I do feel happy!"
       },
       "nonverbals": [
         {
@@ -557,21 +574,7 @@
       "section": "emotion",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We have now covered all SDs for this phase. Let me know if you would like to repeat emotion labeling or continue."
-      },
-      "nonverbals": []
-    },
-
-    {
-      "type": "checkpoint",
-      "section": "emotion"
-    },
-
-    {
-      "section": "error_correction",
-      "embodiment": "trainer",
-      "verbal": {
-        "text": "Now we will review error correction. This is used when a learner gives an incorrect response."
+        "text": "This interaction displays correct emotion identification followed by reinforcement."
       },
       "nonverbals": []
     },
@@ -580,25 +583,25 @@
       "section": "error_correction",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Correct responses are quick and accurate. When errors happen, we help the learner try again so they can learn the correct response."
+        "text": "Lastly, we will look at what happens when the learner gives an incorrect response."
       },
-      "nonverbals": [
-        {
-          "channel": "head",
-          "action": "Shake",
-          "intensity": 0.25,
-          "duration": 1,
-          "repeats": 1,
-          "timing": "during"
-        }
-      ]
+      "nonverbals": []
     },
 
     {
       "section": "error_correction",
       "embodiment": "trainer",
       "verbal": {
-        "text": "After helping the learner, we reinforce correct responses and then continue with easier practice before returning to the original instruction."
+        "text": "In these situations, the trainer helps the learner get to the correct answer and then reinforces that response."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "error_correction",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Please follow the provided flowchart as I go through the full error correction procedure so you understand how to use this protocol in your rehearsal."
       },
       "nonverbals": []
     },
@@ -628,7 +631,7 @@
       "section": "error_correction",
       "embodiment": "kid",
       "verbal": {
-        "text": "...angry."
+        "text": "... angry."
       },
       "nonverbals": [
         {
@@ -685,7 +688,7 @@
       "section": "error_correction",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Good job I do feel happy! Now can you shake your head?"
+        "text": "Good job! I do feel happy! Now can you shake your head?"
       },
       "nonverbals": [
         {
@@ -729,7 +732,7 @@
       "section": "error_correction",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Good job shaking your head! How do I feel?"
+        "text": "Good job! How do I feel?"
       },
       "nonverbals": [
         {
@@ -792,27 +795,127 @@
       "section": "error_correction",
       "embodiment": "trainer",
       "verbal": {
-        "text": "This is the end of the modeling module. If you would like, we can repeat error correction or move on to the rehearsal stage. Please ensure a clear understanding of these practices before moving on. Shall I continue or repeat?"
+        "text": "This interaction showed an example of proper error correction sequencing."
       },
       "nonverbals": []
     },
 
     {
-      "type": "checkpoint",
-      "section": "error_correction"
+      "section": "error_correction",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Following the incorrect learner response, the trainer prompted the child by asking the initial instruction again and immediately providing the correct response."
+      },
+      "nonverbals": []
     },
-    {
-        "section": "transition_to_rehearsal",
-        "embodiment": "trainer",
-        "verbal": {
-            "text": "You have now seen how each type of interaction works. In the next phase, rehearsal, you will take on the role of the trainer and complete these interactions yourself using the same structure. I will guide you and provide feedback as you go. As soon as you say continue, it will be your job to perform the given SDs in order and follow the procedures described previously. Reference your content sheet as needed to assist you. Let me know when you are ready to begin by saying, continue."
-        },
-        "nonverbals": []
-    },
-    {
-        "type": "checkpoint",
-        "section": "transition_to_rehearsal"
-    }
 
+    {
+      "section": "error_correction",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "After the child responds to that correction, the trainer goes through a high-probability SD followed by reinforcement of the response."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "error_correction",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "The initial SD was then repeated with the correct response reinforced."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "error_correction",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "In the event that the child was once again incorrect in their response, the cycle would have continued on."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "error_correction",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Understanding the trial sequencing here is important for the rehearsal stage, so if there are uncertainties, please do interrupt me and we can go back to the start of this process, otherwise, we will be moving on towards rehearsal."
+      },
+      "nonverbals": []
+    },
+
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "You have now seen how each type of interaction works."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "In the next phase, rehearsal, you will take on the role of the trainer that I previously portrayed, and complete these interactions yourself using the same procedures."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "You will be supplied feedback at the end of each trial from myself and I will also help guide you through the interactions."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "As soon as we move on, your role will be to complete the 6 SDs in order while following the procedures we just reviewed."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Use your content sheet as a resource as needed and be sure to follow the main flowchart to help guide your responses."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "You can still stop me for any last minute repeats at this time, otherwise, we will be moving into the practice."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Once I let you know that everything is ready, you can begin the interactions by reading the first SD."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "rehearsal_start",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "We are now ready to begin rehearsal. Please start with the first SD on your sheet."
+      },
+      "nonverbals": []
+    }
   ]
 }
