@@ -175,26 +175,13 @@ class DTT:
             "what do i do",
             "what should i do",
             "what now",
+            "what next",
             "help me",
             "what step",
             "what state",
         ]
 
-        # Stop
-        stop_phrases = [
-            "stop",
-            "quit",
-            "end session",
-            "terminate",
-            "cancel",
-        ]
-
-        # Help
-        help_phrases = [
-            "help",
-            "instructions",
-            "what are the commands",
-        ]
+        
 
         if any(
             phrase in text
@@ -208,17 +195,7 @@ class DTT:
         ):
             return SystemCommand.WHERE_AM_I
 
-        if any(
-            phrase in text
-            for phrase in stop_phrases
-        ):
-            return SystemCommand.STOP
-
-        if any(
-            phrase in text
-            for phrase in help_phrases
-        ):
-            return SystemCommand.HELP
+        
 
         return SystemCommand.NONE
 
@@ -736,6 +713,18 @@ class DTT:
                 elif state == CurrentState.TRAINER:
                     if trial_state == TrialState.FEEDBACK:
                         # Calculate feedback
+                        turn = {"embodiment": "trainer",
+                                  "verbal": {"text": " "},
+                                  "nonverbals": [
+                                      {
+                                        "led" : True
+                                      }
+                                  ]
+                                  }
+                        packet = expr.build(turn)
+                        await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
+
+                        
                         evaluation_payload = feedback.build_evaluation_payload()
                         evaluation = evaluate_dtt_session(evaluation_payload)
 
@@ -766,8 +755,10 @@ class DTT:
                         # Reset state and trial state
                         agent.state.latest_transcript = None
                         print(f"{feedback_text}")
+
                         state = CurrentState.USER
                         trial_state = TrialState.SD
+                    
 
         finally:
             perception_task.cancel()

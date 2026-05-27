@@ -200,3 +200,13 @@ async def track_user_loop(furhat, embodiment, stop_event):
 
     except Exception as e:
         print(f"[TRACK LOOP ERROR] {e}")
+
+async def show_turn(furhat, embodiment, turn_off):
+    if(turn_off):
+         await furhat.request_led_set("#000000")
+    else:  
+        if(embodiment == "trainer"):
+            await furhat.request_led_set("#00BB00")
+        elif(embodiment == "kid"):
+            await furhat.request_led_set("#4882FF")
+

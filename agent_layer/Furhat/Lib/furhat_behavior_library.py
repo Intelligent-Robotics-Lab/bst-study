@@ -14,10 +14,16 @@ async def generic_behavior(furhat, embodiment, packet):
     nonverbals = packet.get("nonverbals", {})
     attention_target = packet.get("attention_target", "user")
     listening = packet.get("listening", False)
-
+    led = packet.get("led", False)
+    led = not led
     interrupt = speech.get("interrupt", False)
+    try:
+        await behavior.show_turn(furhat=furhat, embodiment=embodiment, turn_off=led)
+        await asyncio.sleep(0.05)
+    except RuntimeError as e:
+        print(f"[WARN] LED set failed: {e}")
 
-    # Interrupt handling (unutilized in the current implementation)
+   # Interrupt handling (unutilized in the current implementation)
     if interrupt:
         try:
             await furhat.request_speak_stop()
@@ -128,8 +134,7 @@ async def generic_behavior(furhat, embodiment, packet):
                 behavior.start_gesture(furhat, g["action"], g.get("intensity", 1.0), g.get("duration", 1.0), g.get("repeats", 1)))
 
     # Keep speech as the primary synchonization anchor
-    text = speech.get("text", "").strip()
-
+    text = (speech.get("text") or "").strip()
     if text:
         try:
             # Removed text duration and number of repeats as inputs from this function

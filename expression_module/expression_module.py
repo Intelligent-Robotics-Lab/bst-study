@@ -61,7 +61,8 @@ class ExpressionModule:
                     "intensity": nv.get("intensity", 1.0),
                     "duration": nv.get("duration", 1.0),
                     "repeats": nv.get("repeats", 1),
-                    "timing": nv.get("timing", "during")
+                    "timing": nv.get("timing", "during"),
+                    "led": nv.get("led", False)
                 })
 
             return output
