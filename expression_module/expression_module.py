@@ -58,11 +58,18 @@ class ExpressionModule:
                 output.append({
                     "channel": nv.get("channel"),
                     "action": nv.get("action"),
+
+                    # Common fields
                     "intensity": nv.get("intensity", 1.0),
                     "duration": nv.get("duration", 1.0),
                     "repeats": nv.get("repeats", 1),
                     "timing": nv.get("timing", "during"),
-                    "led": nv.get("led", False)
+                    "keep_moving": nv.get("keep_moving", False),
+
+                    # LED specific
+                    "color": nv.get("color"),
+                    "brightness": nv.get("brightness", 1.0)
+
                 })
 
             return output

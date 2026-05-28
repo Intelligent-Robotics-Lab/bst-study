@@ -201,12 +201,40 @@ async def track_user_loop(furhat, embodiment, stop_event):
     except Exception as e:
         print(f"[TRACK LOOP ERROR] {e}")
 
-async def show_turn(furhat, embodiment, turn_off):
-    if(turn_off):
-         await furhat.request_led_set("#000000")
-    else:  
-        if(embodiment == "trainer"):
-            await furhat.request_led_set("#00BB00")
-        elif(embodiment == "kid"):
-            await furhat.request_led_set("#4882FF")
+async def show_turn(
+    furhat,
+    embodiment,
+    color_override,
+    duration=2.0,
+):
 
+    try:
+
+        if embodiment == "trainer":
+            color = "#00BB00"
+
+        elif embodiment == "kid":
+            color = "#4882FF"
+
+        else:
+            color = "#FFFFFF"
+
+        color = color_override
+        end_time = (
+            asyncio.get_event_loop().time()
+            + duration
+        )
+
+        while (
+            asyncio.get_event_loop().time()
+            < end_time
+        ):
+
+            await furhat.request_led_set(color)
+
+            await asyncio.sleep(0.25)
+
+        await furhat.request_led_set("#000000")
+
+    except Exception as e:
+        print("[LED ERROR]", e)

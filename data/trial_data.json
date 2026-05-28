@@ -171,7 +171,7 @@
         },
 
         "SD_4": {
-            "sd": "What is this?",
+            "sd": "What am I holding?",
             "sd_type": "Labeling",
             "correctness": "No Response",
             "challenge": "Medium",
@@ -198,7 +198,7 @@
                       {
                         "channel": "head",
                         "action": "Nod",
-                        "intensity": 1.0,
+                        "intensity": 2.0,
                         "duration": 0.75,
                         "repeats": 2,
                         "timing": "during"
@@ -295,7 +295,7 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "AR AR AR"
+                        "text": "Click Click Click Click"
                     },
 
                     "nonverbals": [

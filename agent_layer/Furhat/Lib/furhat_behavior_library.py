@@ -14,22 +14,28 @@ async def generic_behavior(furhat, embodiment, packet):
     nonverbals = packet.get("nonverbals", {})
     attention_target = packet.get("attention_target", "user")
     listening = packet.get("listening", False)
-    led = packet.get("led", False)
-    led = not led
-    interrupt = speech.get("interrupt", False)
-    try:
-        await behavior.show_turn(furhat=furhat, embodiment=embodiment, turn_off=led)
-        await asyncio.sleep(0.05)
-    except RuntimeError as e:
-        print(f"[WARN] LED set failed: {e}")
+    for nv in nonverbals.get("led", []):
+        action = nv.get("action", "on")
 
-   # Interrupt handling (unutilized in the current implementation)
-    if interrupt:
-        try:
-            await furhat.request_speak_stop()
-        except Exception as e:
-            print("[WARN] interrupt failed:", e)
+        if action == "on":
+            print("[LED LAYER]", nonverbals.get("led"))
 
+            
+            await behavior.show_turn(
+                    furhat,
+                    embodiment=embodiment,
+                    color_override=nv.get("color", "#000000"),
+                    duration=nv.get("duration", 2.0),
+                )
+            
+
+        elif action == "off":
+            await behavior.show_turn(
+                    furhat,
+                    embodiment=embodiment,
+                    color_override=nv.get("color", "#000000"),
+                    duration=nv.get("duration", 2.0),
+                )
     # Listening function (unutilized currently but looking to add in active listening feature)
     try:
         if listening:

@@ -66,8 +66,42 @@ Return ONLY valid JSON matching this schema:
   "strengths": [str],
   "improvements": [str],
   "protocol_violations": [str],
+  "number_of_failed": int,
   "feedback_statement": str
 }
+
+IMPORTANT:
+The interaction_history contains ALL trainer speech attempts,
+including:
+- failed attempts
+- corrected attempts
+- retries
+- reformulations
+
+Use this history to evaluate:
+- whether the trainer corrected mistakes
+- whether corrections improved clarity
+- whether prompting improved over time
+- whether recovery procedures were appropriate
+
+IMPORTANT SCORING RULES:
+
+- The trainer should be penalized for failed attempts,
+  even if they later recover successfully.
+
+- Multiple attempts reduce fidelity compared to a correct
+  first attempt.
+
+- Successful recovery is better than persistent failure,
+  but should NOT receive a perfect score.
+
+- If interaction_history shows failed attempts before a
+  successful attempt, reduce relevant scores appropriately.
+
+- First-attempt correctness should score higher than
+  corrected performance.
+
+Give the participant the feedback directly and address them as Carter
 """
 
 # =====================================================
@@ -92,6 +126,7 @@ class FeedbackHolder:
         }
 
         self.trainer_events = []
+        self.interaction_history = []
 
     # =====================================================
     # TRAINER EVENT RECORDING
@@ -115,7 +150,24 @@ class FeedbackHolder:
                 ),
             }
         )
+    def add_transcript_event(
+        self,
+        trial_state,
+        text,
+        recognized_as=None,
+        successful=False,
+    ):
 
+        if not hasattr(self, "interaction_history"):
+            self.interaction_history = []
+
+        self.interaction_history.append({
+            "trial_state": str(trial_state),
+            "text": text,
+            "recognized_as": recognized_as,
+            "successful": successful,
+            "corrected_later": False,
+        })
     # =====================================================
     # ACTUAL TRAINER SEQUENCE
     # =====================================================
@@ -308,17 +360,56 @@ class FeedbackHolder:
             self.compute_preliminary_scores()
         )
 
+        recovery_metrics = (
+            self.compute_recovery_metrics()
+        )
+
         return {
             "trial_id": self.trial_id,
+
             "trial_context": self.trial_context,
+
             "precomputed_analysis": (
                 preliminary_scores
             ),
+
             "trainer_behavior": (
                 ordered_events
             ),
+
+            "interaction_history": (
+                self.interaction_history
+            ),
+            "recovery_metrics": recovery_metrics,
         }
 
+    def compute_recovery_metrics(self):
+
+        failed_attempts = 0
+        corrected_attempts = 0
+
+        for event in self.interaction_history:
+
+            if not event["successful"]:
+                failed_attempts += 1
+
+            if event["corrected_later"]:
+                corrected_attempts += 1
+
+        recovery_ratio = 1.0
+
+        if failed_attempts > 0:
+
+            recovery_ratio = (
+                corrected_attempts
+                / failed_attempts
+            )
+
+        return {
+            "failed_attempts": failed_attempts,
+            "corrected_attempts": corrected_attempts,
+            "recovery_ratio": recovery_ratio,
+        }
 
 # =====================================================
 # JSON EXTRACTION

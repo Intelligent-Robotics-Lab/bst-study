@@ -361,6 +361,26 @@ class DTT:
 
             elif event_type == "emotion_update":
                 agent.handle_emotion(payload)
+    def log_transcript(
+        self,
+        feedback,
+        trial_state,
+        transcript,
+        recognized_as=None,
+        successful=False,
+    ):
+        feedback.add_transcript_event(
+            trial_state=trial_state.value,
+            text=transcript,
+            recognized_as=recognized_as,
+            successful=successful,
+        )
+#################################################################################
+#                           MAIN DTT LOOP                                       #
+#################################################################################
+
+
+
 
     async def main_dtt_loop(self):
 
@@ -368,6 +388,8 @@ class DTT:
         trial_state = TrialState.SD 
         trial_sd = None
         current_sd = None
+        reinforcement_source = None
+
         with open("data/trial_data.json", "r") as f:
             trial_data = json.load(f)["trial_data"]
 
@@ -401,7 +423,6 @@ class DTT:
                 self.current_trial_state = trial_state
                 self.current_trial_sd = trial_sd
                 transcript = agent.state.latest_transcript
-
                 command = self.detect_system_command(
                     transcript
                 )
@@ -466,36 +487,87 @@ class DTT:
                             feedback.reset()
 
                             
-                            feedback.add_trainer_event(
-                                event_type="sd",
-                                text=transcript
+                            self.log_transcript(
+                                feedback=feedback,
+                                trial_state=trial_state,
+                                transcript=transcript,
+                                recognized_as=current_sd,
+                                successful=(current_sd is not None),
                             )
-                        if current_sd is not None:
-                            feedback.trial_id = current_sd
-                            feedback.expected_sd = trial_data[current_sd]["sd"]
-                            feedback.correctness = trial_data[current_sd]["correctness"]
+
+                            
+                            if current_sd is not None:
+                                feedback.trial_id = current_sd
+                                feedback.expected_sd = trial_data[current_sd]["sd"]
+                                feedback.correctness = trial_data[current_sd]["correctness"]
 
 
-                            state = CurrentState.KID
-                            trial_state = TrialState.KID_BEHAVIOR_1
-                            print(f"Trial SD: {trial_sd}")
-                            print(f"Current SD: {current_sd}")
+                                state = CurrentState.KID
+                                trial_state = TrialState.KID_BEHAVIOR_1
+                                print(f"Trial SD: {trial_sd}")
+                                print(f"Current SD: {current_sd}")
+                            else:
+                                turn = {
+                                    "embodiment": "kid",
+                                    "verbal": {
+                                        "text": " "
+                                    },
+                                    "nonverbals": [
+                                        {
+                                            "channel": "led",
+                                            "action": "on",
+                                            "color": "#FF0000",
+                                            "duration": 2.0
+                                        }
+                                    ]
+                                }
+                                packet = expr.build(turn)
+                                await expr.execute(agent_type=self.agent, embodiment="kid", packet=packet)
+
+                                await asyncio.sleep(0.5)
 
                         await asyncio.sleep(0.1)
                     elif trial_state == TrialState.REINFORCEMENT:
+
                         transcript = agent.state.latest_transcript
                         emotion = agent.state.latest_emotion
+                        
                         print("REINFORCEMENT STARTED")
-                        if transcript != None:
-                            feedback.add_trainer_event(
-                                event_type="reinforcement",
-                                text=transcript
+
+                        if transcript is not None:
+
+                            self.log_transcript(
+                                feedback=feedback,
+                                trial_state=trial_state,
+                                transcript=transcript,
+                                recognized_as=current_sd,
+                                successful=(current_sd is not None),
                             )
-                            state = CurrentState.TRAINER
-                            trial_state = TrialState.FEEDBACK
+
                             print(f"Trial SD: {trial_sd}")
                             print(f"Current SD: {current_sd}")
+
                             current_sd = None
+
+                            # =========================================================
+                            # CONTROL FLOW DECISION POINT (IMPORTANT)
+                            # =========================================================
+                            print(f"Reinforcement_Source: {reinforcement_source}")
+                            if reinforcement_source == "prompting":
+                                # THESE DO NOT TRIGGER FEEDBACK
+                                state = CurrentState.USER
+                                trial_state = TrialState.HP_SD
+                            elif reinforcement_source == "hp_sd":
+                                state = CurrentState.USER
+                                trial_state = TrialState.RETRY_SD
+
+                            elif reinforcement_source == "retry":
+                                # ONLY THIS PATH TRIGGERS FEEDBACK
+                                state = CurrentState.TRAINER
+                                trial_state = TrialState.FEEDBACK
+
+                            reinforcement_source = None
+
                         await asyncio.sleep(0.1)
 
 
@@ -518,9 +590,14 @@ class DTT:
                             current_sd = result["matched_sd_id"]
 
                             print(f"[PROMPTING DETECTED] {current_sd}")
-                            feedback.add_trainer_event(
-                                event_type="prompt",
-                                text=transcript
+                            self.log_transcript(
+                                feedback=feedback,
+                                trial_state=trial_state,
+                                transcript=transcript,
+                                recognized_as=current_sd,
+                                successful=(
+                                    current_sd == trial_sd
+                                ),
                             )
                             if current_sd is not None and current_sd == trial_sd:
 
@@ -528,6 +605,25 @@ class DTT:
                                 trial_state = TrialState.KID_BEHAVIOR_2
                                 print(f"Trial SD: {trial_sd}")
                                 print(f"Current SD: {current_sd}")
+                            else:
+                                turn = {
+                                    "embodiment": "kid",
+                                    "verbal": {
+                                        "text": " "
+                                    },
+                                    "nonverbals": [
+                                        {
+                                            "channel": "led",
+                                            "action": "on",
+                                            "color": "#FF0000",
+                                            "duration": 2.0
+                                        }
+                                    ]
+                                }
+                                packet = expr.build(turn)
+                                await expr.execute(agent_type=self.agent, embodiment="kid", packet=packet)
+
+                                await asyncio.sleep(0.5)
                         await asyncio.sleep(0.1)
                        
                     elif trial_state == TrialState.HP_SD:
@@ -549,16 +645,38 @@ class DTT:
                             current_sd = result["matched_sd_id"]
 
                             print(f"[HP_SD DETECTED] {current_sd}")
-                            feedback.add_trainer_event(
-                                event_type="high_probability_sd",
-                                text=transcript
+                            self.log_transcript(
+                                feedback=feedback,
+                                trial_state=trial_state,
+                                transcript=transcript,
+                                recognized_as=current_sd,
+                                successful=(current_sd is not None),
                             )
-                        if current_sd is not None:
+                            if current_sd is not None:
 
-                            state = CurrentState.KID
-                            trial_state = TrialState.KID_BEHAVIOR_HP
-                            print(f"Trial SD: {trial_sd}")
-                            print(f"Current SD: {current_sd}")
+                                state = CurrentState.KID
+                                trial_state = TrialState.KID_BEHAVIOR_HP
+                                print(f"Trial SD: {trial_sd}")
+                                print(f"Current SD: {current_sd}")
+                            else:
+                                turn = {
+                                    "embodiment": "kid",
+                                    "verbal": {
+                                        "text": " "
+                                    },
+                                    "nonverbals": [
+                                        {
+                                            "channel": "led",
+                                            "action": "on",
+                                            "color": "#FF0000",
+                                            "duration": 2.0
+                                        }
+                                    ]
+                                }
+                                packet = expr.build(turn)
+                                await expr.execute(agent_type=self.agent, embodiment="kid", packet=packet)
+
+                                await asyncio.sleep(0.5)
 
                         await asyncio.sleep(0.1)
                     elif trial_state == TrialState.RETRY_SD:
@@ -579,10 +697,15 @@ class DTT:
 
                             current_sd = result["matched_sd_id"]
                             
-                            feedback.add_trainer_event(
-                                event_type="retry_sd",
-                                text=transcript
-                                )
+                            self.log_transcript(
+                                feedback=feedback,
+                                trial_state=trial_state,
+                                transcript=transcript,
+                                recognized_as=current_sd,
+                                successful=(
+                                    current_sd == trial_sd
+                                ),
+                            )
 
                             print(f"[RETRY SD DETECTED] {current_sd}")
                             if current_sd is not None and current_sd == trial_sd:
@@ -591,6 +714,25 @@ class DTT:
                                 trial_state = TrialState.KID_BEHAVIOR_RETRY
                                 print(f"Trial SD: {trial_sd}")
                                 print(f"Current SD: {current_sd}")
+                            else:
+                                turn = {
+                                    "embodiment": "kid",
+                                    "verbal": {
+                                        "text": " "
+                                    },
+                                    "nonverbals": [
+                                        {
+                                            "channel": "led",
+                                            "action": "on",
+                                            "color": "#FF0000",
+                                            "duration": 2.0
+                                        }
+                                    ]
+                                }
+                                packet = expr.build(turn)
+                                await expr.execute(agent_type=self.agent, embodiment="kid", packet=packet)
+
+                                await asyncio.sleep(0.5)
                         await asyncio.sleep(0.1)
 
 
@@ -649,8 +791,10 @@ class DTT:
 
                         # reset + return to USER
                         agent.state.latest_transcript = None
+                        reinforcement_source = "propmting"
+
                         state = CurrentState.USER
-                        trial_state = TrialState.HP_SD
+                        trial_state = TrialState.REINFORCEMENT
                        
                         print(f"Trial SD: {trial_sd}")
                         print(f"Current SD: {current_sd}")
@@ -677,8 +821,10 @@ class DTT:
                         # reset + return to USER
                         agent.state.latest_transcript = None
                         current_sd = None
+                        reinforcement_source = "hp_sds"
+                        
                         state = CurrentState.USER
-                        trial_state = TrialState.RETRY_SD
+                        trial_state = TrialState.REINFORCEMENT
                         
                         print(f"Trial SD: {trial_sd}")
                         print(f"Current SD: {current_sd}")
@@ -705,6 +851,7 @@ class DTT:
 
                         # reset + return to USER
                         agent.state.latest_transcript = None
+                        reinforcement_source = "retry"
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
                        
@@ -713,18 +860,24 @@ class DTT:
                 elif state == CurrentState.TRAINER:
                     if trial_state == TrialState.FEEDBACK:
                         # Calculate feedback
-                        turn = {"embodiment": "trainer",
-                                  "verbal": {"text": " "},
-                                  "nonverbals": [
-                                      {
-                                        "led" : True
-                                      }
-                                  ]
-                                  }
+                        turn = {
+                            "embodiment": "trainer",
+                            "verbal": {
+                                "text": " "
+                            },
+                            "nonverbals": [
+                                {
+                                    "channel": "led",
+                                    "action": "on",
+                                    "color": "#00FF00",
+                                    "duration": 2.0
+                                }
+                            ]
+                        }
                         packet = expr.build(turn)
                         await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
 
-                        
+                        await asyncio.sleep(0.5)
                         evaluation_payload = feedback.build_evaluation_payload()
                         evaluation = evaluate_dtt_session(evaluation_payload)
 
@@ -749,12 +902,13 @@ class DTT:
                         await expr.execute(agent_type=self.agent, embodiment=feedback_placeholder["embodiment"], packet=packet)
 
                         # Wait for reinforcement
-                        sleep_time = (len(feedback_text) / 14) * 1.15
+                        sleep_time = (len(feedback_text) / 21)
                         await asyncio.sleep(sleep_time + 0.3)
 
                         # Reset state and trial state
                         agent.state.latest_transcript = None
                         print(f"{feedback_text}")
+                        reinforcement_source = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.SD
