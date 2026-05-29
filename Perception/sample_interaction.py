@@ -53,7 +53,7 @@ class SampleInteractionAgent:
             if full_transcript:
                 self.state.latest_transcript = full_transcript
 
-                #print(f"\n[FINAL TRANSCRIPT] {full_transcript}\n")
+                print(f"\n[FINAL TRANSCRIPT] {full_transcript}\n")
 
                 self._react()
 
