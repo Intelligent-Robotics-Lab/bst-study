@@ -40,6 +40,26 @@ class Instruction:
                     print("[WAKE WORD DETECTED]")
                     self.interrupted = True
 
+                    expr = ExpressionModule()
+
+                    turn = {
+                        "embodiment": "trainer",
+                        "verbal": {
+                            "text": ""
+                        },
+                        "nonverbals": [
+                            {
+                                "channel": "led",
+                                "action": "on",
+                                "color": "#66A5ED",
+                                "duration": 2.0
+                            }
+                        ]
+                    }
+
+                    packet = expr.build(turn)
+                    await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
+
                 # Ignore the speech while the robot is talking (outside of freeze)
                 if self.is_speaking:
                     continue
