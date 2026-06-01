@@ -1,5 +1,4 @@
 import asyncio
-
 from logic.instruction import Instruction
 from logic.modeling import Modeling
 from logic.dtt import DTT

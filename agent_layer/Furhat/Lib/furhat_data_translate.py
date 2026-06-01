@@ -12,10 +12,7 @@ def translate_packet_furhat(packet):
 
     # Estimate speech duration
     if text:
-        duration_text = max(
-            len(text.split()) * 0.45,
-            1.0
-        )
+        duration_text = max(len(text.split()) * 0.45, 1.0)
     else:
         duration_text = 0
 
@@ -44,12 +41,8 @@ def translate_packet_furhat(packet):
 
     gaze_override = None
 
-    # =====================================================
-    # TRANSLATE NONVERBALS
-    # =====================================================
-
+    # Translate the nonverbals as necessary
     for nv in nonverbals:
-
         # Safety check
         if not isinstance(nv, dict):
             print(
@@ -85,95 +78,40 @@ def translate_packet_furhat(packet):
             ),
         }
 
-        # ==========================================
-        # HEAD
-        # ==========================================
-
+        # Seperating head, face, and gaze sections
         if channel == "head":
-
-            output["nonverbals"]["head"].append(
-                entry
-            )
-
-        # ==========================================
-        # FACE
-        # ==========================================
+            output["nonverbals"]["head"].append(entry)
 
         elif channel == "face":
-
-            output["nonverbals"]["face"].append(
-                entry
-            )
-
-        # ==========================================
-        # GAZE
-        # ==========================================
+            output["nonverbals"]["face"].append(entry)
 
         elif channel == "gaze":
+            output["nonverbals"]["gaze"].append(entry)
 
-            output["nonverbals"]["gaze"].append(
-                entry
-            )
-
-            if action in (
-                "robot",
-                "user",
-                "neutral",
-            ):
+            if action in ("robot", "user", "neutral",):
                 gaze_override = action
 
-        # ==========================================
-        # GESTURE
-        # ==========================================
 
         elif channel == "gesture":
+            output["nonverbals"]["gesture"].append(entry)
 
-            output["nonverbals"]["gesture"].append(
-                entry
-            )
-
-        # ==========================================
-        # LED
-        # ==========================================
-
+        # LED control
         elif channel == "led":
+            entry["color"] = nv.get("color", "#FFFFFF")
 
-            entry["color"] = nv.get(
-                "color",
-                "#FFFFFF"
-            )
+            entry["brightness"] = nv.get("brightness", 1.0)
 
-            entry["brightness"] = nv.get(
-                "brightness",
-                1.0
-            )
+            output["nonverbals"]["led"].append(entry)
 
-            output["nonverbals"]["led"].append(
-                entry
-            )
-
-    # =====================================================
-    # ATTENTION OVERRIDE
-    # =====================================================
-
+    # Attention override
     if gaze_override is not None:
-
         if gaze_override == "robot":
-
-            output["attention_target"] = (
-                "robot"
-            )
+            output["attention_target"] = ("robot")
 
         elif gaze_override == "user":
-
-            output["attention_target"] = (
-                "user"
-            )
+            output["attention_target"] = ("user")
 
         else:
-
-            output["attention_target"] = (
-                "neutral"
-            )
+            output["attention_target"] = ("neutral")
 
     return output

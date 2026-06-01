@@ -15,13 +15,6 @@ async def generic_behavior(furhat, embodiment, packet):
     attention_target = packet.get("attention_target", "user")
     listening = packet.get("listening", False)
 
-    # Debug print (temporary)
-    print(
-        f"[PACKET] embodiment={embodiment} "
-        f"attention={attention_target}"
-        f"text={speech.get('text', '')[:40]}"
-    )
-
     for nv in nonverbals.get("led", []):
         action = nv.get("action", "on")
 
@@ -33,7 +26,7 @@ async def generic_behavior(furhat, embodiment, packet):
         elif action == "off":
             await behavior.show_turn(furhat, embodiment=embodiment, color_override=nv.get("color", "#000000"), duration=nv.get("duration", 2.0),)
             
-    # Listening function (unutilized currently but looking to add in active listening feature)
+    # Listening function (not currently used with the plan to add in active listening gestures if necessary)
     try:
         if listening:
             asyncio.create_task(furhat.request_listen_start())
@@ -73,7 +66,6 @@ async def generic_behavior(furhat, embodiment, packet):
                     y=target["y"],
                     z=target["z"]
                 )
-
             current_attention[embodiment] = attention_target
 
     except Exception as e:
