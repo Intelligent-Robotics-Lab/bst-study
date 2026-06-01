@@ -3,7 +3,7 @@ import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
 
 tracking_task = {}
 tracking_stop_event = {}
-
+current_attention = {}
 face_task = {}
 
 """This function turns the cleaned data packet and outputs its paramters onto the agent of choice for Furhat.
@@ -14,28 +14,25 @@ async def generic_behavior(furhat, embodiment, packet):
     nonverbals = packet.get("nonverbals", {})
     attention_target = packet.get("attention_target", "user")
     listening = packet.get("listening", False)
+
+    # Debug print (temporary)
+    print(
+        f"[PACKET] embodiment={embodiment} "
+        f"attention={attention_target}"
+        f"text={speech.get('text', '')[:40]}"
+    )
+
     for nv in nonverbals.get("led", []):
         action = nv.get("action", "on")
 
         if action == "on":
             print("[LED LAYER]", nonverbals.get("led"))
-
             
-            await behavior.show_turn(
-                    furhat,
-                    embodiment=embodiment,
-                    color_override=nv.get("color", "#000000"),
-                    duration=nv.get("duration", 2.0),
-                )
+            await behavior.show_turn(furhat, embodiment=embodiment,color_override=nv.get("color", "#000000"),duration=nv.get("duration", 2.0),)
             
-
         elif action == "off":
-            await behavior.show_turn(
-                    furhat,
-                    embodiment=embodiment,
-                    color_override=nv.get("color", "#000000"),
-                    duration=nv.get("duration", 2.0),
-                )
+            await behavior.show_turn(furhat, embodiment=embodiment, color_override=nv.get("color", "#000000"), duration=nv.get("duration", 2.0),)
+            
     # Listening function (unutilized currently but looking to add in active listening feature)
     try:
         if listening:
@@ -47,65 +44,37 @@ async def generic_behavior(furhat, embodiment, packet):
         print("[WARN] listen toggle failed:", e)
 
     # Clean up the tracking events
-    if embodiment in tracking_stop_event:
-        tracking_stop_event[embodiment].set()
+    previous_attention = current_attention.get(embodiment)
+    attention_changed = (previous_attention != attention_target)
 
-    if embodiment in tracking_task:
-        old_task = tracking_task[embodiment]
+    if attention_changed:
+        await behavior.stop_tracking(embodiment, tracking_task, tracking_stop_event)
 
-        old_task.cancel()
-
-        try:
-            await old_task
-        except asyncio.CancelledError:
-            pass
-        except Exception as e:
-            print("[WARN] tracking cleanup:", e)
-
-    tracking_task.pop(embodiment, None)
-    tracking_stop_event.pop(embodiment, None)
-
-    # Attention target tracking for user and robot selections
+    # Attention control
     try:
-        if attention_target == "user":
+        if attention_changed:
 
-            print(f"[TRACK USER START] {embodiment}")
+            if attention_target == "user":
 
-            tracking_stop_event[embodiment] = asyncio.Event()
+                print(f"[TRACK USER START] {embodiment}")
 
-            tracking_task[embodiment] = asyncio.create_task(
-                behavior.track_user_loop(furhat, embodiment, tracking_stop_event[embodiment]))
+                tracking_stop_event[embodiment] = asyncio.Event()
 
-        elif attention_target == "robot":
+                tracking_task[embodiment] = asyncio.create_task(
+                    behavior.track_user_loop(furhat, embodiment, tracking_stop_event[embodiment], refresh_rate=0.5))
 
-            target = behavior.resolve_look_target(embodiment, "robot")
+            else:
+                target = behavior.resolve_look_target(embodiment, attention_target)
 
-            print(f"[ROBOT LOOK] {target}")
+                print(f"[LOOK TARGET] {attention_target}: {target}")
 
-            asyncio.create_task(
-                furhat.request_attend_location(
+                await furhat.request_attend_location(
                     x=target["x"],
                     y=target["y"],
                     z=target["z"]
                 )
-            )
 
-        elif attention_target == "neutral":
-
-            target = behavior.resolve_look_target(embodiment, "neutral")
-
-            print(f"[NEUTRAL LOOK] {target}")
-
-            asyncio.create_task(
-                furhat.request_attend_location(
-                    x=target["x"],
-                    y=target["y"],
-                    z=target["z"]
-                )
-            )
-
-        else:
-            asyncio.create_task(furhat.request_attend_user())
+            current_attention[embodiment] = attention_target
 
     except Exception as e:
         print("[WARN] attention failed:", e)
@@ -129,15 +98,27 @@ async def generic_behavior(furhat, embodiment, packet):
 
     # Head gestures
     gesture_task = None
+    after_gesture = None
 
     if nonverbals.get("head"):
 
         g = nonverbals["head"][0]
 
-        if g.get("timing") == "during":
+        try:
+            if g.get("timing") == "before":
 
-            gesture_task = asyncio.create_task(
-                behavior.start_gesture(furhat, g["action"], g.get("intensity", 1.0), g.get("duration", 1.0), g.get("repeats", 1)))
+                await behavior.start_gesture(furhat, g["action"], g.get("intensity", 1.0), g.get("duration", 1.0), g.get("repeats", 1))
+
+            elif g.get("timing") == "during":
+                gesture_task = asyncio.create_task(
+                    behavior.start_gesture(furhat, g["action"], g.get("intensity", 1.0), g.get("duration", 1.0), g.get("repeats", 1))
+                )
+
+            elif g.get("timing") == "after":
+                after_gesture = g
+
+        except Exception as e:
+            print("[WARN] gesture setup failed:", e)
 
     # Keep speech as the primary synchonization anchor
     text = (speech.get("text") or "").strip()
@@ -154,3 +135,12 @@ async def generic_behavior(furhat, embodiment, packet):
             await gesture_task
         except Exception as e:
             print("[WARN] gesture failed:", e)
+
+    if after_gesture:
+        # Debug print
+        print("[AFTER GESTURE STARTING]", after_gesture)
+
+        try:
+            await behavior.start_gesture(furhat, after_gesture["action"], after_gesture.get("intensity", 1.0), after_gesture.get("duration", 1.0), after_gesture.get("repeats", 1))
+        except Exception as e:
+            print("[WARN] after gesture failed", e)

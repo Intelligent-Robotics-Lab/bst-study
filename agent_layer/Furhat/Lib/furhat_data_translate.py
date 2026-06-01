@@ -19,10 +19,7 @@ def translate_packet_furhat(packet):
     else:
         duration_text = 0
 
-    # =====================================================
-    # DEFAULT OUTPUT FORMAT
-    # =====================================================
-
+    # Default output format
     output = {
         "speech": {
             "text": text,
