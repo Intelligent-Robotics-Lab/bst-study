@@ -11,7 +11,7 @@ async def connect_furhat(IP_ADDRESS):
     return furhat
 
 async def start_gesture(furhat, gesture, intensity, duration, number_repeat):
-    # List of Gestures: BigSmile, Blink, BrowFrown, BrowRaise, CloseEyes, ExpressAnger, ExpressDisgust, ExpressFear, ExpressSad, GazeAway, Nod, Oh, OpenEyes, Roll, Shake, Smile, Suprise, Thoughtful, Wink
+    # List of Gestures: BigSmile, Blink, BrowFrown, BrowRaise, CloseEyes, ExpressAnger, ExpressDisgust, ExpressFear, ExpressSad, GazeAway, Nod, Oh, OpenEyes, Roll, Shake, Smile, Surprise, Thoughtful, Wink
     for _ in range(number_repeat):
         await furhat.request_gesture_start(
             name=gesture, 
@@ -30,46 +30,41 @@ async def speak_text(furhat, message):
         print("[WARN] speak_text:", e)
 
 # Facial paramter mapping for facial expressiveness
-# "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP"
+# "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP", "EYEBROW_DOWN"
 face_param_mapping = {
     # High positive affect, closed-mouth smile, raised brows
     "Happy": {
         "SMILE_CLOSED": 1.0,
-        "SMILE_OPEN": 0.3,
-        "EYEBROW_UP": 0.8,
-        "BROW_IN_LEFT": 0.0,
-        "BROW_IN_RIGHT": 0.0,
-        "JAW_OPEN": 0.1
+        "EYEBROW_UP": 0.75,
+        "BROW_IN_LEFT": 0.3,
+        "BROW_IN_RIGHT": 0.3,
+        "JAW_OPEN": 0.0
     },
 
     # Very high arousal positive emotion (big expressive joy)
     "VeryHappy": {
-        "SMILE_CLOSED": 0.6,
-        "SMILE_OPEN": 1.0,
-        "EYEBROW_UP": 1.0,
+        "SMILE_OPEN": 0.75,
+        "EYEBROW_UP": 0.75,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
-        "JAW_OPEN": 0.8
     },
 
     # High tension negative affect
     "Angry": {
         "BROW_IN_LEFT": 1.0,
         "BROW_IN_RIGHT": 1.0,
-        "EYEBROW_UP": 0.2,
+        "EYEBROW_DOWN": 0.75,
         "SMILE_CLOSED": 0.0,
         "SMILE_OPEN": 0.0,
-        "JAW_OPEN": 0.4
     },
 
     # Low energy negative affect
     "Sad": {
-        "BROW_IN_LEFT": 0.8,
-        "BROW_IN_RIGHT": 0.8,
-        "EYEBROW_UP": 0.0,
-        "SMILE_CLOSED": 0.1,
-        "SMILE_OPEN": 0.0,
-        "JAW_OPEN": 0.2
+        "BROW_IN_LEFT": 1.0,
+        "BROW_IN_RIGHT": 1.0,
+        "EYEBROW_UP": 0.5,
+        "SMILE_CLOSED": 0.0,
+        "FROWN_CLOSED": 1.0,
     },
 
     # Baseline neutral face
@@ -78,17 +73,34 @@ face_param_mapping = {
         "SMILE_OPEN": 0.0,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
-        "EYEBROW_UP": 0.0,
         "JAW_OPEN": 0.0
     },
 
     # High arousal surprise (wide eyes, open jaw, raised brows)
-    "Suprised": {
+    "Surprised": {
         "JAW_OPEN": 1.0,
-        "EYEBROW_UP": 1.0,
+        "EYEBROW_UP": 1.25,
         "BROW_IN_LEFT": 0.2,
         "BROW_IN_RIGHT": 0.2,
-        "SMILE_OPEN": 0.2
+    },
+
+    # High arousal fear
+    "Fear": {
+        "JAW_OPEN": 0.8,
+        "EYEBROW_UP": 1.0,
+        "BROW_IN_LEFT": 0.6,
+        "BROW_IN_RIGHT": 0.6,
+        "SMILE_OPEN": 0.0,
+        "SMILE_CLOSED": 0.0
+    },
+
+    "Disgust": {
+        "BROW_IN_LEFT": 0.8,
+        "BROW_IN_RIGHT": 0.8,
+        "EYEBROW_UP": 0.0,
+        "SMILE_CLOSED": 0.0,
+        "SMILE_OPEN": 0.0,
+        "JAW_OPEN": 0.2
     }
 }
 
@@ -135,13 +147,7 @@ async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
 
         await asyncio.sleep(0.25)
 
-"""Function to follow the user gaze continuously. Refresh rate can be updated."""
-async def follow_user_gaze(furhat, stop_event, refresh_rate=0.5):
-    while not stop_event.is_set():
-        await furhat.request_attend_user()
-        await asyncio.sleep(refresh_rate)
-
-"""Function to add in active listening when listening is set. Still a work in progress."""
+"""Function to add in active listening when listening is set. Work in progress, not yet implemented."""
 async def active_listening_loop(furhat, embodiment, stop_event):
     try:
         while not stop_event.is_set():
@@ -183,8 +189,7 @@ def resolve_look_target(embodiment, target):
     return LOOK_MAP.get(embodiment, LOOK_MAP["trainer"]).get(target, LOOK_MAP["trainer"]["neutral"])
 
 """Track user function for gaze. Some of these will be cleaned up and deleted... faced issues when accidently losing progress."""
-async def track_user_loop(furhat, embodiment, stop_event):
-    """Active gaze tracking loop (user only)"""
+async def track_user_loop(furhat, embodiment, stop_event, refresh_rate=0.5):
 
     print(f"[TRACK LOOP STARTED] {embodiment}")
 
@@ -193,7 +198,7 @@ async def track_user_loop(furhat, embodiment, stop_event):
 
             await furhat.request_attend_user()
 
-            await asyncio.sleep(3.5)
+            await asyncio.sleep(refresh_rate)
 
     except asyncio.CancelledError:
         print(f"[TRACK LOOP CANCELLED] {embodiment}")
@@ -201,13 +206,29 @@ async def track_user_loop(furhat, embodiment, stop_event):
     except Exception as e:
         print(f"[TRACK LOOP ERROR] {e}")
 
-async def show_turn(
-    furhat,
-    embodiment,
-    color_override,
-    duration=2.0,
-):
+async def stop_tracking(embodiment, tracking_task, tracking_stop_event):
+    print("f[STOP TRACKING] {embodiment}")
+    if embodiment in tracking_stop_event:
+        tracking_stop_event[embodiment].set()
 
+    if embodiment in tracking_task:
+        old_task = tracking_task[embodiment]
+        old_task.cancel()
+
+        try:
+            await old_task
+        
+        except asyncio.CancelledError:
+            pass
+
+        except Exception as e:
+            print("[WARN] tracking cleanup:", e)
+        
+    tracking_task.pop(embodiment, None)
+    tracking_stop_event.pop(embodiment, None)
+
+"""Function to use LEDs to indicate the embodiment's turns during rehearsal."""
+async def show_turn(furhat, embodiment, color_override, duration=2.0,):
     try:
 
         if embodiment == "trainer":
@@ -220,15 +241,9 @@ async def show_turn(
             color = "#FFFFFF"
 
         color = color_override
-        end_time = (
-            asyncio.get_event_loop().time()
-            + duration
-        )
+        end_time = (asyncio.get_event_loop().time() + duration)
 
-        while (
-            asyncio.get_event_loop().time()
-            < end_time
-        ):
+        while (asyncio.get_event_loop().time() < end_time):
 
             await furhat.request_led_set(color)
 

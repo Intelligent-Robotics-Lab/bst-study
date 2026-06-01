@@ -3,7 +3,7 @@
 
   "steps": [
     {
-      "embodiment": "kid",
+      "embodiment": "trainer",
 
       "verbal": {
           "text": "This is a test of a happy face... full intensity.",
@@ -52,7 +52,39 @@
       ]
     },
     {
-      "embodiment": "kid",
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "This is a test of a very happy face... full intensity."
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "VeryHappy",
+          "intensity": 1.0,
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
+
+      "verbal": {
+          "text": "This is a test of a very happy face... half intensity."
+      },
+
+      "nonverbals": [
+        {
+          "channel": "face",
+          "action": "VeryHappy",
+          "intensity": 0.5,
+          "timing": "during"
+        }
+      ]
+    },
+    {
+      "embodiment": "trainer",
 
       "verbal": {
           "text": "This is a test of a angry face... full intensity."
@@ -84,7 +116,7 @@
       ]
     },
     {
-      "embodiment": "kid",
+      "embodiment": "trainer",
 
       "verbal": {
           "text": "This is a test of a neutral face."
@@ -103,13 +135,13 @@
       "embodiment": "trainer",
 
       "verbal": {
-          "text": "This is a test of a suprised face at full intensity."
+          "text": "This is a test of a surprised face at full intensity."
       },
 
       "nonverbals": [
         {
           "channel": "face",
-          "action": "Suprised",
+          "action": "Surprised",
           "intensity": 1.0,
           "timing": "during"
         }

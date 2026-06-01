@@ -71,7 +71,7 @@ class Instruction:
 
         print("\n[INSTRUCTION] Starting module...")
 
-        with open("data/instruction_data.json", "r") as f:
+        with open("data/expression_testing.json", "r") as f:
             self.steps = json.load(f)["steps"]
 
         expr = ExpressionModule()
