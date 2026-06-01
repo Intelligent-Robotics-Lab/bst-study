@@ -1,7 +1,6 @@
 import asyncio
 import json
 import re
-
 from expression_module.expression_module import ExpressionModule
 from Perception.perception_client import PerceptionClient
 from Perception.sample_interaction import SampleInteractionAgent
@@ -97,6 +96,20 @@ class BaseInteraction:
 
         await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))
 
+    async def signal_listening(self):
+        turn = {
+            "embodiment": "trainer",
+            "verbal": {"text": ""},
+            "nonverbals": [{
+                "channel": "led",
+                "action": "on",
+                "color": "#00FF00",
+                "duration": 1
+            }]
+        }
+
+        await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))
+
     """Executes a single step using the expression module and handles embodiment output."""
     async def execute_step(self, step):
         if not step.get("embodiment"):
@@ -117,6 +130,13 @@ class BaseInteraction:
         await self.say_text(expr,
             "Would you like to continue, repeat the step, repeat the section, or hear a summary?"
         )
+
+        agent.state.latest_transcript = None
+        self.last_transcript = None
+
+        await asyncio.sleep(0.5)
+
+        await self.signal_listening()
 
         timeout = 0
 
@@ -192,6 +212,10 @@ class BaseInteraction:
         while attempts < 3:
 
             await self.say_text(expr, full_question)
+
+            await asyncio.sleep(0.5) # Sleep to prevent ASR from carrying over
+
+            await self.signal_listening()
 
             agent.state.latest_transcript = None
             self.last_transcript = None

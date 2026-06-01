@@ -24,6 +24,16 @@ class Modeling(BaseInteraction):
             print(f"[TYPE] {step.get('type')}")
             print(f"[SPEAKING] {self.is_speaking}")
 
+            if step.get("type") == "knowledge_check":
+                result = await self.handle_knowledge_check(step, self.expr, agent)
+
+                if result == "repeat_section":
+                    self.current_index = self.find_section_start(self.current_section)
+                    continue
+
+                self.current_index += 1
+                continue
+        
             await self.execute_step(step)
 
             if self.interrupted:
