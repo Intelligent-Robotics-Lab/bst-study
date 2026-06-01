@@ -1,1 +1,4 @@
 sentence-transformers
+requests
+python-dotenv
+furhat-realtime-api

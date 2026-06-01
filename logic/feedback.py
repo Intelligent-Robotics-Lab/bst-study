@@ -6,6 +6,7 @@ from typing import Any
 
 import requests
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # =====================================================
 # IRL2LLM CONFIGURATION
@@ -13,18 +14,24 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-IRL2LLM_URL = os.getenv(
-    "IRL2LLM_URL",
-    "http://141.210.88.210:8015",
-)
+#IRL2LLM_URL = os.getenv(
+#    "IRL2LLM_URL",
+#    "http://141.210.88.210:8015",
+#)
 
-IRL2LLM_API_KEY = os.getenv("IRL2LLM_API_KEY")
+#IRL2LLM_API_KEY = os.getenv("IRL2LLM_API_KEY")
 
-DEFAULT_MODEL = os.getenv(
-    "LOCAL_LLM_MODEL",
-    "llama3.3:70b",
-)
+#DEFAULT_MODEL = os.getenv(
+#    "LOCAL_LLM_MODEL",
+#    "llama3.3:70b",
+#)
+print("KEY:", os.getenv("OPENAI_KEY"))
 
+
+OPENAI_API_KEY = os.getenv("OPENAI_KEY")
+
+
+DEFAULT_MODEL = "gpt-5"
 # =====================================================
 # SYSTEM PROMPT
 # =====================================================
@@ -101,7 +108,7 @@ IMPORTANT SCORING RULES:
 - First-attempt correctness should score higher than
   corrected performance.
 
-Give the participant the feedback directly and address them as Carter
+Give the participant the feedback directly and address them as Pourya
 """
 
 # =====================================================
@@ -437,7 +444,20 @@ def extract_json(
 # IRL2LLM CHAT
 # =====================================================
 
+def call_openai_chat(
+    messages: list[dict[str, str]],
+    model: str = DEFAULT_MODEL,
+) -> str:
 
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.2,
+    )
+
+
+    return response.choices[0].message.content
 def call_irl2llm_chat(
     messages: list[dict[str, str]],
     model: str = DEFAULT_MODEL,
@@ -514,12 +534,9 @@ def evaluate_dtt_session(
         },
     ]
 
-    content = call_irl2llm_chat(
+    content = call_openai_chat(
         messages=messages,
         model=model,
-        temperature=0.2,
-        max_context_tokens=4096,
-        timeout=300,
     )
 
     print("\n===== RAW LLM OUTPUT =====")

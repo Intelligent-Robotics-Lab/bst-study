@@ -72,14 +72,14 @@
                       {
                         "channel": "face",
                         "action": "Angry",
-                        "intensity": 1.0,
+                        "intensity": 3.0,
                         "duration": 1.0,
                         "timing": "during"
                       },
                       {
                         "channel": "head",
                         "action": "Shake",
-                        "intensity": 1.5,
+                        "intensity": 3,
                         "duration": 1.0,
                         "repeats": 2,
                         "timing": "during"
@@ -295,7 +295,7 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "Click Click Click Click"
+                        "text": "Ball Ball Ball Ball Ball"
                     },
 
                     "nonverbals": [
@@ -308,10 +308,10 @@
                       },
                       {
                         "channel": "head",
-                        "action": "Nod",
+                        "action": "Roll",
                         "intensity": 0.5,
                         "duration": 1.0,
-                        "repeats": 1,
+                        "repeats": 2,
                         "timing": "during"
                       }
                     ]
