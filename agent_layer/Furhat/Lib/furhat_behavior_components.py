@@ -30,46 +30,41 @@ async def speak_text(furhat, message):
         print("[WARN] speak_text:", e)
 
 # Facial paramter mapping for facial expressiveness
-# "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP"
+# "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP", "EYEBROW_DOWN"
 face_param_mapping = {
     # High positive affect, closed-mouth smile, raised brows
     "Happy": {
         "SMILE_CLOSED": 1.0,
-        "SMILE_OPEN": 0.2,
-        "EYEBROW_UP": 0.7,
-        "BROW_IN_LEFT": 0.0,
-        "BROW_IN_RIGHT": 0.0,
+        "EYEBROW_UP": 0.75,
+        "BROW_IN_LEFT": 0.3,
+        "BROW_IN_RIGHT": 0.3,
         "JAW_OPEN": 0.0
     },
 
     # Very high arousal positive emotion (big expressive joy)
     "VeryHappy": {
-        "SMILE_CLOSED": 0.7,
-        "SMILE_OPEN": 1.0,
-        "EYEBROW_UP": 1.0,
+        "SMILE_OPEN": 0.75,
+        "EYEBROW_UP": 0.75,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
-        "JAW_OPEN": 0.9
     },
 
     # High tension negative affect
     "Angry": {
         "BROW_IN_LEFT": 1.0,
         "BROW_IN_RIGHT": 1.0,
-        "EYEBROW_UP": 0.0,
+        "EYEBROW_DOWN": 0.75,
         "SMILE_CLOSED": 0.0,
         "SMILE_OPEN": 0.0,
-        "JAW_OPEN": 0.6
     },
 
     # Low energy negative affect
     "Sad": {
-        "BROW_IN_LEFT": 0.4,
-        "BROW_IN_RIGHT": 0.4,
+        "BROW_IN_LEFT": 1.0,
+        "BROW_IN_RIGHT": 1.0,
         "EYEBROW_UP": 0.5,
         "SMILE_CLOSED": 0.0,
-        "SMILE_OPEN": 0.0,
-        "JAW_OPEN": 0.2
+        "FROWN_CLOSED": 1.0,
     },
 
     # Baseline neutral face
@@ -78,17 +73,15 @@ face_param_mapping = {
         "SMILE_OPEN": 0.0,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
-        "EYEBROW_UP": 0.0,
         "JAW_OPEN": 0.0
     },
 
     # High arousal surprise (wide eyes, open jaw, raised brows)
     "Surprised": {
         "JAW_OPEN": 1.0,
-        "EYEBROW_UP": 1.0,
+        "EYEBROW_UP": 1.25,
         "BROW_IN_LEFT": 0.2,
         "BROW_IN_RIGHT": 0.2,
-        "SMILE_OPEN": 0.0
     },
 
     # High arousal fear
