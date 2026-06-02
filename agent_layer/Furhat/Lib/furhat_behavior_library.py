@@ -15,6 +15,13 @@ async def generic_behavior(furhat, embodiment, packet):
     attention_target = packet.get("attention_target", "user")
     listening = packet.get("listening", False)
 
+    # Added in face reset fix
+    try:
+        await furhat.request_face_params(behavior.resolve_face_params("Neutral"))
+        print("[FACE RESET] Neutral applied")
+    except Exception as e:
+        print("[WARN] face reset failed:", e)
+
     for nv in nonverbals.get("led", []):
         action = nv.get("action", "on")
 
@@ -111,6 +118,16 @@ async def generic_behavior(furhat, embodiment, packet):
 
         except Exception as e:
             print("[WARN] gesture setup failed:", e)
+
+    # Adjust system volume before speech based on the inputted value, set the default to 60 as done previously:
+    volume = speech.get("volume", 50)
+
+
+    # This function will only work if the system config function is added into the virtual environment
+    try:
+        await behavior.change_volume(furhat=furhat, volume=volume)
+    except Exception as e:
+        print("[WARN] system volume failed to adjust")
 
     # Keep speech as the primary synchonization anchor
     text = (speech.get("text") or "").strip()

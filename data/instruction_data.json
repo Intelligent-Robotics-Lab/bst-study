@@ -51,7 +51,36 @@
       "type": "transition",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We will now begin the instructional module, but remember that you can say freeze at any time to pause me and ask for a repeat, summary, or navigation help."
+        "text": "We will now begin the instructional module, but remember that you can say freeze at any time to pause me and ask for a repeat, summary, or navigation help. First, a quick question."
+      },
+      "nonverbals": []
+    },
+    {
+      "section": "intro",
+      "type": "knowledge_check",
+      "embodiment": "trainer",
+      "question": {
+        "text": "What are the 3 phases we will cover today?",
+        "choices": [
+          "Option A. Instruction, Modeling and Rehearsal.",
+          "Option B. Prompting, Reinforcement, and Correction.",
+          "Option C. SDs, responses, and rewards."
+        ],
+        "correct_answer": "A",
+        "accepted_answers": [
+          "a",
+          "instruction",
+          "modeling",
+          "rehearsal"
+        ]
+      },
+      "feedback": {
+        "correct": "Correct! We will move through instruction, modeling, and rehearsal.",
+        "incorrect": "Sorry, the correct answer is actually A, instruction, modeling, and rehearsal. You'll see each phase as we move through the training."
+      },
+      "summary": {
+        "enabled": true,
+        "text": "This training will teach you how structured teaching interactions work through instruction, modeling, and rehearsal. You will learn how trainers guide learners through responses, reinforcement, and correction procedures. You will also practice the interaction yourself using information from the provided content sheet."
       },
       "nonverbals": []
     },
@@ -242,7 +271,8 @@
       "type": "transition",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You will see this process demonstrated during the modeling phase and can refer to the chart on your content sheet as needed."
+        "text": "You will see this process demonstrated during the modeling phase and can refer to the chart on your content sheet as needed.",
+        "volume": 30
       },
       "nonverbals": []
     },
