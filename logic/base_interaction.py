@@ -16,8 +16,9 @@ class BaseInteraction:
         self.current_section = None
         self.last_transcript = None
         self.steps = []
-        self.WAKE_WORD = wake_word
+        self.WAKE_WORDS = {"freeze", "free", "breeze", "tree", "trees"}
         self.expr = ExpressionModule()
+        self.accepting_input = True
 
     # Only thing child overrides
     def load_steps(self):
@@ -34,6 +35,8 @@ class BaseInteraction:
         print(f"\n[{self.get_module_name().upper()}] Starting module...")
 
         self.steps = self.load_steps()
+
+        # Make both robots attend back to neutral first (need to add)
 
         # ASR detection with 2 second timeout for final transcript
         agent = SampleInteractionAgent(silence_timeout=2.0)
@@ -66,14 +69,20 @@ class BaseInteraction:
     """Processes ASR input, handles wake word detection, and forwards valid transcipts."""
     async def handle_asr(self, payload, agent):
         transcript = (payload.get("transcript") or "").lower().strip()
+        cleaned = re.sub(r"[^\w\s]", "", transcript)
 
         if transcript:
             print(f"[ASR] {transcript}")
 
-        if self.WAKE_WORD in transcript:
+        tokens = cleaned.split()
+
+        if any(word in tokens for word in self.WAKE_WORDS):
             await self.trigger_freeze()
 
         if self.is_speaking:
+            return
+
+        if not self.accepting_input:
             return
 
         agent.handle_asr(payload)
@@ -127,26 +136,28 @@ class BaseInteraction:
         self.state = "NAVIGATION"
         self.last_transcript = None
 
-        await self.say_text(expr,
-            "Would you like to continue, repeat the step, repeat the section, or hear a summary?"
-        )
+        await self.say_text(expr, "Would you like to continue, repeat the step, repeat the section, or hear a summary?")
+
+        self.accepting_input = False
+
+        await asyncio.sleep(0.5) # Wait statement to make sure ASR is cleared before listening to the user
 
         agent.state.latest_transcript = None
         self.last_transcript = None
 
-        await asyncio.sleep(0.5)
+        await self.signal_listening() # LED signal to indicate that the robot is now listening
 
-        await self.signal_listening()
+        self.accepting_input = True
 
         timeout = 0
+        clarification_used = False
 
-        while timeout < 120:
-
+        while timeout < 80: # Approximately an 8 second timeout
             if self.is_speaking:
                 await asyncio.sleep(0.1)
                 continue
 
-            if self.interrupted:
+            if self.interrupted: # In the event the user says the wake word again
                 self.interrupted = False
                 await self.say_text(expr, "Paused. Continue when ready.")
                 continue
@@ -184,13 +195,29 @@ class BaseInteraction:
                 self.state = "LECTURE"
                 return "repeat_step"
 
-            await self.say_text(expr,
-                "Please say: continue, repeat, section, or summary."
-            )
+            if not clarification_used:
 
-            timeout += 1
+                clarification_used = True
 
-        return "continue"
+                # First and only ask for clarification
+                await self.say_text(expr, "Sorry, I didn't understand. Please say continue, repeat, section, or summary.")
+
+                self.accepting_input = False
+
+                await asyncio.sleep(0.5) # Timeout after finishing speaking before input is accepted and LED indicator goes active
+
+                agent.state.latest_transcript = None
+                self.last_transcript = None
+
+                await self.signal_listening()
+
+                self.accepting_input = True
+
+                continue
+
+            # In the event of a second incoherent statement
+            await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please say freeze and ask again.")
+            return "continue"
 
     """Runs interactive multiple=choice question flow."""
     async def handle_knowledge_check(self, step, expr, agent):
@@ -210,11 +237,16 @@ class BaseInteraction:
 
         await self.say_text(expr, full_question)
 
-        await asyncio.sleep(0.5)  # Prevent ASR carryover
-        await self.signal_listening()
+        self.accepting_input = False
+
+        await asyncio.sleep(0.5)
 
         agent.state.latest_transcript = None
         self.last_transcript = None
+
+        await self.signal_listening()
+
+        self.accepting_input = True
 
         timeout = 0
 
@@ -225,7 +257,6 @@ class BaseInteraction:
 
             if self.interrupted:
                 self.interrupted = False
-
                 action = await self.handle_navigation(expr, agent, step)
 
                 if action == "repeat_section":
@@ -234,37 +265,48 @@ class BaseInteraction:
                 if action == "summary":
                     await self.play_summary(step, expr)
 
-                timeout = 0
+                self.accepting_input = False
 
                 await asyncio.sleep(0.5)
+
+                agent.state.latest_transcript = None
+                self.last_transcript = None
+
                 await self.signal_listening()
 
+                self.accepting_input = True
+
+                timeout = 0
                 continue
 
             transcript = agent.state.latest_transcript
 
             if not transcript:
-
                 await asyncio.sleep(0.1)
                 timeout += 1
 
-                if timeout >= 70: # Approximately 7 seconds
-
+                if timeout >= 80: # Approximately an 8 second timeout
                     retries_used += 1
 
-                    if retries_used <= 1:
+                    # First retry statement if there is a timeout statement
+                    if retries_used == 1:
+                        await self.say_text(expr, "I didn't hear a response. Please say Option A, Option B, or Option C.")
 
-                        await self.say_text(
-                            expr,
-                            "I didn't hear a response. Please say Option A, Option B, or Option C."
-                        )
+                        self.accepting_input = False
 
-                        await asyncio.sleep(0.5)
+                        await asyncio.sleep(1.0) # Same wait statement before accepting input
+
+                        agent.state.latest_transcript = None
+                        self.last_transcript = None
+
                         await self.signal_listening()
+
+                        self.accepting_input = True
 
                         timeout = 0
                         continue
 
+                    # If timeout the second time just give the answer and move on
                     await self.say_text(
                         expr,
                         feedback.get(
@@ -291,23 +333,27 @@ class BaseInteraction:
 
             detected = self.parse_answer(text)
 
-            # Didn't understand answer
             if detected not in ["a", "b", "c"]:
-
                 retries_used += 1
 
-                if retries_used <= 1:
+                # First retry if answer given but not a valid option
+                if retries_used == 1:
+                    await self.say_text(expr, "I'm sorry, I didn't catch that. Please say Option A, Option B, or Option C.")
 
-                    await self.say_text(
-                        expr,
-                        "I'm sorry, I didn't catch that. Please say Option A, Option B, or Option C."
-                    )
+                    self.accepting_input = False
 
-                    await asyncio.sleep(0.5)
+                    await asyncio.sleep(1.0)
+
+                    agent.state.latest_transcript = None
+                    self.last_transcript = None
+
                     await self.signal_listening()
+
+                    self.accepting_input = True
 
                     continue
 
+                # If retry already used and couldn't decipher the answer move on
                 await self.say_text(
                     expr,
                     feedback.get(
@@ -315,20 +361,16 @@ class BaseInteraction:
                         f"Sorry, the correct answer is Option {correct_answer.upper()}."
                     )
                 )
-
                 return "incorrect"
 
-            # Correct answer
             if detected == correct_answer:
 
                 await self.say_text(
                     expr,
                     feedback.get("correct", "Correct.")
                 )
-
                 return "correct"
 
-            # Wrong answer
             await self.say_text(
                 expr,
                 feedback.get(
@@ -336,7 +378,6 @@ class BaseInteraction:
                     f"Sorry, the correct answer is Option {correct_answer.upper()}."
                 )
             )
-
             return "incorrect"
 
     """Converts noisy ASR input into structured multiple-choice answers (A/B/C)"""
@@ -352,6 +393,8 @@ class BaseInteraction:
             if t in ["a", "b", "c"]:
                 return t
             if t == "bee":
+                return "b"
+            if t == "be":
                 return "b"
             if t == "see":
                 return "c"

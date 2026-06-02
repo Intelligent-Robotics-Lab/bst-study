@@ -20,6 +20,9 @@ async def start_gesture(furhat, gesture, intensity, duration, number_repeat):
         )
         await asyncio.sleep(duration)
 
+async def change_volume(furhat, volume):
+    await furhat.request_system_config(volume=volume)
+
 async def speak_text(furhat, message):
     try:
         await furhat.request_speak_text(text=message, wait=True, abort=False)

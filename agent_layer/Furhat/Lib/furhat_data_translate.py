@@ -8,7 +8,7 @@ def translate_packet_furhat(packet):
 
     text = speech.get("text")
     style = speech.get("style", "neutral")
-    volume = speech.get("volume", 1)
+    volume = speech.get("volume", 50)
 
     # Estimate speech duration
     if text:
