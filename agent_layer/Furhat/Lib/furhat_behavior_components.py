@@ -29,10 +29,9 @@ async def speak_text(furhat, message):
     except Exception as e:
         print("[WARN] speak_text:", e)
 
-# Facial paramter mapping for facial expressiveness
+"""Mapping high-level function names to low-level Furhat parameters."""
 # "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP", "EYEBROW_DOWN"
 face_param_mapping = {
-    # High positive affect, closed-mouth smile, raised brows
     "Happy": {
         "SMILE_CLOSED": 1.0,
         "EYEBROW_UP": 0.75,
@@ -40,16 +39,12 @@ face_param_mapping = {
         "BROW_IN_RIGHT": 0.3,
         "JAW_OPEN": 0.0
     },
-
-    # Very high arousal positive emotion (big expressive joy)
     "VeryHappy": {
         "SMILE_OPEN": 0.75,
         "EYEBROW_UP": 0.75,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
     },
-
-    # High tension negative affect
     "Angry": {
         "BROW_IN_LEFT": 1.0,
         "BROW_IN_RIGHT": 1.0,
@@ -57,8 +52,6 @@ face_param_mapping = {
         "SMILE_CLOSED": 0.0,
         "SMILE_OPEN": 0.0,
     },
-
-    # Low energy negative affect
     "Sad": {
         "BROW_IN_LEFT": 1.0,
         "BROW_IN_RIGHT": 1.0,
@@ -66,8 +59,6 @@ face_param_mapping = {
         "SMILE_CLOSED": 0.0,
         "FROWN_CLOSED": 1.0,
     },
-
-    # Baseline neutral face
     "Neutral": {
         "SMILE_CLOSED": 0.0,
         "SMILE_OPEN": 0.0,
@@ -75,16 +66,12 @@ face_param_mapping = {
         "BROW_IN_RIGHT": 0.0,
         "JAW_OPEN": 0.0
     },
-
-    # High arousal surprise (wide eyes, open jaw, raised brows)
     "Surprised": {
         "JAW_OPEN": 1.0,
         "EYEBROW_UP": 1.25,
         "BROW_IN_LEFT": 0.2,
         "BROW_IN_RIGHT": 0.2,
     },
-
-    # High arousal fear
     "Fear": {
         "JAW_OPEN": 0.8,
         "EYEBROW_UP": 1.0,
@@ -93,7 +80,6 @@ face_param_mapping = {
         "SMILE_OPEN": 0.0,
         "SMILE_CLOSED": 0.0
     },
-
     "Disgust": {
         "BROW_IN_LEFT": 0.8,
         "BROW_IN_RIGHT": 0.8,
@@ -110,7 +96,7 @@ def resolve_face_params(face_expression: str):
         face_expression,
         face_param_mapping["Neutral"])
 
-"""Function to hold the face expression for the duration listed."""
+"""Function to hold the face expression for a request duration."""
 async def hold_face_expressions(furhat, face_params, duration=5):
     end_time = asyncio.get_event_loop().time() + duration
 
@@ -129,11 +115,6 @@ def scale_face_params(face_params, intensity: float):
 
 """Function to smoothly switch facial expression without snapping. Still a work in progress."""
 async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
-    """
-    Holds a facial expression for a fixed duration.
-    This replaces the old persistent loop without reintroducing global state complexity.
-    """
-
     scaled = scale_face_params(face_params, intensity)
 
     end_time = asyncio.get_event_loop().time() + duration
@@ -151,7 +132,6 @@ async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
 async def active_listening_loop(furhat, embodiment, stop_event):
     try:
         while not stop_event.is_set():
-
             try:
                 await furhat.request_gesture(name="Nod", intensity=0.25, duration=0.5, repetitions=1)
             except:
@@ -171,24 +151,23 @@ async def active_listening_loop(furhat, embodiment, stop_event):
     except asyncio.CancelledError:
         pass
 
-"""Function to map keywords to fixed positions, just robot as of now. Allows them to attend to each other reliably."""
+"""Function to map keywords to fixed positions, just for "robot" as of now. Allows them to attend to each other reliably in the modeling phase."""
 def resolve_look_target(embodiment, target):
-    """Fixed gaze map (NO user detection needed for robot/trainer split)"""
 
     LOOK_MAP = {
         "trainer": {
-            "robot":   {"x": -1.0, "y": 0.0, "z": 1.0},
+            "robot":   {"x": -1.25, "y": 0.0, "z": 1.0},
             "neutral": {"x": 0.0,  "y": 0.0, "z": 1.0},
         },
         "kid": {
-            "robot":   {"x": 1.25,  "y": 0.0, "z": 1.0},
+            "robot":   {"x": 1.5,  "y": 0.0, "z": 1.0},
             "neutral": {"x": 0.0,  "y": 0.0,  "z": 1.0},
         }
     }
 
     return LOOK_MAP.get(embodiment, LOOK_MAP["trainer"]).get(target, LOOK_MAP["trainer"]["neutral"])
 
-"""Track user function for gaze. Some of these will be cleaned up and deleted... faced issues when accidently losing progress."""
+"""Function to track the user and have the robots gaze follow the user throughout the interaction."""
 async def track_user_loop(furhat, embodiment, stop_event, refresh_rate=0.5):
 
     print(f"[TRACK LOOP STARTED] {embodiment}")
@@ -206,6 +185,7 @@ async def track_user_loop(furhat, embodiment, stop_event, refresh_rate=0.5):
     except Exception as e:
         print(f"[TRACK LOOP ERROR] {e}")
 
+"""Function to stop the tracking loop and save necessary parameters."""
 async def stop_tracking(embodiment, tracking_task, tracking_stop_event):
     print("f[STOP TRACKING] {embodiment}")
     if embodiment in tracking_stop_event:
@@ -227,7 +207,7 @@ async def stop_tracking(embodiment, tracking_task, tracking_stop_event):
     tracking_task.pop(embodiment, None)
     tracking_stop_event.pop(embodiment, None)
 
-"""Function to use LEDs to indicate the embodiment's turns during rehearsal."""
+"""Function to use LEDs to indicate turn-taking during the rehearsal. It helps to acknowledge inputs and limit confusion."""
 async def show_turn(furhat, embodiment, color_override, duration=2.0,):
     try:
 
