@@ -5,11 +5,11 @@ import agent_layer.Furhat.Lib.furhat_manager as FurhatManager
 
 EMBODIMENT_PROFILE = {
     "trainer": {
-        "voice": "Danielle-Neural (en-US) - Amazon Polly",
+        "voice": "Danielle-generative (en-US) - Amazon Polly",
         "face_id": "adult - Rene"
     },
     "kid": {
-        "voice": "Ivy-Neural (en-US) - Amazon Polly",
+        "voice": "AnaNeural (en-US) - Microsoft Azure",
         "face_id": "child - Billy"
     }
 }

@@ -7,6 +7,9 @@ __pycache__/
 venv/
 .venv/
 
+# Environment as well
+.env
+
 # VS Code
 .vscode/
 
