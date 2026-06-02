@@ -32,6 +32,9 @@ OPENAI_API_KEY = os.getenv("OPENAI_KEY")
 
 
 DEFAULT_MODEL = "gpt-5"
+client = OpenAI(
+    api_key=OPENAI_API_KEY
+)
 # =====================================================
 # SYSTEM PROMPT
 # =====================================================
@@ -453,6 +456,7 @@ def call_openai_chat(
     response = client.chat.completions.create(
         model=model,
         messages=messages,
+        response_format={"type": "json_object"},
         temperature=0.2,
     )
 
