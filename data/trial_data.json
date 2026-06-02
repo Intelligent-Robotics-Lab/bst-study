@@ -17,7 +17,7 @@
                     "verbal": {
                         "text": "I want to work for the ball!",
                         "style": "instructional",
-                        "volume": 0.85,
+                        "volume": 50,
                         "interrupt": false
                     },
 
@@ -64,7 +64,7 @@
                     "verbal": {
                         "text": "NO! NO, I DON'T WANT TO!",
                         "style": "instructional",
-                        "volume": 0.85,
+                        "volume": 80,
                         "interrupt": false
                     },
 
@@ -184,7 +184,9 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "OH! OH GIVE ME THE BALL! I want the ball."
+                        "text": "OH! OH GIVE ME THE BALL! I want the ball.",
+                        "volume": 80
+
                     },
 
                     "nonverbals": [
@@ -295,7 +297,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "Ball Ball Ball Ball Ball"
+                        "text": "BALL! BALL! BALL! I WANT BALL! I WANT BALL! ",
+                        "volume": 80
                     },
 
                     "nonverbals": [
@@ -309,9 +312,9 @@
                       {
                         "channel": "head",
                         "action": "Roll",
-                        "intensity": 0.5,
-                        "duration": 1.0,
-                        "repeats": 2,
+                        "intensity": 0.7,
+                        "duration": 1.5,
+                        "repeats": 5,
                         "timing": "during"
                       }
                     ]

@@ -28,8 +28,7 @@ load_dotenv()
 print("KEY:", os.getenv("OPENAI_KEY"))
 
 
-OPENAI_API_KEY = os.getenv("OPENAI_KEY")
-
+OPENAI_API_KEY = os.getenv("OPENAI_KEY", "").strip()
 
 DEFAULT_MODEL = "gpt-5"
 client = OpenAI(

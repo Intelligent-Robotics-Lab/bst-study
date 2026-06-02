@@ -464,7 +464,6 @@ class DTT:
                 behavior["verbal"]["text"]
             ) / 14
         ) * 1.15
-
         await asyncio.sleep(
             sleep_time + 0.3
         )
@@ -755,7 +754,7 @@ class DTT:
                         )
 
                         state = CurrentState.USER
-
+                        agent.state.latest_transcript = None
                         if trial["correctness"] == "Correct":
                             reinforcement_source = "correct"
                             trial_state = TrialState.REINFORCEMENT
@@ -773,6 +772,7 @@ class DTT:
                         )
 
                         reinforcement_source = "prompting"
+                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
@@ -788,6 +788,7 @@ class DTT:
 
                         current_sd = None
                         reinforcement_source = "hp_sds"
+                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
@@ -802,6 +803,7 @@ class DTT:
                         )
 
                         reinforcement_source = "retry"
+                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
