@@ -194,7 +194,6 @@ class BaseInteraction:
 
     """Runs interactive multiple=choice question flow."""
     async def handle_knowledge_check(self, step, expr, agent):
-
         print("[KNOWLEDGE CHECK]")
 
         question = step.get("question", {})
@@ -207,76 +206,138 @@ class BaseInteraction:
 
         full_question = text + " " + " ".join(choices)
 
-        attempts = 0
+        retries_used = 0
 
-        while attempts < 3:
+        await self.say_text(expr, full_question)
 
-            await self.say_text(expr, full_question)
+        await asyncio.sleep(0.5)  # Prevent ASR carryover
+        await self.signal_listening()
 
-            await asyncio.sleep(0.5) # Sleep to prevent ASR from carrying over
+        agent.state.latest_transcript = None
+        self.last_transcript = None
 
-            await self.signal_listening()
+        timeout = 0
 
+        while True:
+            if self.is_speaking:
+                await asyncio.sleep(0.1)
+                continue
+
+            if self.interrupted:
+                self.interrupted = False
+
+                action = await self.handle_navigation(expr, agent, step)
+
+                if action == "repeat_section":
+                    return "repeat_section"
+
+                if action == "summary":
+                    await self.play_summary(step, expr)
+
+                timeout = 0
+
+                await asyncio.sleep(0.5)
+                await self.signal_listening()
+
+                continue
+
+            transcript = agent.state.latest_transcript
+
+            if not transcript:
+
+                await asyncio.sleep(0.1)
+                timeout += 1
+
+                if timeout >= 70: # Approximately 7 seconds
+
+                    retries_used += 1
+
+                    if retries_used <= 1:
+
+                        await self.say_text(
+                            expr,
+                            "I didn't hear a response. Please say Option A, Option B, or Option C."
+                        )
+
+                        await asyncio.sleep(0.5)
+                        await self.signal_listening()
+
+                        timeout = 0
+                        continue
+
+                    await self.say_text(
+                        expr,
+                        feedback.get(
+                            "incorrect",
+                            f"Sorry, the correct answer is Option {correct_answer.upper()}."
+                        )
+                    )
+
+                    return "timeout"
+
+                continue
+
+            text = transcript.lower().strip()
+
+            if text == self.last_transcript:
+                continue
+
+            self.last_transcript = text
             agent.state.latest_transcript = None
-            self.last_transcript = None
 
             timeout = 0
 
-            while timeout < 120:
+            print(f"[ANSWER INPUT] {text}")
 
-                if self.is_speaking:
-                    await asyncio.sleep(0.1)
-                    continue
+            detected = self.parse_answer(text)
 
-                if self.interrupted:
-                    self.interrupted = False
+            # Didn't understand answer
+            if detected not in ["a", "b", "c"]:
 
-                    action = await self.handle_navigation(expr, agent, step)
+                retries_used += 1
 
-                    if action == "repeat_section":
-                        return "repeat_section"
+                if retries_used <= 1:
 
-                    if action == "summary":
-                        await self.play_summary(step, expr)
-
-                    break
-
-                transcript = agent.state.latest_transcript
-
-                if not transcript:
-                    await asyncio.sleep(0.1)
-                    timeout += 1
-                    continue
-
-                text = transcript.lower().strip()
-
-                if text == self.last_transcript:
-                    continue
-
-                self.last_transcript = text
-                agent.state.latest_transcript = None
-
-                detected = self.parse_answer(text)
-
-                if detected not in ["a", "b", "c"]:
                     await self.say_text(
                         expr,
-                        "I'm sorry, I didn't catch that. Please say A, B, or C clearly."
+                        "I'm sorry, I didn't catch that. Please say Option A, Option B, or Option C."
                     )
-                    timeout += 1
+
+                    await asyncio.sleep(0.5)
+                    await self.signal_listening()
+
                     continue
 
-                if detected == correct_answer:
-                    await self.say_text(expr, feedback.get("correct", "Correct."))
-                    return "correct"
+                await self.say_text(
+                    expr,
+                    feedback.get(
+                        "incorrect",
+                        f"Sorry, the correct answer is Option {correct_answer.upper()}."
+                    )
+                )
 
-                await self.say_text(expr, feedback.get("incorrect", "Incorrect."))
                 return "incorrect"
 
-            attempts += 1
+            # Correct answer
+            if detected == correct_answer:
 
-        await self.say_text(expr, "Let's move on.")
-        return "timeout"
+                await self.say_text(
+                    expr,
+                    feedback.get("correct", "Correct.")
+                )
+
+                return "correct"
+
+            # Wrong answer
+            await self.say_text(
+                expr,
+                feedback.get(
+                    "incorrect",
+                    f"Sorry, the correct answer is Option {correct_answer.upper()}."
+                )
+            )
+
+            return "incorrect"
 
     """Converts noisy ASR input into structured multiple-choice answers (A/B/C)"""
     def parse_answer(self, text):
