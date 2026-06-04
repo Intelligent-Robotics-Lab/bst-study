@@ -51,7 +51,7 @@
       "type": "transition",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We will now begin the instructional module, but remember that you can say freeze at any time to pause me and ask for a repeat, summary, or navigation help. First, a quick question."
+        "text": "We will now begin the instructional module, but remember that you can use the Pause command on your content sheet at any time to pause me and ask for a repeat, summary, or navigation help. First, a quick question."
       },
       "nonverbals": []
     },
@@ -271,8 +271,7 @@
       "type": "transition",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You will see this process demonstrated during the modeling phase and can refer to the chart on your content sheet as needed.",
-        "volume": 30
+        "text": "You will see this process demonstrated during the modeling phase and can refer to the chart on your content sheet as needed."
       },
       "nonverbals": []
     },

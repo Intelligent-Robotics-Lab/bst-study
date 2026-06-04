@@ -27,7 +27,6 @@ class SDRecognizer:
             sd.get("sd_type", ""),
             sd.get("object", "") or "",
             sd.get("action", "") or "",
-            sd.get("emotion", "") or ""
         ]
         return " ".join(parts)
 
@@ -36,17 +35,41 @@ class SDRecognizer:
         query = self._build_query(observed_input)
         query_emb = self.model.encode(query)
 
+        detected_emotion = (observed_input.get("emotion") or "").lower()
+        print("Detected emotion:", repr(detected_emotion))
         scores = []
 
         for i, sd_emb in enumerate(self.sd_embeddings):
+
+            sd_id = self.sd_ids[i]
+            sd = self.trial_data[sd_id]
+
+            # Special handling for emotion SDs
+            if sd.get("sd_type") == "Emotion":
+                expected_emotion = sd.get("emotion", "").lower()
+                print(
+                    f"Checking {sd_id}: "
+                    f"detected={detected_emotion} "
+                    f"expected={expected_emotion}"
+                    )
+                if detected_emotion != expected_emotion:
+                    continue
+
             score = self._cosine(query_emb, sd_emb)
-            scores.append((score, self.sd_ids[i]))
+            scores.append((score, sd_id))
+
+        if not scores:
+            return {
+                "matched_sd_id": None,
+                "confidence": 0.0,
+                "resolved_sd": None,
+                "rejected": True
+            }
 
         scores.sort(reverse=True)
 
         best_score, best_sd = scores[0]
 
-        # REJECTION LOGIC (IMPORTANT)
         if best_score < self.threshold:
             return {
                 "matched_sd_id": None,
@@ -63,7 +86,7 @@ class SDRecognizer:
         }
 
     def _build_query(self, observed):
-        return f"{observed.get('verbal_text','')} {observed.get('emotion','')}"
+        return f"{observed.get('verbal_text','')}"
 
     def _cosine(self, a, b):
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))

@@ -150,8 +150,6 @@ class DTT:
             "start over",
             "reset",
             "restart trial",
-            "redo",
-            "try again",
         ]
 
         # Where am I
@@ -504,6 +502,23 @@ class DTT:
         )
 
         last_processed = None
+        turn = {
+            "embodiment": "trainer",
+            "verbal": {
+                "text": ""
+            },
+            "nonverbals": [
+                {
+                    "channel": "led",
+                    "action": "on",
+                    "color": "#B6FFB6",
+                    "duration": 2.0
+                }
+            ]
+        }
+        packet = expr.build(turn)
+        await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
+        agent.state.latest_transcript = None
 
         try:
 
@@ -559,6 +574,14 @@ class DTT:
                         feedback.user_utterances = []
                         feedback.child_utterances = []
                         trial_sd = None
+                        with open("monitor_state.json", "w") as f:
+                                json.dump(
+                                    {
+                                        "trial_sd": trial_sd,
+                                        "trial_state": trial_state.name
+                                    },
+                                    f
+                                )
 
                         transcript = agent.state.latest_transcript
                         emotion = agent.state.latest_emotion
@@ -580,7 +603,14 @@ class DTT:
 
                             current_sd = result["matched_sd_id"]
                             trial_sd = current_sd
-
+                            with open("monitor_state.json", "w") as f:
+                                json.dump(
+                                    {
+                                        "trial_sd": trial_sd,
+                                        "trial_state": trial_state.name
+                                    },
+                                    f
+                                )
                             print(f"[SD DETECTED] {current_sd}")
 
                             feedback.reset()
@@ -862,6 +892,24 @@ class DTT:
                         agent.state.latest_transcript = None
                         print(f"{feedback_text}")
                         reinforcement_source = None
+
+                        turn = {
+                            "embodiment": "trainer",
+                            "verbal": {
+                                "text": ""
+                            },
+                            "nonverbals": [
+                                {
+                                    "channel": "led",
+                                    "action": "on",
+                                    "color": "#B6FFB6",
+                                    "duration": 2.0
+                                }
+                            ]
+                        }
+                        packet = expr.build(turn)
+                        await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
+                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.SD

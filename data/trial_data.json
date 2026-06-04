@@ -8,7 +8,7 @@
             "pb_response_type": null,
             "action": null,
             "object": null,
-            "emotion": null,
+            "emotion": "",
 
             "child_behavior": 
                 {
@@ -17,7 +17,7 @@
                     "verbal": {
                         "text": "I want to work for the ball!",
                         "style": "instructional",
-                        "volume": 50,
+                        "volume": 60,
                         "interrupt": false
                     },
 
@@ -56,7 +56,7 @@
             "pb_response_type": "NR",
             "action": null,
             "object": null,
-            "emotion": null,
+            "emotion": "",
             "child_behavior": 
                 {
                     "embodiment": "kid",
@@ -141,7 +141,7 @@
             "pb_response_type": null,
             "action": "Shake",
             "object": null,
-            "emotion": null,
+            "emotion": "",
             "child_behavior": 
                 {
                     "embodiment": "kid",
@@ -178,14 +178,14 @@
             "pb_response_type": "PR",
             "action": null,
             "object": "Ball",
-            "emotion": null,
+            "emotion": "",
             "child_behavior": 
                 {
                     "embodiment": "kid",
 
                     "verbal": {
                         "text": "OH! OH GIVE ME THE BALL! I want the ball.",
-                        "volume": 80
+                        "volume": 75
 
                     },
 
@@ -200,9 +200,9 @@
                       {
                         "channel": "head",
                         "action": "Nod",
-                        "intensity": 2.0,
-                        "duration": 0.75,
-                        "repeats": 2,
+                        "intensity": 4.0,
+                        "duration": 1,
+                        "repeats": 3,
                         "timing": "during"
                       }
                     ]
@@ -212,7 +212,9 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Ball"
+                      "text": "Ball",
+                      "volume": 60
+                     
                     },
 
                     "nonverbals" : [
@@ -231,7 +233,9 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Ball!"
+                      "text": "Ball!",
+                      "volume": 60
+
                     },
 
                     "nonverbals" : [
@@ -268,7 +272,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "Happy!"
+                        "text": "Happy!",
+                        "volume": 60
                     },
 
                     "nonverbals": [
@@ -324,7 +329,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Suprised"
+                      "text": "Suprised",
+                      "volume": 60
                     },
 
                     "nonverbals" : [
@@ -343,7 +349,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Suprised!"
+                      "text": "Suprised!",
+                      "volume": 60
                     },
 
                     "nonverbals" : [

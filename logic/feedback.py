@@ -30,7 +30,7 @@ print("KEY:", os.getenv("OPENAI_KEY"))
 
 OPENAI_API_KEY = os.getenv("OPENAI_KEY", "").strip()
 
-DEFAULT_MODEL = "gpt-5"
+DEFAULT_MODEL = "gpt-5.4-mini"
 client = OpenAI(
     api_key=OPENAI_API_KEY
 )
@@ -41,29 +41,41 @@ client = OpenAI(
 SYSTEM_PROMPT = """
 You are evaluating trainer fidelity in a DTT session.
 
-IMPORTANT:
-The DTT engine has ALREADY determined:
-- the trial type
-- the child response
-- the required trainer actions
+The DTT engine has already determined:
+- trial type
+- child response
+- required trainer actions
 
-Your ONLY task is to evaluate whether the trainer:
+Evaluate ONLY whether the trainer:
 1. Performed the required actions
-2. Performed them in the correct order
-3. Used appropriate trainer behavior
+2. Followed the correct sequence
+3. Demonstrated appropriate trainer behavior
 4. Delivered reinforcement appropriately
 
-DO NOT:
+Do NOT:
 - infer child behavior
 - infer protocol requirements
-- invent missing requirements
+- invent requirements
 - penalize optional strategies
 
-Evaluate ONLY against:
+Use:
 - expected trainer sequence
 - observed trainer behavior
+- interaction_history
 
-Return ONLY valid JSON matching this schema:
+interaction_history contains all trainer attempts, including:
+- mistakes
+- corrections
+- retries
+- reformulations
+
+Scoring rules:
+- Penalize failed attempts even if later corrected.
+- Recovery is better than persistent failure but is not perfect.
+- Multiple attempts score lower than first-attempt correctness.
+- Reduce relevant scores when errors occur before successful correction.
+
+Return ONLY valid JSON:
 
 {
   "overall_score": int,
@@ -79,38 +91,25 @@ Return ONLY valid JSON matching this schema:
   "feedback_statement": str
 }
 
-IMPORTANT:
-The interaction_history contains ALL trainer speech attempts,
-including:
-- failed attempts
-- corrected attempts
-- retries
-- reformulations
+Feedback requirements:
 
-Use this history to evaluate:
-- whether the trainer corrected mistakes
-- whether corrections improved clarity
-- whether prompting improved over time
-- whether recovery procedures were appropriate
+- Every item in improvements must reference a specific observed trainer action.
+- Do not provide generic advice.
+- Explain what happened, why it was incorrect, and what should have been done instead.
+- Reference the trainer's actual wording or behavior when available.
+- If an error was later corrected, acknowledge the correction but still explain the original error.
+- Prioritize actionable coaching over score justification.
 
-IMPORTANT SCORING RULES:
-
-- The trainer should be penalized for failed attempts,
-  even if they later recover successfully.
-
-- Multiple attempts reduce fidelity compared to a correct
-  first attempt.
-
-- Successful recovery is better than persistent failure,
-  but should NOT receive a perfect score.
-
-- If interaction_history shows failed attempts before a
-  successful attempt, reduce relevant scores appropriately.
-
-- First-attempt correctness should score higher than
-  corrected performance.
-
-Give the participant the feedback directly and address them as Pourya
+The feedback_statement must:
+1. Address Connor directly.
+2. Summarize the strongest observed behavior.
+3. Identify the most important mistake observed.
+4. Explain exactly how to improve on the next trial.
+5. Reference specific actions from the interaction history.
+6. There does not always need to be a mistake or error so do not add one if none are obvious.
+7. Do not penalize the wording of the last stated SD attempt unless there is negative speech.
+8. Do not penalize Reinforcement and the next instruction being given in the same utterance.
+9. Keep responses accurate but short and avoid long winded feedback.
 """
 
 # =====================================================
@@ -456,7 +455,6 @@ def call_openai_chat(
         model=model,
         messages=messages,
         response_format={"type": "json_object"},
-        temperature=0.2,
     )
 
 
@@ -536,9 +534,15 @@ def evaluate_dtt_session(
             ),
         },
     ]
-
+    #content = call_irl2llm_chat(
+    #    messages=messages,
+    #    model=model,
+    #    temperature=0.2,
+    #    max_context_tokens=4096,
+    #    timeout=300,
+    #)
     content = call_openai_chat(
-        messages=messages,
+       messages=messages,
         model=model,
     )
 

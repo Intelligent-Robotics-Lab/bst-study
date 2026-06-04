@@ -897,7 +897,7 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "After prompting and reinforcement during error correction, what should happen next?",
+        "text": "Question. After prompting and reinforcement during error correction, what should happen next?",
         "choices": [
           "Option A. End the interaction.",
           "Option B. Repeat the original instruction.",
