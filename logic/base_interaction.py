@@ -197,12 +197,9 @@ class BaseInteraction:
 
         question = step.get("question", {})
         feedback = step.get("feedback", {})
-
         correct_answer = (question.get("correct_answer") or "").lower()
-
         text = question.get("text", "")
         choices = question.get("choices", [])
-
         full_question = text + " " + " ".join(choices)
 
         retries_used = 0
@@ -244,14 +241,14 @@ class BaseInteraction:
                     retries_used += 1
 
                     if retries_used == 1:
-                        await self.say_text(expr, "I didn't hear a response. Please say Option A, Option B, or Option C.")
+                        await self.say_text(expr, "I didn't hear a response. Please say Option 1, Option 2, or Option 3.")
 
                         await self.prepare_for_input(agent)
 
                         timeout = 0
                         continue
 
-                    await self.say_text(expr, feedback.get("incorrect", f"Sorry, the correct answer is Option {correct_answer.upper()}."))
+                    await self.say_text(expr, f"Sorry, I didn't catch a response. The correct answer was option {correct_answer}. Lets continue.")
 
                     return "timeout"
 
@@ -269,64 +266,62 @@ class BaseInteraction:
 
             print(f"[ANSWER INPUT] {text}")
 
-            detected = self.parse_answer(text)
+            accepted_answers = question.get("accepted_answers", [])
 
-            if detected not in ["a", "b", "c"]:
-                retries_used += 1
+            if self.is_correct_answer(text, accepted_answers):
 
-                if retries_used == 1:
-                    await self.say_text(expr, "I'm sorry, I didn't catch that. Please say Option A, Option B, or Option C.")
-
-                    await self.prepare_for_input(agent)
-
-                    continue
-
-                await self.say_text(expr, feedback.get("incorrect", f"Sorry, the correct answer is Option {correct_answer.upper()}."))
-
-                return "incorrect"
-
-            if detected == correct_answer:
-
-                await self.say_text(expr, feedback.get("correct", "Correct."))
+                await self.say_text(
+                    expr,
+                    feedback.get("correct", "Correct.")
+                )
 
                 return "correct"
 
-            await self.say_text(expr, feedback.get("incorrect", f"Sorry, the correct answer is Option {correct_answer.upper()}."))
+            await self.say_text(
+                expr,
+                feedback.get(
+                    "incorrect",
+                    f"Sorry, the correct answer is option {correct_answer}."
+                )
+            )
 
             return "incorrect"
 
-    """Creates a clean way of determining correct answers based on the user input."""
-    def parse_answer(self, text):
-        if not text:
-            return None
+    """Checks whether a transcript matches any accepted answer for the question."""
+    def is_correct_answer(self, transcript, accepted_answers):
+        if not transcript:
+            return False
 
-        text = re.sub(r"[^a-z\s]", "", text.lower().strip())
+        normalized_text = re.sub(
+            r"[^\w\s]",
+            "",
+            transcript.lower().strip()
+        )
 
-        tokens = text.split()
+        accepted_answers = sorted(
+            [
+                str(answer).lower().strip()
+                for answer in accepted_answers
+            ],
+            key=len,
+            reverse=True
+        )
 
-        for t in tokens:
-            if t in ["a", "b", "c"]:
-                return t
-            if t in ["bee", "be"]:
-                return "b"
-            if t in ["sea", "see"]:
-                return "c"
+        for answer in accepted_answers:
 
-        if " a " in f" {text} ":
-            return "a"
-        if " b " in f" {text} ":
-            return "b"
-        if " c " in f" {text} ":
-            return "c"
+            normalized_answer = re.sub(
+                r"[^\w\s]",
+                "",
+                answer
+            )
 
-        if text.startswith("a"):
-            return "a"
-        if text.startswith("b"):
-            return "b"
-        if text.startswith("c"):
-            return "c"
+            if normalized_text == normalized_answer:
+                return True
 
-        return None
+            if normalized_answer in normalized_text:
+                return True
+
+        return False
 
     """Plays the current section summary if the user wants a quick overview."""
     async def play_summary(self, step, expr):
