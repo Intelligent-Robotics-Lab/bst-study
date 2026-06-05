@@ -223,3 +223,19 @@ async def clear_led(furhat):
         await furhat.request_led_set("#000000")
     except Exception as e:
         print("[LED ERROR]", e)
+
+
+AUDIO_URLS = {
+    "scream": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/scream.wav",
+    #"laugh": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/laugh.wav",
+    #"cry": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/cry.wav",
+    #"clap": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/clap.wav",
+}
+async def play_audio(furhat, audio):
+    url = AUDIO_URLS.get(audio)
+
+    if not url:
+        print(f"Unknown audio clip: {audio}")
+        return
+
+    await furhat.request_speak_audio(url=url)

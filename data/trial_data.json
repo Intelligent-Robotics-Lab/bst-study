@@ -18,6 +18,7 @@
                         "text": "I want to work for the ball!",
                         "style": "instructional",
                         "volume": 60,
+                        "audio": null,
                         "interrupt": false
                     },
 
@@ -64,7 +65,8 @@
                     "verbal": {
                         "text": "NO! NO, I DON'T WANT TO!",
                         "style": "instructional",
-                        "volume": 80,
+                        "volume": 70,
+                        "audio": "scream",
                         "interrupt": false
                     },
 
@@ -184,7 +186,7 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "OH! OH GIVE ME THE BALL! I want the ball.",
+                        "text": "GIVE ME THE BALL GIVE IT TO ME GIVE GIVE GIVE GIVE GIVE IT IS MINE MINE GIVE ME GIVE IT NOW!<BREAK=2> I SAID GIVE GIVE ME GIVE ME GIVE",
                         "volume": 75
 
                     },

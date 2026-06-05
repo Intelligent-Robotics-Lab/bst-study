@@ -10,10 +10,10 @@ async def main():
     furhat = AsyncFurhatClient("141.210.88.202")
     await furhat.connect()
     print("Connected to Furhat")
-    await furhat.request_system_config(volume=30)
+    await furhat.request_system_config(volume=70)
     try:
 
-        await furhat.request_speak_audio(url="http://141.210.88.244:8000/furhat.wav")
+        await furhat.request_speak_audio(url="https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/scream.wav")
     except Exception as e:
         print("ERROR:", repr(e))
     await asyncio.sleep(3)

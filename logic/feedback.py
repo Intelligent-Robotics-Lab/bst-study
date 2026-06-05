@@ -90,6 +90,43 @@ Return ONLY valid JSON:
   "number_of_failed": int,
   "feedback_statement": str
 }
+ASR Reliability Rules:
+
+- interaction_history may contain speech-to-text transcription errors.
+- Minor transcription mistakes, dropped words, substituted words, misheard words, punctuation errors, and partial transcripts are common.
+- Do not penalize the trainer for likely ASR errors.
+- If the observed utterance is substantially similar to the expected trainer action and the difference is plausibly caused by ASR, treat it as correct.
+- Only score an SD, prompt, or reinforcement as incorrect when there is clear evidence that the trainer actually performed the wrong action.
+- When uncertain whether a discrepancy is a trainer error or an ASR error, favor the trainer and do not penalize.
+
+Examples:
+
+Expected SD:
+"Touch your nose"
+
+Observed transcript:
+"Touch your noes"
+
+Result:
+Treat as correct. Likely ASR error.
+
+Expected SD:
+"Touch your nose"
+
+Observed transcript:
+"What color is it?"
+
+Result:
+Treat as incorrect. Clear mismatch.
+
+Expected reinforcement:
+"Great job!"
+
+Observed transcript:
+"Great jab"
+
+Result:
+Treat as correct. Likely ASR error.
 
 Feedback requirements:
 
@@ -101,13 +138,13 @@ Feedback requirements:
 - Prioritize actionable coaching over score justification.
 
 The feedback_statement must:
-1. Address Connor directly.
+1. Address Carter directly.
 2. Summarize the strongest observed behavior.
 3. Identify the most important mistake observed.
 4. Explain exactly how to improve on the next trial.
 5. Reference specific actions from the interaction history.
 6. There does not always need to be a mistake or error so do not add one if none are obvious.
-7. Do not penalize the wording of the last stated SD attempt unless there is negative speech.
+7. Do not penalize the SD at all.                                                                                            
 8. Do not penalize Reinforcement and the next instruction being given in the same utterance.
 9. Keep responses accurate but short and avoid long winded feedback.
 """
