@@ -6,6 +6,7 @@ from typing import Any
 
 import requests
 from dotenv import load_dotenv
+from openai import OpenAI
 
 # =====================================================
 # IRL2LLM CONFIGURATION
@@ -13,18 +14,26 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-IRL2LLM_URL = os.getenv(
-    "IRL2LLM_URL",
-    "http://141.210.88.210:8015",
+#IRL2LLM_URL = os.getenv(
+#    "IRL2LLM_URL",
+#    "http://141.210.88.210:8015",
+#)
+
+#IRL2LLM_API_KEY = os.getenv("IRL2LLM_API_KEY")
+
+#DEFAULT_MODEL = os.getenv(
+#    "LOCAL_LLM_MODEL",
+#    "llama3.3:70b",
+#)
+print("KEY:", os.getenv("OPENAI_KEY"))
+
+
+OPENAI_API_KEY = os.getenv("OPENAI_KEY", "").strip()
+
+DEFAULT_MODEL = "gpt-5.4-mini"
+client = OpenAI(
+    api_key=OPENAI_API_KEY
 )
-
-IRL2LLM_API_KEY = os.getenv("IRL2LLM_API_KEY")
-
-DEFAULT_MODEL = os.getenv(
-    "LOCAL_LLM_MODEL",
-    "llama3.3:70b",
-)
-
 # =====================================================
 # SYSTEM PROMPT
 # =====================================================
@@ -32,29 +41,41 @@ DEFAULT_MODEL = os.getenv(
 SYSTEM_PROMPT = """
 You are evaluating trainer fidelity in a DTT session.
 
-IMPORTANT:
-The DTT engine has ALREADY determined:
-- the trial type
-- the child response
-- the required trainer actions
+The DTT engine has already determined:
+- trial type
+- child response
+- required trainer actions
 
-Your ONLY task is to evaluate whether the trainer:
+Evaluate ONLY whether the trainer:
 1. Performed the required actions
-2. Performed them in the correct order
-3. Used appropriate trainer behavior
+2. Followed the correct sequence
+3. Demonstrated appropriate trainer behavior
 4. Delivered reinforcement appropriately
 
-DO NOT:
+Do NOT:
 - infer child behavior
 - infer protocol requirements
-- invent missing requirements
+- invent requirements
 - penalize optional strategies
 
-Evaluate ONLY against:
+Use:
 - expected trainer sequence
 - observed trainer behavior
+- interaction_history
 
-Return ONLY valid JSON matching this schema:
+interaction_history contains all trainer attempts, including:
+- mistakes
+- corrections
+- retries
+- reformulations
+
+Scoring rules:
+- Penalize failed attempts even if later corrected.
+- Recovery is better than persistent failure but is not perfect.
+- Multiple attempts score lower than first-attempt correctness.
+- Reduce relevant scores when errors occur before successful correction.
+
+Return ONLY valid JSON:
 
 {
   "overall_score": int,
@@ -69,39 +90,63 @@ Return ONLY valid JSON matching this schema:
   "number_of_failed": int,
   "feedback_statement": str
 }
+ASR Reliability Rules:
 
-IMPORTANT:
-The interaction_history contains ALL trainer speech attempts,
-including:
-- failed attempts
-- corrected attempts
-- retries
-- reformulations
+- interaction_history may contain speech-to-text transcription errors.
+- Minor transcription mistakes, dropped words, substituted words, misheard words, punctuation errors, and partial transcripts are common.
+- Do not penalize the trainer for likely ASR errors.
+- If the observed utterance is substantially similar to the expected trainer action and the difference is plausibly caused by ASR, treat it as correct.
+- Only score an SD, prompt, or reinforcement as incorrect when there is clear evidence that the trainer actually performed the wrong action.
+- When uncertain whether a discrepancy is a trainer error or an ASR error, favor the trainer and do not penalize.
 
-Use this history to evaluate:
-- whether the trainer corrected mistakes
-- whether corrections improved clarity
-- whether prompting improved over time
-- whether recovery procedures were appropriate
+Examples:
 
-IMPORTANT SCORING RULES:
+Expected SD:
+"Touch your nose"
 
-- The trainer should be penalized for failed attempts,
-  even if they later recover successfully.
+Observed transcript:
+"Touch your noes"
 
-- Multiple attempts reduce fidelity compared to a correct
-  first attempt.
+Result:
+Treat as correct. Likely ASR error.
 
-- Successful recovery is better than persistent failure,
-  but should NOT receive a perfect score.
+Expected SD:
+"Touch your nose"
 
-- If interaction_history shows failed attempts before a
-  successful attempt, reduce relevant scores appropriately.
+Observed transcript:
+"What color is it?"
 
-- First-attempt correctness should score higher than
-  corrected performance.
+Result:
+Treat as incorrect. Clear mismatch.
 
-Give the participant the feedback directly and address them as Carter
+Expected reinforcement:
+"Great job!"
+
+Observed transcript:
+"Great jab"
+
+Result:
+Treat as correct. Likely ASR error.
+
+Feedback requirements:
+
+- Every item in improvements must reference a specific observed trainer action.
+- Do not provide generic advice.
+- Explain what happened, why it was incorrect, and what should have been done instead.
+- Reference the trainer's actual wording or behavior when available.
+- If an error was later corrected, acknowledge the correction but still explain the original error.
+- Prioritize actionable coaching over score justification.
+
+The feedback_statement must:
+1. Address Carter directly.
+2. Summarize the strongest observed behavior.
+3. Identify the most important mistake observed.
+4. Explain exactly how to improve on the next trial.
+5. Reference specific actions from the interaction history.
+6. There does not always need to be a mistake or error so do not add one if none are obvious.
+7. Do not penalize the SD at all.                                                                                            
+8. Do not penalize Reinforcement and the next instruction being given in the same utterance.
+9. Keep responses accurate but short and avoid long winded feedback.
 """
 
 # =====================================================
@@ -437,7 +482,20 @@ def extract_json(
 # IRL2LLM CHAT
 # =====================================================
 
+def call_openai_chat(
+    messages: list[dict[str, str]],
+    model: str = DEFAULT_MODEL,
+) -> str:
 
+
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        response_format={"type": "json_object"},
+    )
+
+
+    return response.choices[0].message.content
 def call_irl2llm_chat(
     messages: list[dict[str, str]],
     model: str = DEFAULT_MODEL,
@@ -513,13 +571,16 @@ def evaluate_dtt_session(
             ),
         },
     ]
-
-    content = call_irl2llm_chat(
-        messages=messages,
+    #content = call_irl2llm_chat(
+    #    messages=messages,
+    #    model=model,
+    #    temperature=0.2,
+    #    max_context_tokens=4096,
+    #    timeout=300,
+    #)
+    content = call_openai_chat(
+       messages=messages,
         model=model,
-        temperature=0.2,
-        max_context_tokens=4096,
-        timeout=300,
     )
 
     print("\n===== RAW LLM OUTPUT =====")

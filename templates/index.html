@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DTT Monitor</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+
+            background-color: #1e1e1e;
+            color: white;
+
+            font-family: Arial, sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 50px;
+            color: #4CAF50;
+        }
+
+        .card {
+            background: #2c2c2c;
+
+            border-radius: 20px;
+
+            padding: 40px;
+            margin: 25px 0;
+
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        .label {
+            font-size: 2rem;
+            color: #bbbbbb;
+            margin-bottom: 15px;
+        }
+
+        .value {
+            font-size: 5rem;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+
+        .state {
+            color: #4CAF50;
+        }
+
+        .sd {
+            color: #00BFFF;
+        }
+
+        .timestamp {
+            margin-top: 40px;
+            font-size: 1.5rem;
+            color: #888888;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>DTT Session Monitor</h1>
+
+    <div class="card">
+        <div class="label">Current SD</div>
+        <div id="sd" class="value sd">Waiting...</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Trial State</div>
+        <div id="state" class="value state">---</div>
+    </div>
+
+    <div id="updated" class="timestamp">
+        Waiting for updates...
+    </div>
+
+</div>
+
+<script>
+
+async function updateMonitor() {
+
+    try {
+
+        const response = await fetch("/current_sd");
+        const data = await response.json();
+
+        document.getElementById("sd").textContent =
+            data.trial_sd || "None";
+
+        document.getElementById("state").textContent =
+            data.trial_state || "---";
+
+        document.getElementById("updated").textContent =
+            "Updated: " + new Date().toLocaleTimeString();
+
+    }
+    catch(err) {
+
+        document.getElementById("sd").textContent =
+            "Connection Lost";
+
+        document.getElementById("state").textContent =
+            "---";
+    }
+}
+
+updateMonitor();
+setInterval(updateMonitor, 1000);
+
+</script>
+
+</body>
+</html>

@@ -8,7 +8,7 @@
             "pb_response_type": null,
             "action": null,
             "object": null,
-            "emotion": null,
+            "emotion": "",
 
             "child_behavior": 
                 {
@@ -17,7 +17,8 @@
                     "verbal": {
                         "text": "I want to work for the ball!",
                         "style": "instructional",
-                        "volume": 0.85,
+                        "volume": 60,
+                        "audio": null,
                         "interrupt": false
                     },
 
@@ -56,7 +57,7 @@
             "pb_response_type": "NR",
             "action": null,
             "object": null,
-            "emotion": null,
+            "emotion": "",
             "child_behavior": 
                 {
                     "embodiment": "kid",
@@ -64,7 +65,8 @@
                     "verbal": {
                         "text": "NO! NO, I DON'T WANT TO!",
                         "style": "instructional",
-                        "volume": 0.85,
+                        "volume": 70,
+                        "audio": "scream",
                         "interrupt": false
                     },
 
@@ -72,14 +74,14 @@
                       {
                         "channel": "face",
                         "action": "Angry",
-                        "intensity": 1.0,
+                        "intensity": 3.0,
                         "duration": 1.0,
                         "timing": "during"
                       },
                       {
                         "channel": "head",
                         "action": "Shake",
-                        "intensity": 1.5,
+                        "intensity": 3,
                         "duration": 1.0,
                         "repeats": 2,
                         "timing": "during"
@@ -141,7 +143,7 @@
             "pb_response_type": null,
             "action": "Shake",
             "object": null,
-            "emotion": null,
+            "emotion": "",
             "child_behavior": 
                 {
                     "embodiment": "kid",
@@ -178,13 +180,15 @@
             "pb_response_type": "PR",
             "action": null,
             "object": "Ball",
-            "emotion": null,
+            "emotion": "",
             "child_behavior": 
                 {
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "OH! OH GIVE ME THE BALL! I want the ball."
+                        "text": "GIVE ME THE BALL GIVE IT TO ME GIVE GIVE GIVE GIVE GIVE IT IS MINE MINE GIVE ME GIVE IT NOW!<BREAK=2> I SAID GIVE GIVE ME GIVE ME GIVE",
+                        "volume": 75
+
                     },
 
                     "nonverbals": [
@@ -198,9 +202,9 @@
                       {
                         "channel": "head",
                         "action": "Nod",
-                        "intensity": 2.0,
-                        "duration": 0.75,
-                        "repeats": 2,
+                        "intensity": 4.0,
+                        "duration": 1,
+                        "repeats": 3,
                         "timing": "during"
                       }
                     ]
@@ -210,7 +214,9 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Ball"
+                      "text": "Ball",
+                      "volume": 60
+                     
                     },
 
                     "nonverbals" : [
@@ -229,7 +235,9 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Ball!"
+                      "text": "Ball!",
+                      "volume": 60
+
                     },
 
                     "nonverbals" : [
@@ -266,7 +274,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "Happy!"
+                        "text": "Happy!",
+                        "volume": 60
                     },
 
                     "nonverbals": [
@@ -295,7 +304,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "Click Click Click Click"
+                        "text": "BALL! BALL! BALL! I WANT BALL! I WANT BALL! <BREAK=1>  Tuh tuh tuh tuh tuh tuh tuh tuh tuh tuh tuh",
+                        "volume": 80
                     },
 
                     "nonverbals": [
@@ -308,10 +318,10 @@
                       },
                       {
                         "channel": "head",
-                        "action": "Nod",
-                        "intensity": 0.5,
-                        "duration": 1.0,
-                        "repeats": 1,
+                        "action": "Roll",
+                        "intensity": 0.7,
+                        "duration": 1.5,
+                        "repeats": 7,
                         "timing": "during"
                       }
                     ]
@@ -321,7 +331,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Suprised"
+                      "text": "Suprised",
+                      "volume": 60
                     },
 
                     "nonverbals" : [
@@ -340,7 +351,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Suprised!"
+                      "text": "Suprised!",
+                      "volume": 60
                     },
 
                     "nonverbals" : [

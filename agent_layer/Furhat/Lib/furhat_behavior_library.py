@@ -1,6 +1,6 @@
 import asyncio
 import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
-
+import re
 tracking_task = {}
 tracking_stop_event = {}
 current_attention = {}
@@ -130,15 +130,81 @@ async def generic_behavior(furhat, embodiment, packet):
     except Exception as e:
         print("[WARN] system volume failed to adjust")
 
+    audio = speech.get("audio")
+    print(f"AUDIO PLAYING: {audio}")
+    try:
+        await behavior.play_audio(furhat=furhat, audio=audio)
+    except Exception as e:
+        print("[WARN] System audio failed to play" )
+
     # Keep speech as the primary synchonization anchor
     text = (speech.get("text") or "").strip()
+
+ # Keep speech as the primary synchronization anchor
+    text = (speech.get("text") or "").strip()
+
     if text:
         try:
-            # Removed text duration and number of repeats as inputs from this function
-            await behavior.speak_text(furhat=furhat, message=text)
+
+            # Split on:
+            # <BREAK>
+            # <BREAK=1>
+            # <BREAK = 0.5>
+            parts = re.split(
+                r"<BREAK(?:\s*=\s*([\d.]+))?>",
+                text
+            )
+
+            # No break tags present
+            if len(parts) == 1:
+
+                await behavior.speak_text(
+                    furhat=furhat,
+                    message=text
+                )
+
+            else:
+
+                # Format returned by re.split:
+                # [speech, pause, speech, pause, speech...]
+
+                speech_chunk = parts[0]
+
+                if speech_chunk.strip():
+                    await behavior.speak_text(
+                        furhat=furhat,
+                        message=speech_chunk.strip()
+                    )
+
+                index = 1
+
+                while index < len(parts):
+
+                    pause_value = parts[index]
+                    next_chunk = parts[index + 1] if index + 1 < len(parts) else ""
+
+                    # Default pause for plain <BREAK>
+                    pause_seconds = 0.25
+
+                    if pause_value:
+                        try:
+                            pause_seconds = float(pause_value)
+                        except ValueError:
+                            pass
+
+                    await asyncio.sleep(pause_seconds)
+
+                    if next_chunk.strip():
+                        await behavior.speak_text(
+                            furhat=furhat,
+                            message=next_chunk.strip()
+                        )
+
+                    index += 2
 
         except Exception as e:
             print("[WARN] speech failed:", e)
+
 
     if gesture_task:
         try:
