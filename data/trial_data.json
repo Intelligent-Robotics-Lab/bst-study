@@ -304,7 +304,7 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "BALL! BALL! BALL! I WANT BALL! I WANT BALL! ",
+                        "text": "BALL! BALL! BALL! I WANT BALL! I WANT BALL! <BREAK=1>  Tuh tuh tuh tuh tuh tuh tuh tuh tuh tuh tuh",
                         "volume": 80
                     },
 
@@ -321,7 +321,7 @@
                         "action": "Roll",
                         "intensity": 0.7,
                         "duration": 1.5,
-                        "repeats": 5,
+                        "repeats": 7,
                         "timing": "during"
                       }
                     ]

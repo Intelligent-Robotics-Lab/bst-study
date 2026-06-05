@@ -416,6 +416,59 @@ class DTT:
             "last_processed": transcript,
         }
 
+    async def turn_on_green_led(self, expr):
+
+        turn = {
+            "embodiment": "kid",
+            "verbal": {
+                "text": " "
+            },
+            "nonverbals": [
+                {
+                    "channel": "led",
+                    "action": "on",
+                    "color": "#00FF00",
+                    "duration": 2.0
+                }
+            ]
+        }
+
+        packet = expr.build(turn)
+
+        await expr.execute(
+            agent_type=self.agent,
+            embodiment="kid",
+            packet=packet,
+        )
+
+        await asyncio.sleep(0.5)
+    async def turn_off_green_led(self, expr):
+
+        turn = {
+            "embodiment": "kid",
+            "verbal": {
+                "text": " "
+            },
+            "nonverbals": [
+                {
+                    "channel": "led",
+                    "action": "off",
+                    "color": "#00FF00",
+                    "duration": 2.0
+                }
+            ]
+        }
+
+        packet = expr.build(turn)
+
+        await expr.execute(
+            agent_type=self.agent,
+            embodiment="kid",
+            packet=packet,
+        )
+
+        await asyncio.sleep(0.5)
+       
     async def flash_red_led(self, expr):
 
         turn = {
@@ -441,7 +494,10 @@ class DTT:
             packet=packet,
         )
 
-        await asyncio.sleep(0.5)
+        await asyncio.sleep(1)
+        
+
+        await self.turn_on_green_led(expr=expr)
 
     async def run_kid_behavior(
         self,
@@ -502,23 +558,10 @@ class DTT:
         )
 
         last_processed = None
-        turn = {
-            "embodiment": "trainer",
-            "verbal": {
-                "text": ""
-            },
-            "nonverbals": [
-                {
-                    "channel": "led",
-                    "action": "on",
-                    "color": "#B6FFB6",
-                    "duration": 2.0
-                }
-            ]
-        }
-        packet = expr.build(turn)
-        await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
-        agent.state.latest_transcript = None
+        
+        await self.turn_on_green_led(expr=expr)
+
+        
 
         try:
 
@@ -776,6 +819,7 @@ class DTT:
 
                     if trial_state == TrialState.KID_BEHAVIOR_1:
 
+                        await self.turn_off_green_led(expr=expr)
                         trial = trial_data[current_sd]
 
                         await self.run_kid_behavior(
@@ -791,8 +835,10 @@ class DTT:
 
                         elif trial["correctness"] == "No Response":
                             trial_state = TrialState.PROMPTING
+                        await self.turn_on_green_led(expr=expr)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_2:
+                        await self.turn_off_green_led(expr=expr)
 
                         trial = trial_data[current_sd]
 
@@ -806,8 +852,10 @@ class DTT:
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
+                        await self.turn_on_green_led(expr=expr)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_HP:
+                        await self.turn_off_green_led(expr=expr)
 
                         hp_trial = hp_trial_data[current_sd]
 
@@ -822,8 +870,10 @@ class DTT:
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
+                        await self.turn_on_green_led(expr=expr)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_RETRY:
+                        await self.turn_off_green_led(expr=expr)
 
                         trial = trial_data[current_sd]
 
@@ -837,11 +887,15 @@ class DTT:
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
+                        await self.turn_on_green_led(expr=expr)
+                       
 
                     await asyncio.sleep(0.1)
 
                 elif state == CurrentState.TRAINER:
                     if trial_state == TrialState.FEEDBACK:
+                        await self.turn_off_green_led(expr=expr)
+
                         # Calculate feedback
                         turn = {
                             "embodiment": "trainer",
@@ -852,7 +906,7 @@ class DTT:
                                 {
                                     "channel": "led",
                                     "action": "on",
-                                    "color": "#00FF00",
+                                    "color": "#FFBB00",
                                     "duration": 2.0
                                 }
                             ]
@@ -901,8 +955,8 @@ class DTT:
                             "nonverbals": [
                                 {
                                     "channel": "led",
-                                    "action": "on",
-                                    "color": "#B6FFB6",
+                                    "action": "off",
+                                    "color": "#FFBB00",
                                     "duration": 2.0
                                 }
                             ]
@@ -910,6 +964,7 @@ class DTT:
                         packet = expr.build(turn)
                         await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
                         agent.state.latest_transcript = None
+                        await self.turn_on_green_led(expr=expr)
 
                         state = CurrentState.USER
                         trial_state = TrialState.SD
