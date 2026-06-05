@@ -7,7 +7,7 @@ from Perception.sample_interaction import SampleInteractionAgent
 
 """This class contains all the helper functions used in the instruction and modeling logic."""
 class BaseInteraction:
-    def __init__(self, agent=None, wake_word="freeze"):
+    def __init__(self, agent=None):
         self.agent = agent
         self.state = "IDLE"
         self.is_speaking = False
@@ -16,11 +16,11 @@ class BaseInteraction:
         self.current_section = None
         self.last_transcript = None
         self.steps = []
-        self.WAKE_WORDS = {"freeze", "free", "breeze", "tree", "trees"}
+        self.WAKE_WORDS = {"freeze", "free", "breeze"} # Removed "tree" and "trees" from here
         self.expr = ExpressionModule()
         self.accepting_input = True
+        self.led_state = None
 
-    # Only thing child overrides
     def load_steps(self):
         raise NotImplementedError
 
@@ -36,12 +36,10 @@ class BaseInteraction:
 
         self.steps = self.load_steps()
 
-        # Make both robots attend back to neutral first (need to add)
+        # NOTE: future addition to set both robots to attend to neutral when the process is started.
 
-        # ASR detection with 2 second timeout for final transcript
-        agent = SampleInteractionAgent(silence_timeout=2.0)
+        agent = SampleInteractionAgent(silence_timeout=2.0) # ASR has 2-second timeout for final transcript
 
-        # Connect to the perception layer using the server
         client = PerceptionClient(server_host="141.210.88.210", server_port=8000)
 
         task = asyncio.create_task(self.run_perception(client, agent))
@@ -56,7 +54,6 @@ class BaseInteraction:
     """Continuously listens to emotion and ASR events from the perception module"""
     async def run_perception(self, client, agent):
         async for event in client.events():
-
             event_type = event.get("event_type")
             payload = event.get("payload", {})
 
@@ -69,60 +66,76 @@ class BaseInteraction:
     """Processes ASR input, handles wake word detection, and forwards valid transcipts."""
     async def handle_asr(self, payload, agent):
         transcript = (payload.get("transcript") or "").lower().strip()
-        cleaned = re.sub(r"[^\w\s]", "", transcript)
+        cleaned = re.sub(r"[^\w\s]", "", transcript) # Remove any puncutation, used to detect the wake word options
 
         if transcript:
             print(f"[ASR] {transcript}")
 
         tokens = cleaned.split()
 
-        if any(word in tokens for word in self.WAKE_WORDS):
+        if any(word in tokens for word in self.WAKE_WORDS): # Trigger a freeze if any of the wake words are detected
             await self.trigger_freeze()
-
-        if self.is_speaking:
             return
 
-        if not self.accepting_input:
+        if self.is_speaking or not self.accepting_input:
             return
 
         agent.handle_asr(payload)
 
+    """Wait for a response function to be used in the tutorial phase."""
+    async def wait_for_transcript(self, agent, timeout=80):
+        elapsed = 0
+
+        while elapsed < timeout:
+
+            if self.is_speaking:
+                await asyncio.sleep(0.1)
+                continue
+
+            if self.interrupted:
+                await asyncio.sleep(0.1)
+                continue
+
+            transcript = agent.state.latest_transcript
+
+            if transcript:
+                text = transcript.lower().strip()
+                agent.state.latest_transcript = None
+                return text
+
+            await asyncio.sleep(0.1)
+            elapsed += 1
+
+        return None
+
+    """Function to clean up redundant code in the following functions."""
+    async def prepare_for_input(self, agent, delay=0.5):
+        self.accepting_input = False
+
+        await asyncio.sleep(delay)
+
+        agent.state.latest_transcript = None
+        self.last_transcript = None
+
+        await self.set_led("green")
+
+        self.accepting_input = True
+
     """Triggers interrupt state and provides LED feedback to indicate the word was detected."""
     async def trigger_freeze(self):
         self.interrupted = True
+        await self.set_led("blue")
 
-        # LED flashes blue to indicate that freeze was detected
-        turn = {
-            "embodiment": "trainer",
-            "verbal": {"text": ""},
-            "nonverbals": [{
-                "channel": "led",
-                "action": "on",
-                "color": "#66A5ED",
-                "duration": 2.0
-            }]
-        }
-
-        await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))
-
+    """Function to turn on the green LED when listening"""
     async def signal_listening(self):
-        turn = {
-            "embodiment": "trainer",
-            "verbal": {"text": ""},
-            "nonverbals": [{
-                "channel": "led",
-                "action": "on",
-                "color": "#00FF00",
-                "duration": 1
-            }]
-        }
-
-        await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))
+        await self.set_led("green")
 
     """Executes a single step using the expression module and handles embodiment output."""
     async def execute_step(self, step):
         if not step.get("embodiment"):
             return
+        
+        await self.set_led("off") # Turn the LED off at the start of a step as the robot speaks
 
         self.is_speaking = True
         print(f"[EXECUTING] {step.get('embodiment')}")
@@ -138,28 +151,21 @@ class BaseInteraction:
 
         await self.say_text(expr, "Would you like to continue, repeat the step, repeat the section, or hear a summary?")
 
-        self.accepting_input = False
-
-        await asyncio.sleep(0.5) # Wait statement to make sure ASR is cleared before listening to the user
-
-        agent.state.latest_transcript = None
-        self.last_transcript = None
-
-        await self.signal_listening() # LED signal to indicate that the robot is now listening
-
-        self.accepting_input = True
+        await self.prepare_for_input(agent)
 
         timeout = 0
         clarification_used = False
 
-        while timeout < 80: # Approximately an 8 second timeout
+        while timeout < 80:
+
             if self.is_speaking:
                 await asyncio.sleep(0.1)
                 continue
 
-            if self.interrupted: # In the event the user says the wake word again
+            if self.interrupted:
                 self.interrupted = False
                 await self.say_text(expr, "Paused. Continue when ready.")
+                await self.set_led("green")
                 continue
 
             transcript = agent.state.latest_transcript
@@ -196,57 +202,104 @@ class BaseInteraction:
                 return "repeat_step"
 
             if not clarification_used:
-
                 clarification_used = True
 
-                # First and only ask for clarification
                 await self.say_text(expr, "Sorry, I didn't understand. Please say continue, repeat, section, or summary.")
 
-                self.accepting_input = False
-
-                await asyncio.sleep(0.5) # Timeout after finishing speaking before input is accepted and LED indicator goes active
-
-                agent.state.latest_transcript = None
-                self.last_transcript = None
-
-                await self.signal_listening()
-
-                self.accepting_input = True
+                await self.prepare_for_input(agent)
 
                 continue
 
-            # In the event of a second incoherent statement
             await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please say freeze and ask again.")
             return "continue"
+        
+    """Added function to handle freeze requests in question since the responses will be different."""    
+    async def handle_question_navigation(self, expr, agent, step, full_question):
+
+        await self.say_text(expr, "Would you like me to repeat the question, repeat the section, hear a summary, or continue?")
+
+        await self.prepare_for_input(agent)
+
+        clarification_used = False
+        timeout = 0
+
+        while timeout < 80:
+
+            if self.interrupted: # If the users say freeze again while already paused
+
+                self.interrupted = False
+
+                await self.say_text(expr, "You are already paused. Please say repeat question, repeat section, summary, or continue.")
+
+                await self.prepare_for_input(agent)
+
+                continue
+
+            transcript = agent.state.latest_transcript
+
+            if not transcript:
+                await asyncio.sleep(0.1)
+                timeout += 1
+                continue
+
+            text = transcript.lower().strip()
+
+            if text == self.last_transcript: # Prevents duplicate processing
+                await asyncio.sleep(0.1)
+                continue
+
+            self.last_transcript = text
+            agent.state.latest_transcript = None
+
+            print(f"[QUESTION NAV] {text}")
+
+            if "question" in text:
+                return "repeat_question"
+
+            if "section" in text:
+                return "repeat_section"
+
+            if "summary" in text:
+                return "summary"
+
+            if "continue" in text:
+                return "continue"
+
+            if not clarification_used: # This only allows 2 attempts before moving on and requiring the user to pause again if necessary
+
+                clarification_used = True
+
+                await self.say_text(expr, "Sorry, I didn't understand. Please say repeat question, repeat section, summary, or continue.")
+
+                await self.prepare_for_input(agent)
+
+                timeout = 0
+
+                continue
+
+            await self.say_text(expr, "Sorry, I still didn't understand. I will repeat the question. If that is not what you wanted, please say freeze again.")
+
+            return "repeat_question"
+
+        await self.say_text(expr, "I didn't hear a response. I will repeat the question. If that is not what you wanted, please say freeze again.")
+
+        return "repeat_question"
 
     """Runs interactive multiple=choice question flow."""
     async def handle_knowledge_check(self, step, expr, agent):
-        print("[KNOWLEDGE CHECK]")
 
         question = step.get("question", {})
         feedback = step.get("feedback", {})
-
         correct_answer = (question.get("correct_answer") or "").lower()
-
         text = question.get("text", "")
         choices = question.get("choices", [])
-
         full_question = text + " " + " ".join(choices)
 
         retries_used = 0
 
         await self.say_text(expr, full_question)
 
-        self.accepting_input = False
-
-        await asyncio.sleep(0.5)
-
-        agent.state.latest_transcript = None
-        self.last_transcript = None
-
-        await self.signal_listening()
-
-        self.accepting_input = True
+        await self.prepare_for_input(agent)
 
         timeout = 0
 
@@ -257,27 +310,36 @@ class BaseInteraction:
 
             if self.interrupted:
                 self.interrupted = False
-                action = await self.handle_navigation(expr, agent, step)
+
+                action = await self.handle_question_navigation(expr, agent, step, full_question)
+
+                if action == "repeat_question":
+
+                    await self.say_text(expr, full_question)
+
+                    await self.prepare_for_input(agent)
+
+                    timeout = 0
+                    continue
 
                 if action == "repeat_section":
                     return "repeat_section"
 
                 if action == "summary":
+
                     await self.play_summary(step, expr)
 
-                self.accepting_input = False
+                    await self.prepare_for_input(agent)
 
-                await asyncio.sleep(0.5)
+                    timeout = 0
+                    continue
 
-                agent.state.latest_transcript = None
-                self.last_transcript = None
+                if action == "continue":
 
-                await self.signal_listening()
+                    await self.prepare_for_input(agent)
 
-                self.accepting_input = True
-
-                timeout = 0
-                continue
+                    timeout = 0
+                    continue
 
             transcript = agent.state.latest_transcript
 
@@ -285,35 +347,18 @@ class BaseInteraction:
                 await asyncio.sleep(0.1)
                 timeout += 1
 
-                if timeout >= 80: # Approximately an 8 second timeout
+                if timeout >= 80:
                     retries_used += 1
 
-                    # First retry statement if there is a timeout statement
                     if retries_used == 1:
-                        await self.say_text(expr, "I didn't hear a response. Please say Option A, Option B, or Option C.")
+                        await self.say_text(expr, "I didn't hear a response. Please say Option 1, Option 2, or Option 3.")
 
-                        self.accepting_input = False
-
-                        await asyncio.sleep(1.0) # Same wait statement before accepting input
-
-                        agent.state.latest_transcript = None
-                        self.last_transcript = None
-
-                        await self.signal_listening()
-
-                        self.accepting_input = True
+                        await self.prepare_for_input(agent)
 
                         timeout = 0
                         continue
 
-                    # If timeout the second time just give the answer and move on
-                    await self.say_text(
-                        expr,
-                        feedback.get(
-                            "incorrect",
-                            f"Sorry, the correct answer is Option {correct_answer.upper()}."
-                        )
-                    )
+                    await self.say_text(expr, f"Sorry, I didn't catch a response. The correct answer was option {correct_answer}. Lets continue.")
 
                     return "timeout"
 
@@ -331,97 +376,51 @@ class BaseInteraction:
 
             print(f"[ANSWER INPUT] {text}")
 
-            detected = self.parse_answer(text)
+            accepted_answers = question.get("accepted_answers", [])
 
-            if detected not in ["a", "b", "c"]:
-                retries_used += 1
+            if self.is_correct_answer(text, accepted_answers):
 
-                # First retry if answer given but not a valid option
-                if retries_used == 1:
-                    await self.say_text(expr, "I'm sorry, I didn't catch that. Please say Option A, Option B, or Option C.")
+                await self.say_text(expr, feedback.get("correct", "Correct."))
 
-                    self.accepting_input = False
-
-                    await asyncio.sleep(1.0)
-
-                    agent.state.latest_transcript = None
-                    self.last_transcript = None
-
-                    await self.signal_listening()
-
-                    self.accepting_input = True
-
-                    continue
-
-                # If retry already used and couldn't decipher the answer move on
-                await self.say_text(
-                    expr,
-                    feedback.get(
-                        "incorrect",
-                        f"Sorry, the correct answer is Option {correct_answer.upper()}."
-                    )
-                )
-                return "incorrect"
-
-            if detected == correct_answer:
-
-                await self.say_text(
-                    expr,
-                    feedback.get("correct", "Correct.")
-                )
                 return "correct"
 
-            await self.say_text(
-                expr,
-                feedback.get(
-                    "incorrect",
-                    f"Sorry, the correct answer is Option {correct_answer.upper()}."
-                )
-            )
+            await self.say_text(expr,feedback.get("incorrect", f"Sorry, the correct answer is option {correct_answer}."))
+
             return "incorrect"
 
-    """Converts noisy ASR input into structured multiple-choice answers (A/B/C)"""
-    def parse_answer(self, text):
-        if not text:
-            return None
+    """Checks whether a transcript matches any accepted answer for the question."""
+    def is_correct_answer(self, transcript, accepted_answers):
+        if not transcript:
+            return False
 
-        text = re.sub(r"[^a-z\s]", "", text.lower().strip())
+        normalized_text = re.sub(r"[^\w\s]", "", transcript.lower().strip())
 
-        tokens = text.split()
+        accepted_answers = sorted(
+            [
+                str(answer).lower().strip()
+                for answer in accepted_answers
+            ],
+            key=len,
+            reverse=True
+        )
 
-        for t in tokens:
-            if t in ["a", "b", "c"]:
-                return t
-            if t == "bee":
-                return "b"
-            if t == "be":
-                return "b"
-            if t == "see":
-                return "c"
+        for answer in accepted_answers:
+            normalized_answer = re.sub(r"[^\w\s]", "", answer)
 
-        if " a " in f" {text} ":
-            return "a"
-        if " b " in f" {text} ":
-            return "b"
-        if " c " in f" {text} ":
-            return "c"
+            if normalized_text == normalized_answer:
+                return True
 
-        if text.startswith("a"):
-            return "a"
-        if text.startswith("b"):
-            return "b"
-        if text.startswith("c"):
-            return "c"
+            if normalized_answer in normalized_text:
+                return True
 
-        return None
+        return False
 
-    """Finds and reads aloud the summary associated with the current section."""
+    """Plays the current section summary if the user wants a quick overview."""
     async def play_summary(self, step, expr):
         current_section = step.get("section")
 
         summary_text = None
 
-        # Look through all steps for this section
         for s in self.steps:
             if s.get("section") != current_section:
                 continue
@@ -431,7 +430,6 @@ class BaseInteraction:
             if not summary:
                 continue
 
-            # Skip disabled summaries
             if isinstance(summary, dict):
                 if not summary.get("enabled", False):
                     continue
@@ -441,7 +439,6 @@ class BaseInteraction:
             else:
                 summary_text = str(summary)
 
-            # Stop at first valid summary
             if summary_text:
                 break
 
@@ -451,12 +448,12 @@ class BaseInteraction:
 
         await self.say_text(expr, summary_text)
 
-    """Speaks text using the expression module while locking speaking state."""
+    """Speak function used in the above navigation and knowledge checks. Only for hardcoded questions. Expression module still handles the steps."""
     async def say_text(self, expr, text):
-        print(f"[SAY TEXT] {repr(text)}") # Debug print while testing
-
         text = text or ""
 
+        await self.set_led("off") # Set the LED off it is the robot's turn to speak
+        
         self.is_speaking = True
 
         await expr.execute(
@@ -471,9 +468,40 @@ class BaseInteraction:
 
         self.is_speaking = False
 
-    """Finds the first index of a section in the step list for section restart purposes."""
+    """Helper to find the start of section if asked to repeat it."""
     def find_section_start(self, section):
         for i, step in enumerate(self.steps):
             if step.get("section") == section:
                 return i
         return 0
+
+    """Function to map the LEDs as requested. Creates a turn using the current state that is send through the expression module."""
+    async def set_led(self, state):
+        print(f"[LED] {self.led_state} -> {state}")
+
+        if state == self.led_state:     # If the new state is the same as the current one do nothing
+            return
+
+        self.led_state = state
+
+        color_map = {
+            "green": "#00FF00",
+            "blue": "#0000FF",
+            "yellow": "#FFBB00",
+            "red": "#FF0000",
+            "off": "#000000"
+        }
+
+        color = color_map.get(state)
+
+        turn = {
+            "embodiment": "trainer",
+            "verbal": {"text": ""},
+            "nonverbals": [{
+                "channel": "led",
+                "action": "on" if color else "off",
+                **({"color": color} if color else {})
+            }]
+        }
+
+        await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))

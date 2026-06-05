@@ -116,7 +116,7 @@ def scale_face_params(face_params, intensity: float):
         for k, v in face_params.items()
     }
 
-"""Function to smoothly switch facial expression without snapping. Still a work in progress."""
+"""Function to smoothly switch facial expression without snapping. NOTE: Still a work in progress."""
 async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
     scaled = scale_face_params(face_params, intensity)
 
@@ -131,7 +131,7 @@ async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
 
         await asyncio.sleep(0.25)
 
-"""Function to add in active listening when listening is set. Work in progress, not yet implemented."""
+"""Function to add in active listening when listening is set. NOTE: This has yet to be implemented and is not finished"""
 async def active_listening_loop(furhat, embodiment, stop_event):
     try:
         while not stop_event.is_set():
@@ -210,29 +210,16 @@ async def stop_tracking(embodiment, tracking_task, tracking_stop_event):
     tracking_task.pop(embodiment, None)
     tracking_stop_event.pop(embodiment, None)
 
-"""Function to use LEDs to indicate turn-taking during the rehearsal. It helps to acknowledge inputs and limit confusion."""
-async def show_turn(furhat, embodiment, color_override, duration=2.0,):
+"""Set LED color function (used for listening, freeze, etc.)"""
+async def set_led(furhat, color):
     try:
+        await furhat.request_led_set(color)
+    except Exception as e:
+        print("LED error", e)
 
-        if embodiment == "trainer":
-            color = "#00BB00"
-
-        elif embodiment == "kid":
-            color = "#4882FF"
-
-        else:
-            color = "#FFFFFF"
-
-        color = color_override
-        end_time = (asyncio.get_event_loop().time() + duration)
-
-        while (asyncio.get_event_loop().time() < end_time):
-
-            await furhat.request_led_set(color)
-
-            await asyncio.sleep(0.25)
-
+"""Clear the LED lights (whenever the robot is speaking)"""
+async def clear_led(furhat):
+    try:
         await furhat.request_led_set("#000000")
-
     except Exception as e:
         print("[LED ERROR]", e)

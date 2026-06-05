@@ -7,7 +7,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Hello, and welcome to our study covering training for teaching interactions. We are glad to have you here and participating!"
+        "text": "Hello again, and welcome to our study covering training for teaching interactions! We are glad to have you here and participating!"
       },
       "summary": {
         "enabled": true,
@@ -41,7 +41,27 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "To support your understanding, you can pause or repeat sections at any time during the instruction and modeling phases. You have also been given a content sheet that we will reference throughout the training. The sections we will cover are listed at the top of your sheet so you can follow along."
+        "text": "To support your understanding, remember that you can pause or repeat sections at any time. You have also been given several resources that we will reference throughout the training."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "intro",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "The sections we will cover are listed at the top of your content sheet so you can follow along."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "intro",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "In addition to these resources, there will be periodic questions to check your comprehension. Be sure to stay focused so you can answer these questions as they come."
       },
       "nonverbals": []
     },
@@ -51,7 +71,7 @@
       "type": "transition",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We will now begin the instructional module, but remember that you can use the Pause command on your content sheet at any time to pause me and ask for a repeat, summary, or navigation help. First, a quick question."
+        "text": "We will now begin the instructional module, but remember that you can pause by saying so, and ask to repeat sections at any time. First, a quick question."
       },
       "nonverbals": []
     },
@@ -62,21 +82,22 @@
       "question": {
         "text": "What are the 3 phases we will cover today?",
         "choices": [
-          "Option A. Instruction, Modeling and Rehearsal.",
-          "Option B. Prompting, Reinforcement, and Correction.",
-          "Option C. SDs, responses, and rewards."
+          "Option 1. Instruction, Modeling and Rehearsal.",
+          "Option 2. Prompting, Reinforcement, and Correction.",
+          "Option 3. SDs, responses, and rewards."
         ],
-        "correct_answer": "A",
+        "correct_answer": "one",
         "accepted_answers": [
-          "a",
+          "one",
+          "1",
           "instruction",
           "modeling",
           "rehearsal"
         ]
       },
       "feedback": {
-        "correct": "Correct! We will move through instruction, modeling, and rehearsal.",
-        "incorrect": "Sorry, the correct answer is actually A, instruction, modeling, and rehearsal. You'll see each phase as we move through the training."
+        "correct": "Correct! We will move through instruction, modeling, and rehearsal. Lets continue on.",
+        "incorrect": "Sorry, the correct answer is actually option 1, instruction, modeling, and rehearsal. You'll see each phase as we move through the training."
       },
       "summary": {
         "enabled": true,
@@ -175,25 +196,37 @@
 
     {
       "section": "skills_overview",
+      "type": "transition",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Before we continue let's try a quick check for understanding."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "skills_overview",
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "Before we continue, lets try a quick check for understanding. What does the SD refer to?",
+        "text": "What does the SD refer to?",
         "choices": [
-          "Option A. Reinforcement.",
-          "Option B. The Instruction.",
-          "Option C. The child response."
+          "Option 1. Reinforcement.",
+          "Option 2. The Instruction.",
+          "Option 3. The child response."
         ],
-        "correct_answer": "B",
+        "correct_answer": "two",
         "accepted_answers": [
-          "b",
-          "the instruction",
+          "two",
+          "2",
+          "to",
+          "too",
           "instruction"
         ]
       },
       "feedback": {
         "correct": "Correct! The trainer's instruction is called the SD. Let's continue.",
-        "incorrect": "Sorry, the correct answer is actually B, the instruction."
+        "incorrect": "Sorry, the correct answer is actually option 2, the instruction."
       },
       "summary": {
         "enabled": true,
@@ -231,7 +264,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "For our purposes, prompting will be a repeat of the initial SD while displaying the proper gesture. If you refer to the SD table at the bottom of your sheet, you can see examples of prompts for each SD in orange."
+        "text": "For our purposes, prompting will be a repeat of the initial SD while displaying the proper gesture. If you refer to the rehearsal page, you can see examples of prompts listed next to the insturctions in orange."
       },
       "nonverbals": []
     },
@@ -251,7 +284,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In the event of an incorrect response, the first step is to prompt by repeating the SD and giving assistance. The next step is to deliver a high-probability SD, which can be found on the chart in yellow. These are skills the learner has already mastered."
+        "text": "In the event of an incorrect response, the first step is to prompt by repeating the SD and giving assistance. The next step is to deliver a high-probability SD. As with the prompts, each SD that will be delivered has a high-probability SD that can be used in the event it is needed. These can be seen on the right of the rehearsal sheet in yellow."
       },
       "nonverbals": []
     },
@@ -261,7 +294,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "After delivering and reinforcing the high-probability SD, the trainer repeats the original instruction. If the learner responds correctly, reinforcement is given and the interaction moves on. If another incorrect response occurs, the process repeats."
+        "text": "After delivering that instruction we will reinforce the response before finally repeating the initial instruction. If correct, we reinforce and move on to the next trial, where if another incorrect response persists, we must repeat the procedure just described."
       },
       "nonverbals": []
     },
@@ -271,7 +304,8 @@
       "type": "transition",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You will see this process demonstrated during the modeling phase and can refer to the chart on your content sheet as needed."
+        "text": "You will see this process demonstrated during the modeling phase and can refer to the chart on your content sheet as needed.",
+        "volume": 30
       },
       "nonverbals": []
     },
@@ -283,21 +317,21 @@
       "question": {
         "text": "What should happen first after an incorrect response?",
         "choices": [
-          "Option A. Prompt the learner.",
-          "Option B. End the interaction.",
-          "Option C. Skip to the next SD."
+          "Option 1. Skip to the next SD.",
+          "Option 2. End the interaction.",
+          "Option 3. Prompt the learner."
         ],
-        "correct_answer": "A",
+        "correct_answer": "three",
         "accepted_answers": [
-          "a",
-          "prompt the learner",
+          "3",
+          "three",
           "prompt",
           "prompting"
         ]
       },
       "feedback": {
-        "correct": "Correct! Prompting is the first step after an incorrect response.",
-        "incorrect": "Sorry, the correct answer is actually A, prompt the learner."
+        "correct": "Correct! Prompting is the first step after an incorrect response. Moving on.",
+        "incorrect": "Sorry, the correct answer is actually 3, prompt the learner. We will now move on."
       },
       "summary": {
         "enabled": true,
@@ -355,6 +389,16 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
+        "text": "Sometimes learners need a little more support to stay motivated and engaged during learning tasks, so not only do we reinforce throughout the training to give the learner confidence, but we employ other techniques as well."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "reinforcement_motivation",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
         "text": "Teachers may begin with easier tasks to build confidence before moving to more difficult tasks. High-probability SDs can also help increase confidence before retrying a difficult instruction."
       },
       "nonverbals": []
@@ -362,7 +406,7 @@
 
     {
       "section": "reinforcement_motivation",
-      "type": "transition",
+      "type": "content",
       "embodiment": "trainer",
       "verbal": {
         "text": "Together, reinforcement, prompting, and structured instruction help form the full teaching process that you will now see put together step by step."
@@ -372,26 +416,36 @@
 
     {
       "section": "reinforcement_motivation",
+      "type": "transition",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "First, lets do another quick question."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "reinforcement_motivation",
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "First, a question. What is reinforcement used for?",
+        "text": "What is reinforcement used for?",
         "choices": [
-          "Option A. To encourage correct responding.",
-          "Option B. To give the learner the answer.",
-          "Option C. To stop the interaction."
+          "Option 1. To encourage correct responding.",
+          "Option 2. To give the learner the answer.",
+          "Option 3. To stop the interaction."
         ],
-        "correct_answer": "A",
+        "correct_answer": "one",
         "accepted_answers": [
-          "a",
-          "to encourage correct responding",
-          "encourage correct responding",
-          "encourage behavior"
+          "1",
+          "one",
+          "correct responding",
+          "encourage"
         ]
       },
       "feedback": {
-        "correct": "Correct! Reinforcement helps encourage correct behavior.",
-        "incorrect": "Sorry, the correct answer is actually A, to encourage correct responding."
+        "correct": "Correct! Reinforcement helps encourage correct behavior. Lets continue.",
+        "incorrect": "Sorry, but the correct answer is actually 1, to encourage correct responding. We will continue on now."
       },
       "summary": {
         "enabled": true,
@@ -405,7 +459,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Now that we have covered the main concepts, we can walk through the full teaching process as it will be performed. You should refer to the flowchart on the content sheet and the terms we covered as needed to refresh your memory."
+        "text": "Now that we have covered the main concepts, we can quickly walk through the full teaching process as it will be performed. You should refer to the flowchart on the content sheet and the terms we covered as needed to refresh your memory."
       },
       "summary": {
         "enabled": true,
@@ -429,7 +483,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "If the response was incorrect, prompting with error correction is used to help guide the learner toward the correct response. After the learner responds correctly, reinforcement is given. The teacher then moves to presenting a high-probability SD before presenting the original instruction again."
+        "text": "If the response was incorrect, prompting with error correction is used to guide the learner toward the correct response. After the learner responds correctly, reinforcement is given. The teacher then moves to presenting a high-probability SD before presenting the original instruction again."
       },
       "nonverbals": []
     },
@@ -456,26 +510,36 @@
 
     {
       "section": "full_process_walkthrough",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Quick understanding check."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "full_process_walkthrough",
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "Question. If the learner responds correctly, what happens next?",
+        "text": "If the learner responds correctly, what happens next?",
         "choices": [
-          "Option A. Prompting.",
-          "Option B. Reinforcement.",
-          "Option C. Present a high-probability SD."
+          "Option 1. Prompting.",
+          "Option 2. Present a high-probability SD.",
+          "Option 3. Reinforcement."
         ],
-        "correct_answer": "B",
+        "correct_answer": "three",
         "accepted_answers": [
-          "b",
-          "reinforcement",
+          "3",
+          "three",
           "reinforce",
-          "give reinforcement"
+          "reinforcement"
         ]
       },
       "feedback": {
-        "correct": "Correct! Reinforcement follows a correct response.",
-        "incorrect": "Sorry, the correct answer is actually B, reinforcement."
+        "correct": "Correct! Reinforcement follows a correct response. Moving on.",
+        "incorrect": "Sorry, but the correct answer is actually option 3, reinforcement. We will now be moving on to the next section."
       },
       "summary": {
         "enabled": true,
@@ -489,7 +553,17 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We have now covered the main parts of the teaching process, including instructions, responses, prompting, reinforcement, and error correction. If there are any sections that still feel unclear, you can stop me and we can go over them again. Now that you have an understanding of the process, you will observe these concepts demonstrated together through concrete examples."
+        "text": "We have now covered the main parts of the teaching process, including instructions, responses, prompting, reinforcement, and error correction. If there are any sections that still feel unclear, pause me and refer to the content resources as needed."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "checkpoint",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Now that you have an understanding of the process, you will observe these concepts demonstrated together through concrete examples."
       },
       "summary": {
         "enabled": true,

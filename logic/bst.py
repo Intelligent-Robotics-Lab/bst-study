@@ -2,6 +2,7 @@ import asyncio
 from logic.instruction import Instruction
 from logic.modeling import Modeling
 from logic.dtt import DTT
+from logic.tutorial import Tutorial
 import agent_layer.Furhat.Lib.furhat_manager as FurhatManager
 
 AGENT_TYPE = "Furhat"
@@ -16,7 +17,10 @@ async def BST():
         _furhats = await FurhatManager.initialize_furhat()
         print("[CONNECTED TO FURHAT]")
 
-    #await Instruction(agent=AGENT_TYPE).execute()
+    await Tutorial(agent=AGENT_TYPE).execute()
+    print("Executed tutorial")
+
+    await Instruction(agent=AGENT_TYPE).execute()
     print("Executed instruction")
 
     #await Modeling(agent=AGENT_TYPE).execute()

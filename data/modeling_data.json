@@ -16,7 +16,7 @@
         {
           "channel": "face",
           "action": "Happy",
-          "intensity": 0.75,
+          "intensity": 0.5,
           "timing": "during"
         }
       ]
@@ -71,7 +71,17 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Again, remember you can follow each interaction step-by-step using the flowchart on your sheet to help understand the process."
+        "text": "Again, remember you can follow each interaction step-by-step using the flowchart to help understand the process."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "intro_watch",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Before we begin, a quick question."
       },
       "nonverbals": []
     },
@@ -81,17 +91,23 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "Before we begin, question. What should you mainly focus on during modeling?",
+        "text": "What should you mainly focus on during modeling?",
         "choices": [
-          "Option A. The system setup.",
-          "Option B. The interaction flow.",
-          "Option C. The robot's appearance."
+          "Option 1. The system setup.",
+          "Option 2. The interaction flow.",
+          "Option 3. The robot's appearance."
         ],
-        "correct_answer": "B"
+        "correct_answer": "two",
+        "accepted_answers": [
+          "2",
+          "two",
+          "interaction",
+          "flow"
+        ]
       },
       "feedback": {
-        "correct": "Correct! Focus on the flow of the interaction.",
-        "incorrect": "Sorry, the correct answer is actually B, the interaction flow. Would you like to move on or hear that section again?"
+        "correct": "Correct! Focus on the flow of the interaction. Moving on.",
+        "incorrect": "Sorry, the correct answer is actually option 2, the interaction flow. Moving on."
       },
       "nonverbals": []
     },
@@ -173,14 +189,6 @@
           "timing": "during"
         },
         {
-          "channel": "head",
-          "action": "Roll",
-          "intensity": 0.3,
-          "duration": 1.5,
-          "repeats": 1,
-          "timing": "during"
-        },
-        {
           "channel": "gaze",
           "action": "robot",
           "timing": "during"
@@ -247,7 +255,7 @@
         {
           "channel": "head",
           "action": "Nod",
-          "intensity": 1.0,
+          "intensity": 1.5,
           "duration": 0.75,
           "repeats": 3,
           "timing": "during"
@@ -289,14 +297,7 @@
       "verbal": {
         "text": "Because the learner responded correctly, reinforcement was delivered immediately."
       },
-      "nonverbals": [
-        {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 0.5,
-          "timing": "during"
-        }
-      ]
+      "nonverbals": []
     },
     {
       "section": "receptive",
@@ -423,20 +424,35 @@
 
     {
       "section": "receptive",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Quick question for you."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "receptive",
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "Quick question. What should the trainer do immediately after reinforcing the prompt in error correction?",
+        "text": "What should the trainer do immediately after reinforcing the prompt in error correction?",
         "choices": [
-          "Option A. End the interaction.",
-          "Option B. Move to another SD.",
-          "Option C. Deliver a high-probability SD."
+          "Option 1. End the interaction.",
+          "Option 2. Move to another SD.",
+          "Option 3. Deliver a high-probability SD."
         ],
-        "correct_answer": "C"
+        "correct_answer": "three",
+        "accepted_answers": [
+          "3",
+          "three",
+          "high probability"
+        ]
       },
       "feedback": {
         "correct": "Correct! The trainer should deliver a high-probability SD. Let's move on.",
-        "incorrect": "The correct answer is actually B, deliver a high-probability SD. We will see this in action in an example to come."
+        "incorrect": "The correct answer is actually option 3, deliver a high-probability SD. We will see this in action in an example to come."
       },
       "nonverbals": []
     },
@@ -446,7 +462,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In this example, the learner initially did not respond, so prompting was used to guide the correct behavior. Although the trainer demonstrated the action during prompting, this is still considered a receptive SD because the gesture was part of the correction procedure rather than the original instruction."
+        "text": "In the previous example, the learner initially did not respond, so prompting was used to guide the correct behavior. Although the trainer demonstrated the action during prompting, this is still considered a receptive SD because the gesture was part of the correction procedure rather than the original instruction."
       },
       "nonverbals": []
     },
@@ -530,6 +546,12 @@
       },
       "nonverbals": [
         {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 1.0,
+          "timing": "during"
+        },
+        {
           "channel": "gaze",
           "action": "robot",
           "timing": "during"
@@ -592,6 +614,12 @@
       },
       "nonverbals": [
         {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 0.75,
+          "timing": "after"
+        },
+        {
           "channel": "gaze",
           "action": "robot",
           "timing": "during"
@@ -608,6 +636,12 @@
       },
       "nonverbals": [
         {
+          "channel": "face",
+          "action": "Happy",
+          "intensity": 1.0,
+          "timing": "after"
+        },
+        {
           "channel": "gaze",
           "action": "robot",
           "timing": "during"
@@ -620,7 +654,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "This interaction displays correct emotion identification followed by reinforcement."
+        "text": "This interaction displays correct emotion identification followed by reinforcement. Quick question."
       },
       "nonverbals": []
     },
@@ -630,17 +664,23 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "Quick check. What should always happen immediately after the learner answer correctly?",
+        "text": "What should always happen immediately after the learner answers correctly?",
         "choices": [
-          "Option A. Prompting.",
-          "Option B. Reinforcement.",
-          "Option C. Error correction."
+          "Option 1. Reinforcement.",
+          "Option 2. Prompting.",
+          "Option 3. Error correction."
         ],
-        "correct_answer": "B"
+        "correct_answer": "one",
+        "accepted_answers": [
+          "1",
+          "one",
+          "reinforce",
+          "reinforcement"
+        ]
       },
       "feedback": {
-        "correct": "Correct! Reinforcement always follows the correct learner response.",
-        "incorrect": "Sorry, the correct answer is actually B, reinforcement. Correct responses should be reinforced right away."
+        "correct": "Correct! Reinforcement always follows the correct learner response. Let's move to the final section.",
+        "incorrect": "Sorry, but the correct answer is actually option 1, reinforcement. Correct responses should be reinforced right away. Moving on to the final section."
       },
       "nonverbals": []
     },
@@ -669,9 +709,9 @@
       "nonverbals": [
         {
           "channel": "face",
-          "action": "Happy",
+          "action": "VeryHappy",
           "intensity": 0.8,
-          "timing": "during"
+          "timing": "after"
         },
         {
           "channel": "gaze",
@@ -773,7 +813,7 @@
         {
           "channel": "head",
           "action": "Shake",
-          "intensity": 0.8,
+          "intensity": 1.25,
           "duration": 0.75,
           "repeats": 3,
           "timing": "during"
@@ -894,20 +934,35 @@
 
     {
       "section": "error_correction",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "First, one last question before moving on."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "error_correction",
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
         "text": "Question. After prompting and reinforcement during error correction, what should happen next?",
         "choices": [
-          "Option A. End the interaction.",
-          "Option B. Repeat the original instruction.",
-          "Option C. Perform a high-probability SD."
+          "Option 1. End the interaction.",
+          "Option 2. Repeat the original instruction.",
+          "Option 3. Perform a high-probability SD."
         ],
-        "correct_answer": "C"
+        "correct_answer": "three",
+        "accepted_answers": [
+          "3",
+          "three",
+          "high probability"
+        ]
       },
       "feedback": {
-        "correct": "Correct! A high-probability SD should be presented.",
-        "incorrect": "Sorry, the correct answer is actually C, perform a high-probability SD. Would you like me to move on or hear that section again?"
+        "correct": "Correct! A high-probability SD should be presented. Moving on.",
+        "incorrect": "Sorry, the correct answer is actually option 3, perform a high-probability SD. We are going to move on."
       },
       "nonverbals": []
     },
@@ -951,7 +1006,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "As soon as we move on, your role will be to complete the 6 SDs, highlighted in red on your sheet, in order while following the procedures we just reviewed. Use your content sheet as a resource as needed and be sure to follow the main flowchart to help guide your responses."
+        "text": "As soon as we move on, your role will be to complete the 6 SDs, highlighted in red on your rehearsal sheet, in order while following the procedures we just reviewed. Use your content sheet as a resource as needed and be sure to follow the main flowchart to help guide your responses."
       },
       "nonverbals": []
     },
@@ -961,7 +1016,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You can still stop me for any last minute repeats at this time, otherwise, we will be moving into the practice. Once I let you know that everything is ready, you can begin the interactions by reading the first SD."
+        "text": "You can still stop me for any last minute repeats at this time, otherwise, we will be moving into the practice. Once my lights go green indicating that we are listening, you can begin the interactions by reading the first SD."
       },
       "nonverbals": []
     }
