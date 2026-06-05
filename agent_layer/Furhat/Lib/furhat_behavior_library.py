@@ -27,13 +27,14 @@ async def generic_behavior(furhat, embodiment, packet):
 
         if action == "on":
             print("[LED LAYER]", nonverbals.get("led"))
-            
-            await behavior.show_turn(furhat, embodiment=embodiment,color_override=nv.get("color", "#000000"),duration=nv.get("duration", 2.0),)
+            # If led is supposed to be on, get the color and light it
+            await behavior.set_led(furhat, nv.get("color", "#000000"))
             
         elif action == "off":
-            await behavior.show_turn(furhat, embodiment=embodiment, color_override=nv.get("color", "#000000"), duration=nv.get("duration", 2.0),)
-            
-    # Listening function (not currently used with the plan to add in active listening gestures if necessary)
+            # Clear the led setting it to #000000 if used
+            await behavior.clear_led(furhat)
+
+    # Listening function. NOTE: not currently used with the goal to add it in later
     try:
         if listening:
             asyncio.create_task(furhat.request_listen_start())
@@ -123,7 +124,7 @@ async def generic_behavior(furhat, embodiment, packet):
     volume = speech.get("volume", 50)
 
 
-    # This function will only work if the system config function is added into the virtual environment
+    # This function will only work if the system config function is added into the virtual v
     try:
         await behavior.change_volume(furhat=furhat, volume=volume)
     except Exception as e:
