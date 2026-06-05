@@ -97,11 +97,17 @@
           "Option 2. The interaction flow.",
           "Option 3. The robot's appearance."
         ],
-        "correct_answer": "2"
+        "correct_answer": "two",
+        "accepted_answers": [
+          "2",
+          "two",
+          "interaction",
+          "flow"
+        ]
       },
       "feedback": {
         "correct": "Correct! Focus on the flow of the interaction. Moving on.",
-        "incorrect": "Sorry, the correct answer is actually option 2, the interaction flow. Would you like to move on or hear that section again?"
+        "incorrect": "Sorry, the correct answer is actually option 2, the interaction flow. Moving on."
       },
       "nonverbals": []
     },
@@ -437,7 +443,12 @@
           "Option 2. Move to another SD.",
           "Option 3. Deliver a high-probability SD."
         ],
-        "correct_answer": "3"
+        "correct_answer": "three",
+        "accepted_answers": [
+          "3",
+          "three",
+          "high probability"
+        ]
       },
       "feedback": {
         "correct": "Correct! The trainer should deliver a high-probability SD. Let's move on.",
@@ -653,13 +664,19 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "What should always happen immediately after the learner answer correctly?",
+        "text": "What should always happen immediately after the learner answers correctly?",
         "choices": [
           "Option 1. Reinforcement.",
           "Option 2. Prompting.",
           "Option 3. Error correction."
         ],
-        "correct_answer": "1"
+        "correct_answer": "one",
+        "accepted_answers": [
+          "1",
+          "one",
+          "reinforce",
+          "reinforcement"
+        ]
       },
       "feedback": {
         "correct": "Correct! Reinforcement always follows the correct learner response. Let's move to the final section.",
@@ -936,7 +953,12 @@
           "Option 2. Repeat the original instruction.",
           "Option 3. Perform a high-probability SD."
         ],
-        "correct_answer": "3"
+        "correct_answer": "three",
+        "accepted_answers": [
+          "3",
+          "three",
+          "high probability"
+        ]
       },
       "feedback": {
         "correct": "Correct! A high-probability SD should be presented. Moving on.",
@@ -984,7 +1006,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "As soon as we move on, your role will be to complete the 6 SDs, highlighted in red on your sheet, in order while following the procedures we just reviewed. Use your content sheet as a resource as needed and be sure to follow the main flowchart to help guide your responses."
+        "text": "As soon as we move on, your role will be to complete the 6 SDs, highlighted in red on your rehearsal sheet, in order while following the procedures we just reviewed. Use your content sheet as a resource as needed and be sure to follow the main flowchart to help guide your responses."
       },
       "nonverbals": []
     },
@@ -994,7 +1016,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You can still stop me for any last minute repeats at this time, otherwise, we will be moving into the practice. Once I let you know that everything is ready, you can begin the interactions by reading the first SD."
+        "text": "You can still stop me for any last minute repeats at this time, otherwise, we will be moving into the practice. Once my lights go green indicating that we are listening, you can begin the interactions by reading the first SD."
       },
       "nonverbals": []
     }

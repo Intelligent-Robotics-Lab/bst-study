@@ -7,7 +7,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Hello, and welcome to our study covering training for teaching interactions. We are glad to have you here and participating!"
+        "text": "Hello again, and welcome to our study covering training for teaching interactions! We are glad to have you here and participating!"
       },
       "summary": {
         "enabled": true,
@@ -86,7 +86,7 @@
           "Option 2. Prompting, Reinforcement, and Correction.",
           "Option 3. SDs, responses, and rewards."
         ],
-        "correct_answer": "1",
+        "correct_answer": "one",
         "accepted_answers": [
           "one",
           "1",
@@ -215,7 +215,7 @@
           "Option 2. The Instruction.",
           "Option 3. The child response."
         ],
-        "correct_answer": "2",
+        "correct_answer": "two",
         "accepted_answers": [
           "two",
           "2",
@@ -330,7 +330,7 @@
           "Option 2. End the interaction.",
           "Option 3. Prompt the learner."
         ],
-        "correct_answer": "3",
+        "correct_answer": "three",
         "accepted_answers": [
           "3",
           "three",
@@ -444,7 +444,7 @@
           "Option 2. To give the learner the answer.",
           "Option 3. To stop the interaction."
         ],
-        "correct_answer": "1",
+        "correct_answer": "one",
         "accepted_answers": [
           "1",
           "one",
@@ -538,7 +538,7 @@
           "Option 2. Present a high-probability SD.",
           "Option 3. Reinforcement."
         ],
-        "correct_answer": "3",
+        "correct_answer": "three",
         "accepted_answers": [
           "3",
           "three",

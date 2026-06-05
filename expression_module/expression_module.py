@@ -28,7 +28,7 @@ class ExpressionModule:
         return {
             "text": verbal.get("text"),
             "style": verbal.get("style", "neutral"),
-            "volume": verbal.get("volume", 50),
+            "volume": verbal.get("volume", 60),
             "interrupt": verbal.get("interrupt", False)
         }
 
