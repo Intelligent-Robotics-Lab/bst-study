@@ -6,7 +6,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In this next module, the modeling phase, I will demonstrate what an interaction with a learner looks like."
+        "text": "In this next module, the modeling phase, I will demonstrate what an interaction with a learner looks like. You will see how each interaction follows the same basic structure: the instruction, the learner response, and then reinforcement or error correction."
       },
       "summary": {
         "enabled": true,
@@ -27,16 +27,6 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You will see how each interaction follows the same basic structure: the instruction, the learner response, and then reinforcement or error correction."
-      },
-      "nonverbals": []
-    },
-
-    {
-      "section": "intro",
-      "type": "content",
-      "embodiment": "trainer",
-      "verbal": {
         "text": "During this phase, your main job is to watch the flow of each interaction while following along using the flowchart on your content sheet."
       },
       "nonverbals": []
@@ -47,31 +37,11 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Before we begin, here are some notes of what you should focus on. Watch for, how the instruction is delivered, how the learner responds, when reinforcement is given, what happens if the response is incorrect, and how prompting or correction is used."
+        "text": "Specifically watch for, how the instruction is delivered, how the learner responds, when reinforcement is given, what happens if the response is incorrect, and how prompting or correction is used. These same points can be found on the left side of your content sheet under “What to watch for”."
       },
       "summary": {
         "enabled": true,
         "text": "This section highlights the key parts of the interaction that the learner should focus on during modeling. These include interaction flow, instruction delivery, learner responses, reinforcement timing, and how prompting or correction is handled after incorrect responses."
-      },
-      "nonverbals": []
-    },
-
-    {
-      "section": "intro_watch",
-      "type": "content",
-      "embodiment": "trainer",
-      "verbal": {
-        "text": "These same points can be found on the left side of your content sheet so you can refresh your memory throughout the interaction."
-      },
-      "nonverbals": []
-    },
-
-    {
-      "section": "intro_watch",
-      "type": "content",
-      "embodiment": "trainer",
-      "verbal": {
-        "text": "Again, remember you can follow each interaction step-by-step using the flowchart to help understand the process."
       },
       "nonverbals": []
     },
@@ -106,8 +76,18 @@
         ]
       },
       "feedback": {
-        "correct": "Correct! Focus on the flow of the interaction. Moving on.",
-        "incorrect": "Sorry, the correct answer is actually option 2, the interaction flow. Moving on."
+        "correct": "Correct! Focus on the flow of the interaction.",
+        "incorrect": "Sorry, the correct answer is actually option 2, the interaction flow."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "intro_watch",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Keep those points in mind as we begin looking at specific teaching interactions."
       },
       "nonverbals": []
     },
@@ -201,7 +181,43 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In this interaction, a correct response was given, so reinforcement was delivered right away without the need for prompting, or error correction."
+        "text": "Question for you."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "manding",
+      "type": "knowledge_check",
+      "embodiment": "trainer",
+      "question": {
+        "text": "What was the purpose of this interaction?",
+        "choices": [
+          "Option 1. Practice imitation.",
+          "Option 2. Correct an error.",
+          "Option 3. Identify a preferred reinforcer."
+        ],
+        "correct_answer": "three",
+        "accepted_answers": [
+          "3",
+          "three",
+          "preferred",
+          "identify"
+        ]
+      },
+      "feedback": {
+        "correct": "Correct! The manding SD helps establish what the learner wants to work for.",
+        "incorrect": "Sorry, the correct answer is option 3, identify a preferred reinforcer. "
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "manding",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "In this interaction, a correct response was given, so reinforcement was delivered right away without the need for prompting or error correction."
       },
       "nonverbals": []
     },
@@ -299,6 +315,43 @@
       },
       "nonverbals": []
     },
+
+    {
+      "section": "imitative",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Quick question."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "imitative",
+      "type": "knowledge_check",
+      "embodiment": "trainer",
+      "question": {
+        "text": "What made this an imitative SD?",
+        "choices": [
+          "Option 1. The learner labeled an object.",
+          "Option 2. The learner identified an emotion.",
+          "Option 3. The learner copied an action."
+        ],
+        "correct_answer": "three",
+        "accepted_answers": [
+          "3",
+          "three",
+          "copied",
+          "action"
+        ]
+      },
+      "feedback": {
+        "correct": "Correct! Since the learner copied the action, this is an imitative SD.",
+        "incorrect": "Sorry, the correct answer is option 3. Since the learner copied the action this is an imitative SD."
+      },
+      "nonverbals": []
+    },
+
     {
       "section": "receptive",
       "type": "content",
@@ -437,22 +490,21 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "What should the trainer do immediately after reinforcing the prompt in error correction?",
+        "text": "Why was prompting used here?",
         "choices": [
-          "Option 1. End the interaction.",
-          "Option 2. Move to another SD.",
-          "Option 3. Deliver a high-probability SD."
+          "Option 1. The learner did not respond.",
+          "Option 2. The learner responded corectly.",
+          "Option 3. The interactinon ended."
         ],
-        "correct_answer": "three",
+        "correct_answer": "one",
         "accepted_answers": [
-          "3",
-          "three",
-          "high probability"
+          "1",
+          "one"
         ]
       },
       "feedback": {
-        "correct": "Correct! The trainer should deliver a high-probability SD. Let's move on.",
-        "incorrect": "The correct answer is actually option 3, deliver a high-probability SD. We will see this in action in an example to come."
+        "correct": "Correct!",
+        "incorrect": "Sorry, the correct answer is option 1."
       },
       "nonverbals": []
     },
@@ -462,7 +514,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In the previous example, the learner initially did not respond, so prompting was used to guide the correct behavior. Although the trainer demonstrated the action during prompting, this is still considered a receptive SD because the gesture was part of the correction procedure rather than the original instruction."
+        "text": "In this example, the learner initially did not respond, so prompting was used to guide the correct behavior. Although the trainer demonstrated the action during prompting, this is still considered a receptive SD because the gesture was part of the correction procedure rather than the original instruction."
       },
       "nonverbals": []
     },
@@ -570,11 +622,38 @@
     },
 
     {
+      "section": "tacting",
+      "type": "knowledge_check",
+      "embodiment": "trainer",
+      "question": {
+        "text": "What skill was the learner demonstrating in this example?",
+        "choices": [
+          "Option 1. Identifying an emotionn.",
+          "Option 2. Labeling an object.",
+          "Option 3. Following an instruction."
+        ],
+        "correct_answer": "two",
+        "accepted_answers": [
+          "2",
+          "two",
+          "to",
+          "too",
+          "labeling"
+        ]
+      },
+      "feedback": {
+        "correct": "Correct! The learner identified the object in front of the trainer.",
+        "incorrect": "Sorry, the correct answer is option 2, object labeling. In this example, the learner correctly identified the car sitting in front of the trainer."
+      },
+      "nonverbals": []
+    },
+
+    {
       "section": "emotion",
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "We will now present the emotion labeling SD that teaches the learner to identify emotional context and map these observations to labels."
+        "text": "The last SD we will present is the emotion labeling SD that teaches the learner to identify emotional context and map these observations to labels."
       },
       "summary": {
         "enabled": true,
@@ -654,7 +733,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "This interaction displays correct emotion identification followed by reinforcement. Quick question."
+        "text": "This interaction displays correct emotion identification followed by reinforcement."
       },
       "nonverbals": []
     },
@@ -664,23 +743,21 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "What should always happen immediately after the learner answers correctly?",
+        "text": "What was the learner identifying in this example?",
         "choices": [
-          "Option 1. Reinforcement.",
-          "Option 2. Prompting.",
-          "Option 3. Error correction."
+          "Option 1. An emotion.",
+          "Option 2. An object.",
+          "Option 3. A preferred item."
         ],
         "correct_answer": "one",
         "accepted_answers": [
           "1",
           "one",
-          "reinforce",
-          "reinforcement"
-        ]
+          "emotion"        ]
       },
       "feedback": {
-        "correct": "Correct! Reinforcement always follows the correct learner response. Let's move to the final section.",
-        "incorrect": "Sorry, but the correct answer is actually option 1, reinforcement. Correct responses should be reinforced right away. Moving on to the final section."
+        "correct": "Correct! The learner identified the trainer's emotional state.",
+        "incorrect": "The correct answer is actually option 1, emotion. The learner was able to correctly identify the trainer's emotional state."
       },
       "nonverbals": []
     },
@@ -690,7 +767,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Lastly, we will look at what happens when the learner gives an incorrect response. In these situations, the trainer helps the learner get to the correct answer and then reinforces that response. Please follow the provided flowchart as I go through the full error correction procedure so you understand how to use this protocol in your rehearsal."
+        "text": "Finally, we will look at what happens when the learner gives an incorrect response. In these situations, the trainer helps the learner get to the correct answer and then reinforces that response. Please follow the provided flowchart as I go through the full error correction procedure so you understand how to use this protocol in your rehearsal."
       },
       "summary": {
         "enabled": true,
@@ -897,7 +974,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "This interaction showed an example of proper error correction sequencing. Following the incorrect learner response, the trainer prompted the child by asking the initial instruction again and immediately providing the correct response."
+        "text": "This interaction showed an example of proper error correction sequencing."
       },
       "nonverbals": []
     },
@@ -907,7 +984,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "After the child responds to that correction, the trainer goes through a high-probability SD followed by reinforcement of the response."
+        "text": "Following the incorrect learner response, the trainer prompted the child by asking the initial instruction again and immediately providing the correct response."
       },
       "nonverbals": []
     },
@@ -917,7 +994,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The initial SD was then repeated with the correct response reinforced. In the event that the child was once again incorrect in their response, the cycle would have continued on."
+        "text": "After the child responds to that correction, the trainer goes through a high-probability SD followed by reinforcement of that response. The initial SD was then repeated with the correct response reinforced."
       },
       "nonverbals": []
     },
@@ -947,7 +1024,7 @@
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
-        "text": "Question. After prompting and reinforcement during error correction, what should happen next?",
+        "text": "After reinforcement during error correction, what should happen next?",
         "choices": [
           "Option 1. End the interaction.",
           "Option 2. Repeat the original instruction.",
@@ -961,8 +1038,8 @@
         ]
       },
       "feedback": {
-        "correct": "Correct! A high-probability SD should be presented. Moving on.",
-        "incorrect": "Sorry, the correct answer is actually option 3, perform a high-probability SD. We are going to move on."
+        "correct": "Correct! A high-probability SD should be presented.",
+        "incorrect": "Sorry, the correct answer is actually option 3, perform a high-probability SD."
       },
       "nonverbals": []
     },
@@ -986,7 +1063,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In the next phase, rehearsal, you will take on the role of the trainer that I previously portrayed, and complete these interactions yourself using the same procedures."
+        "text": "In the next phase, rehearsal, you will take on the role of the trainer and complete these interactions yourself using the same procedures."
       },
       "nonverbals": []
     },
@@ -996,7 +1073,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You will be supplied feedback at the end of each trial from myself, and I will also help guide you through the interactions."
+        "text": "You will be supplied feedback at the end of each trial from myself, and I will also help guide you through the interactions if necessary."
       },
       "nonverbals": []
     },
@@ -1006,7 +1083,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "As soon as we move on, your role will be to complete the 6 SDs, highlighted in red on your rehearsal sheet, in order while following the procedures we just reviewed. Use your content sheet as a resource as needed and be sure to follow the main flowchart to help guide your responses."
+        "text": "As soon as we move on, you will complete the 6 SDs in order while following the procedures we just reviewed. Use your content sheet as a resource as needed and be sure to follow the main flowchart and LED indicators to help guide your responses."
       },
       "nonverbals": []
     },
@@ -1016,7 +1093,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You can still stop me for any last minute repeats at this time, otherwise, we will be moving into the practice. Once my lights go green indicating that we are listening, you can begin the interactions by reading the first SD."
+        "text": "Once I let you know that everything is ready by signaling that we are listening with the LEDs, you can begin the interactions by reading the first SD."
       },
       "nonverbals": []
     }

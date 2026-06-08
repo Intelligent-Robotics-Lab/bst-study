@@ -97,24 +97,57 @@ class Tutorial(BaseInteraction):
 
             await self.set_led("off")
 
-            await self.say_text(self.expr, "Great! I detected your pause request.")
+            await self.say_text(
+                self.expr,
+                "Great! I detected your pause request."
+            )
 
             return
 
-        # Anything that isn't pause waits for a transcript response
+        # Everything else waits for a response
         response = await self.wait_for_any_response(agent)
 
         if mode == "response":
-            await self.say_text(self.expr, "Great! Thank you for sharing!")
+
+            reply = step.get(
+                "success_text",
+                "Great! Thank you for sharing!"
+            )
+
+            await self.say_text(self.expr, reply)
 
         elif mode == "question":
-            await self.say_text(self.expr, "Thanks for asking! For this tutorial, my favorite color is blue.")
 
-        elif mode == "feedback": # Users have already responded at this point
-            await self.set_led("yellow")
+            await self.say_text(
+                self.expr,
+                "Thanks for asking! For this tutorial, my favorite color is blue."
+            )
+
+        elif mode == "feedback":
+
+            color = step.get("feedback_led", "yellow")
+            duration = step.get("feedback_duration", 2)
+
+            await self.set_led(color)
+
+            await asyncio.sleep(duration)
+
+            await self.set_led("off")
+
+            await self.say_text(
+                self.expr,
+                "Great! While the LEDs were briefly yellow, I was demonstrating feedback processing."
+            )
+
+        elif mode == "red_demo":
+
+            await self.set_led("red")
 
             await asyncio.sleep(2)
 
             await self.set_led("off")
 
-            await self.say_text(self.expr, "Great! While the LEDs were briefly yellow, I was demonstrating feedback processing.")
+            await self.say_text(
+                self.expr,
+                "The red LEDs indicate that I was unable to understand the response. During this study, you may occasionally see this signal or be asked to repeat what you said. Your patience is much appreciated."
+            )
