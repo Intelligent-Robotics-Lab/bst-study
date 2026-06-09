@@ -99,7 +99,7 @@ class Tutorial(BaseInteraction):
 
             await self.say_text(
                 self.expr,
-                "Great! I detected your pause request."
+                "Great! I detected your raised hand and paused the interaction."
             )
 
             return

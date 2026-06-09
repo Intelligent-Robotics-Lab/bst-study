@@ -6,9 +6,14 @@ from expression_module.expression_module import ExpressionModule
 from Perception.perception_client import PerceptionClient
 from Perception.sample_interaction import SampleInteractionAgent
 
-"""This class contains all the helper functions used in the instruction and modeling logic."""
 class BaseInteraction:
+    """Base class for instructional interactions.
+
+    Provides shared functionality for perception handling, navigation, knowledge checks, LED control, 
+    speech output, and freeze-state management."""
     def __init__(self, agent=None):
+        """Initializes shared interaction state, perception tracking,
+        speech control flags, LED status, and gesture-detection timers."""
         self.agent = agent
         self.state = "IDLE"
         self.is_speaking = False
@@ -17,35 +22,38 @@ class BaseInteraction:
         self.current_section = None
         self.last_transcript = None
         self.steps = []
-        self.WAKE_WORDS = {"freeze", "free", "breeze"} # Removed "tree" and "trees" from here since three is a valid option
+        self.WAKE_WORDS = {"freeze", "free", "breeze"}
         self.expr = ExpressionModule()
         self.accepting_input = True
         self.led_state = None
         self.one_hand_up_start_time = None
         self.one_hand_up_active = False
         self.HAND_HOLD_THRESHOLD = 3.0
-        self.HAND_LAST_SEEN_TIME = 0
-        self.HAND_LOST_TIMEOUT = 0.5
+        self.hand_last_seen_time = 0
+        self.hand_lost_timeout = 0.5
 
     def load_steps(self):
+        """Loads and returns instructional steps for the current module."""
         raise NotImplementedError
 
     def get_module_name(self):
+        """Returns the name of the current instructional module."""
         return "base"
 
     async def run_main_loop(self, agent):
+        """Executes the primary instructional flow for the module."""
         raise NotImplementedError
 
-    """Entry point initializing perception and running the main inference loop"""
     async def execute(self):
+        """Initializes the interaction environment, starts perception processing, 
+        and runs the module's main instructional loop."""
+        
         print(f"\n[{self.get_module_name().upper()}] Starting module...")
-
         self.steps = self.load_steps()
 
         # NOTE: future addition to set both robots to attend to neutral when the process is started.
 
-        agent = SampleInteractionAgent(silence_timeout=2.0) # ASR has 2-second timeout for final transcript
-
+        agent = SampleInteractionAgent(silence_timeout=2.0) # Two-second timeout to gather final transcript
         client = PerceptionClient(server_host="141.210.88.210", server_port=8000)
 
         task = asyncio.create_task(self.run_perception(client, agent))
@@ -57,78 +65,13 @@ class BaseInteraction:
 
         print(f"\n[{self.get_module_name().upper()} COMPLETE]")
 
-    def debug_gesture(self, payload):
-        """
-        Prints raw gesture fields so you can verify perception is working.
-        Safe to leave on during development.
-        """
-        pred = payload.get("prediction", {})
-        motion = pred.get("motion", {})
-        meta = pred.get("meta", {})
-
-        print(
-            f"[GESTURE DEBUG] "
-            f"one_hand_up(meta)={meta.get('one_hand_up')} "
-            f"left={meta.get('left_hand_up')} "
-            f"right={meta.get('right_hand_up')} "
-            f"counter={motion.get('one_hand_up_counter')} "
-            f"last_action={pred.get('last_action')}"
-        )
-
-    def process_gesture(self, payload):
-        """
-        Converts raw gesture_update payload into a simple event.
-
-        Trigger rule:
-        - one_hand_up must be continuously detected for >= 2 seconds
-        - resets if gesture disappears for > 0.5 seconds
-        """
-
-        pred = payload.get("prediction", {})
-        meta = pred.get("meta", {})
-        motion = pred.get("motion", {})
-
-        # Debug raw input
-        self.debug_gesture(payload)
-
-        now = time.time()
-
-        # robust detection from multiple possible backend fields
-        is_up = (
-            meta.get("one_hand_up", False)
-            or meta.get("left_hand_up", False)
-            or meta.get("right_hand_up", False)
-        )
-
-        # if gesture is currently seen, update "last seen time"
-        if is_up:
-            self.HAND_LAST_SEEN_TIME = now
-
-            # start timing if not already started
-            if self.one_hand_up_start_time is None:
-                self.one_hand_up_start_time = now
-
-            held = now - self.one_hand_up_start_time
-
-            # trigger freeze only once after threshold
-            if held >= self.HAND_HOLD_THRESHOLD and not self.one_hand_up_active:
-                self.one_hand_up_active = True
-                print("[GESTURE] one_hand_up HELD -> FREEZE")
-                return "freeze"
-
-        else:
-            # reset if gesture disappears for too long
-            if now - self.HAND_LAST_SEEN_TIME > self.HAND_LOST_TIMEOUT:
-                self.one_hand_up_start_time = None
-                self.one_hand_up_active = False
-
-        return None
+    # -------------------------
+    # PERCEPTION HANDLING TASKS
+    # -------------------------
 
     async def run_perception(self, client, agent):
-        """
-        Main perception event loop.
-        Routes ASR + emotion + gesture events into handlers.
-        """
+        """Continuously receives perception events and routes emotion, speech, 
+        and gesture updates to their appropriate handlers."""
 
         async for event in client.events():
 
@@ -150,18 +93,21 @@ class BaseInteraction:
                 if action == "freeze":
                     print("[PERCEPTION] FREEZE TRIGGERED (one_hand_up)")
                     await self.trigger_freeze()
-    
-    """Processes ASR input, handles wake word detection, and forwards valid transcipts."""
+
     async def handle_asr(self, payload, agent):
+        """Processes speech recognition results, detects wake words (now the backup to hand-raise),
+        and forwards valid user transcripts to the interaction agent."""
+
         transcript = (payload.get("transcript") or "").lower().strip()
-        cleaned = re.sub(r"[^\w\s]", "", transcript) # Remove any puncutation, used to detect the wake word options
+        cleaned = re.sub(r"[^\w\s]", "", transcript) # Remove any puncutation to detect wake-word more robustly
 
         if transcript:
             print(f"[ASR] {transcript}")
 
         tokens = cleaned.split()
 
-        if any(word in tokens for word in self.WAKE_WORDS): # Trigger a freeze if any of the wake words are detected
+        # Trigger a freeze if any of the WAKE WORDS are detected
+        if any(word in tokens for word in self.WAKE_WORDS):
             await self.trigger_freeze()
             return
 
@@ -170,11 +116,70 @@ class BaseInteraction:
 
         agent.handle_asr(payload)
 
-    """Wait for a response function to be used in the tutorial phase."""
+    def process_gesture(self, payload):
+        """Processes gesture perception data and converts it into high-level 
+        interaction events such as freeze requests."""
+
+        pred = payload.get("prediction", {})
+        meta = pred.get("meta", {})
+        motion = pred.get("motion", {})
+
+        # Optional DEBUG statement if necessary
+        # self.debug_gesture(payload)
+
+        now = time.time()
+
+        # Robust statement to detect hand-raise as it is allowed to grab from multiple backend parameters
+        is_up = (meta.get("one_hand_up", False) or meta.get("left_hand_up", False) or meta.get("right_hand_up", False))
+
+        # If gesture is seen, update the "last_seen_time"
+        if is_up:
+            self.hand_last_seen_time = now
+
+            # Begin timing if not already going
+            if self.one_hand_up_start_time is None:
+                self.one_hand_up_start_time = now
+
+            held = now - self.one_hand_up_start_time
+
+            # Trigger freeze once the threshold has been passed (3 seconds)
+            if held >= self.HAND_HOLD_THRESHOLD and not self.one_hand_up_active:
+                self.one_hand_up_active = True
+                print("[GESTURE] one_hand_up HELD -> FREEZE")
+                return "freeze"
+
+        else:
+            # Reset if gesture disappears for the threshold (0.5 seconds)
+            if now - self.hand_last_seen_time > self.hand_lost_timeout:
+                self.one_hand_up_start_time = None
+                self.one_hand_up_active = False
+
+        return None
+
+    def debug_gesture(self, payload):
+        """Prints gesture-related perception data for debugging and validation. 
+        Useful for verifying gesture detection during development."""
+
+        pred = payload.get("prediction", {})
+        motion = pred.get("motion", {})
+        meta = pred.get("meta", {})
+
+        print(
+            f"[GESTURE DEBUG] "
+            f"one_hand_up(meta)={meta.get('one_hand_up')} "
+            f"left={meta.get('left_hand_up')} "
+            f"right={meta.get('right_hand_up')} "
+            f"counter={motion.get('one_hand_up_counter')} "
+            f"last_action={pred.get('last_action')}"
+        )
+
     async def wait_for_transcript(self, agent, timeout=80):
+        """Waits for a user transcript while respecting speaking and
+        interruption states. Returns the transcript or None on timeout."""
+
         elapsed = 0
 
-        while elapsed < timeout:
+        while elapsed < timeout: # Approximately 8 seconds
 
             if self.is_speaking:
                 await asyncio.sleep(0.1)
@@ -187,74 +192,39 @@ class BaseInteraction:
             transcript = agent.state.latest_transcript
 
             if transcript:
-                text = transcript.lower().strip()
-                agent.state.latest_transcript = None
+                text = transcript.lower().strip() # Clean the transcript
+                agent.state.latest_transcript = None # Reset the transcript
                 return text
 
             await asyncio.sleep(0.1)
             elapsed += 1
 
         return None
+    
+    # --------------------
+    # NAVIGATION FUNCTIONS
+    # --------------------
 
-    """Function to clean up redundant code in the following functions."""
-    async def prepare_for_input(self, agent, delay=0.5):
-        self.accepting_input = False
-
-        await asyncio.sleep(delay)
-
-        agent.state.latest_transcript = None
-        self.last_transcript = None
-
-        await self.set_led("green")
-
-        self.accepting_input = True
-
-    """Triggers interrupt state and provides LED feedback to indicate the word was detected."""
-    async def trigger_freeze(self):
-        self.interrupted = True
-
-        # reset gesture state so freeze doesn't loop
-        self.one_hand_up_start_time = None
-        self.one_hand_up_active = False
-
-        await self.set_led("blue")
-
-    """Function to turn on the green LED when listening"""
-    async def signal_listening(self):
-        await self.set_led("green")
-
-    """Executes a single step using the expression module and handles embodiment output."""
-    async def execute_step(self, step):
-        if not step.get("embodiment"):
-            return
-        
-        await self.set_led("off") # Turn the LED off at the start of a step as the robot speaks
-
-        self.is_speaking = True
-        print(f"[EXECUTING] {step.get('embodiment')}")
-
-        await self.expr.execute(agent_type=self.agent, embodiment=step["embodiment"], packet=self.expr.build(step))
-
-        self.is_speaking = False
-
-    """Handles user navigation commands like continue, repeat step, repeat section, and summary"""
     async def handle_navigation(self, expr, agent, step):
+        """Processes navigation commands during instructional content,
+        including continue, repeat, section replay, and summary requests."""
+
         self.state = "NAVIGATION"
         self.last_transcript = None
 
         await self.say_text(expr, "Please say, continue, repeat the step, repeat the section, summary?")
-
         await self.prepare_for_input(agent)
 
         timeout = 0
         clarification_used = False
 
-        while timeout < 80:
+        while timeout < 80: # Approximately an 8-second timeout
 
             if self.is_speaking:
                 await asyncio.sleep(0.1)
                 continue
 
+            # Remind user they are arleady paused if freeze command comes again
             if self.interrupted:
                 self.interrupted = False
                 await self.say_text(expr, "Paused. Continue when ready.")
@@ -294,38 +264,33 @@ class BaseInteraction:
                 self.state = "LECTURE"
                 return "repeat_step"
 
+            # Only allow for clarification once, 2 total attempts before moving on
             if not clarification_used:
                 clarification_used = True
-
                 await self.say_text(expr, "Sorry, I didn't understand. Please say continue, repeat, section, or summary.")
-
                 await self.prepare_for_input(agent)
-
                 continue
 
             await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please signal to pause and ask again.")
             return "continue"
         
-    """Added function to handle freeze requests in question since the responses will be different."""    
     async def handle_question_navigation(self, expr, agent, step, full_question):
+        """Processes navigation commands while a knowledge check is paused,
+        including question replay, section replay, summaries, and continuation."""
 
         await self.say_text(expr, "Say, repeat the question, repeat the section, summary, or continue?")
-
         await self.prepare_for_input(agent)
 
         clarification_used = False
         timeout = 0
 
-        while timeout < 80:
+        while timeout < 80: # Approximately 8 seconds as before
 
-            if self.interrupted: # If the users say freeze again while already paused
-
+            # If the users pause while already frozen
+            if self.interrupted:
                 self.interrupted = False
-
                 await self.say_text(expr, "You are already paused. Please say repeat question, repeat section, summary, or continue.")
-
                 await self.prepare_for_input(agent)
-
                 continue
 
             transcript = agent.state.latest_transcript
@@ -337,7 +302,8 @@ class BaseInteraction:
 
             text = transcript.lower().strip()
 
-            if text == self.last_transcript: # Prevents duplicate processing
+            # Prevent duplicate processing
+            if text == self.last_transcript:
                 await asyncio.sleep(0.1)
                 continue
 
@@ -358,16 +324,12 @@ class BaseInteraction:
             if "continue" in text:
                 return "continue"
 
-            if not clarification_used: # This only allows 2 attempts before moving on and requiring the user to pause again if necessary
-
+            # Only allow 2 attempts before moving on and requiring the user to pause again if necessary
+            if not clarification_used:
                 clarification_used = True
-
                 await self.say_text(expr, "Sorry, I didn't understand. Please say repeat question, repeat section, summary, or continue.")
-
                 await self.prepare_for_input(agent)
-
                 timeout = 0
-
                 continue
 
             await self.say_text(expr, "Sorry, I still didn't understand. I will repeat the question. If that is not what you wanted, please say freeze again.")
@@ -378,26 +340,63 @@ class BaseInteraction:
 
         return "repeat_question"
     
-    async def flash_correct_led(self):
-        await self.set_led("orange")
-        await asyncio.sleep(1)
+    async def play_summary(self, step, expr):
+        """Retrieves and presents the summary associated with the current
+        instructional section."""
 
-    def normalize_answer(self, text: str):
-        text = text.lower()
+        current_section = step.get("section")
 
-        if any(x in text for x in ["1", "one", "first", "option one", "option 1"]):
-            return "1"
-        if any(x in text for x in ["2", "two", "to", "too", "second", "option two", "option 2"]):
-            return "2"
-        if any(x in text for x in ["3", "three", "third", "option three", "option 3"]):
-            return "3"
+        summary_text = None
 
-        return None
+        for s in self.steps:
+            if s.get("section") != current_section:
+                continue
+
+            summary = s.get("summary")
+
+            if not summary:
+                continue
+
+            if isinstance(summary, dict):
+                if not summary.get("enabled", False):
+                    continue
+
+                summary_text = summary.get("text")
+
+            else:
+                summary_text = str(summary)
+
+            if summary_text:
+                break
+
+        if not summary_text:
+            await self.say_text(expr, "No summary available for this section.")
+            return
+
+        await self.say_text(expr, summary_text)
+
+    def find_section_start(self, section):
+        """Finds and returns the index of the first step belonging to
+        the specified instructional section."""
+
+        for i, step in enumerate(self.steps):
+            if step.get("section") == section:
+                return i
+            
+        return 0
+    
+    # ---------------
+    # KNOWLEDGE CHECK
+    # ---------------
 
     async def handle_knowledge_check(self, step, expr, agent):
+        """Presents a knowledge check question, evaluates responses,
+        manages retries, and provides appropriate feedback."""
+
         question = step.get("question", {})
         feedback = step.get("feedback", {})
 
+        # Normalize so we worry about only a few cases
         correct_answer = self.normalize_answer(
             str(question.get("correct_answer") or "")
         )
@@ -412,7 +411,8 @@ class BaseInteraction:
         await self.say_text(expr, full_question)
         await self.prepare_for_input(agent)
 
-        while True: # If the robot is speaking continue to wait
+        # If the robot is speaking continue to wait
+        while True:
             if self.is_speaking:
                 await asyncio.sleep(0.1)
                 continue
@@ -454,6 +454,7 @@ class BaseInteraction:
                 if timeout >= 80: # Approximately an 8 second timeout
                     retries_used += 1
 
+                    # Again only allow 2 retries before we move on
                     if retries_used < 2:
                         await self.say_text(
                             expr,
@@ -482,19 +483,19 @@ class BaseInteraction:
 
             print(f"[ANSWER INPUT] {text}")
 
-            # If repeat command
+            # If repeat is asked for when waiting for a question answer
             if "repeat" in text or "again" in text:
                 retries_used = 0
                 await self.say_text(expr, full_question)
                 await self.prepare_for_input(agent)
                 continue
 
-            # Answer normalization
             selected = self.normalize_answer(text)
 
             if selected is None:
                 retries_used += 1
 
+                # Only proceed if the 2nd retry hasn't been done
                 if retries_used < 2:
                     await self.say_text(
                         expr,
@@ -509,17 +510,18 @@ class BaseInteraction:
                 )
                 return "invalid"
 
-            # Check for correctness
+            # Check for correctness of a 2nd response
             correct_answer = self.normalize_answer(
                 str(question.get("correct_answer") or "")
             )
 
+            # Handle correct reponse
             if selected == correct_answer:
                 await self.flash_correct_led()
                 await self.say_text(expr, feedback.get("correct", "Correct."))
                 return "correct"
 
-            # Handling incorrect responses
+            # Incorrect response handling
             await self.say_text(
                 expr,
                 feedback.get(
@@ -529,8 +531,25 @@ class BaseInteraction:
             )
             return "incorrect"
 
-    """Checks whether a transcript matches any accepted answer for the question."""
+    def normalize_answer(self, text: str):
+        """Converts recognized answer variations into a standardized response
+        format for knowledge check evaluation."""
+
+        text = text.lower()
+
+        if any(x in text for x in ["1", "one", "first", "option one", "option 1"]):
+            return "1"
+        if any(x in text for x in ["2", "two", "to", "too", "second", "option two", "option 2"]):
+            return "2"
+        if any(x in text for x in ["3", "three", "third", "option three", "option 3"]):
+            return "3"
+
+        return None
+
     def is_correct_answer(self, text, accepted_answers):
+        """Determines whether a user response matches any accepted answer
+        for the current question."""
+
         text = text.lower().strip()
 
         for answer in accepted_answers:
@@ -539,44 +558,23 @@ class BaseInteraction:
 
         return False
 
-    """Plays the current section summary if the user wants a quick overview."""
-    async def play_summary(self, step, expr):
-        current_section = step.get("section")
+    async def flash_correct_led(self):
+        """Temporarily displays the correct-answer LED indication to provide
+        feedback following a successful response."""
+        await self.set_led("orange")
+        await asyncio.sleep(1)
 
-        summary_text = None
+    # ------------------------
+    # ROBOT-SPECIFIC UTILITIES
+    # ------------------------
 
-        for s in self.steps:
-            if s.get("section") != current_section:
-                continue
-
-            summary = s.get("summary")
-
-            if not summary:
-                continue
-
-            if isinstance(summary, dict):
-                if not summary.get("enabled", False):
-                    continue
-
-                summary_text = summary.get("text")
-
-            else:
-                summary_text = str(summary)
-
-            if summary_text:
-                break
-
-        if not summary_text:
-            await self.say_text(expr, "No summary available for this section.")
-            return
-
-        await self.say_text(expr, summary_text)
-
-    """Speak function used in the above navigation and knowledge checks. Only for hardcoded questions. Expression module still handles the steps."""
     async def say_text(self, expr, text):
+        """Speaks a text message through the expression module while managing
+        speaking state and visual turn-taking indicators."""
+
         text = text or ""
 
-        await self.set_led("off") # Set the LED off it is the robot's turn to speak
+        await self.set_led("off") # Always set the LED off it is the robot's turn to speak
         
         self.is_speaking = True
 
@@ -592,22 +590,36 @@ class BaseInteraction:
 
         self.is_speaking = False
 
-    """Helper to find the start of section if asked to repeat it."""
-    def find_section_start(self, section):
-        for i, step in enumerate(self.steps):
-            if step.get("section") == section:
-                return i
-        return 0
+    async def execute_step(self, step):
+        """Executes a single instructional step through the expression module
+        and manages speaking state transitions."""
 
-    """Function to map the LEDs as requested. Creates a turn using the current state that is send through the expression module."""
+        if not step.get("embodiment"):
+            return
+        
+        # Turn the LED off at the start of each step indicating it is the robot's turn to speak
+        await self.set_led("off")
+
+        self.is_speaking = True
+        print(f"[EXECUTING] {step.get('embodiment')}")
+
+        await self.expr.execute(agent_type=self.agent, embodiment=step["embodiment"], packet=self.expr.build(step))
+
+        self.is_speaking = False
+
     async def set_led(self, state):
+        """Updates the robot's LED state and sends the corresponding
+        visual feedback command through the expression module."""
+
         print(f"[LED] {self.led_state} -> {state}")
 
-        if state == self.led_state:     # If the new state is the same as the current one do nothing
+        # If the new state is the same as the current one do nothing
+        if state == self.led_state:
             return
 
         self.led_state = state
 
+        # Map the used colors to implementable hex values
         color_map = {
             "green": "#00FF00",
             "blue": "#0000FF",
@@ -619,6 +631,7 @@ class BaseInteraction:
 
         color = color_map.get(state)
 
+        # Create a turn that can be executed by Furhat out of the inputs
         turn = {
             "embodiment": "trainer",
             "verbal": {"text": ""},
@@ -630,3 +643,36 @@ class BaseInteraction:
         }
 
         await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))
+
+    async def signal_listening(self):
+        """Updates visual feedback to indicate that the system is actively
+        listening for user input."""
+        await self.set_led("green")
+
+    async def trigger_freeze(self):
+        """Activates the interaction pause state and updates visual feedback
+        to indicate that a freeze request was received."""
+
+        self.interrupted = True
+
+        # Reset gesture states to prevent freeze from looping
+        self.one_hand_up_start_time = None
+        self.one_hand_up_active = False
+
+        # Stays blue until the trainer asks you how to proceed
+        await self.set_led("blue")
+
+    async def prepare_for_input(self, agent, delay=0.5):
+        """Prepares the system to receive user input by clearing transcript
+        buffers, updating LEDs, and enabling input processing. Written to reduce copy-and-paste code."""
+
+        self.accepting_input = False
+
+        await asyncio.sleep(delay)
+
+        agent.state.latest_transcript = None
+        self.last_transcript = None
+
+        await self.set_led("green")
+
+        self.accepting_input = True
