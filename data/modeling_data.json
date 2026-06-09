@@ -37,7 +37,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Specifically watch for, how the instruction is delivered, how the learner responds, when reinforcement is given, what happens if the response is incorrect, and how prompting or correction is used. These same points can be found on the left side of your content sheet under “What to watch for”."
+        "text": "Specifically watch for, how the instruction is delivered, how the learner responds, when reinforcement is given, what happens if the response is incorrect, and how prompting or correction is used. These same points can be found on the left side of your content sheet under What to watch for."
       },
       "summary": {
         "enabled": true,
@@ -67,10 +67,11 @@
           "Option 2. The interaction flow.",
           "Option 3. The robot's appearance."
         ],
-        "correct_answer": "two",
+        "correct_answer": "2",
         "accepted_answers": [
           "2",
           "two",
+          "second",
           "interaction",
           "flow"
         ]
@@ -121,7 +122,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "What do you want to work for?"
+        "text": "What should we do next?"
       },
       "nonverbals": [
         {
@@ -143,7 +144,7 @@
       "type": "content",
       "embodiment": "kid",
       "verbal": {
-        "text": "... I want to work for the ball."
+        "text": "... I want to play with the ball."
       },
       "nonverbals": [
         {
@@ -159,7 +160,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Awesome! Let's work for the ball today!"
+        "text": "Ball, great! Let's work to get the ball next!"
       },
       "nonverbals": [
         {
@@ -197,10 +198,11 @@
           "Option 2. Correct an error.",
           "Option 3. Identify a preferred reinforcer."
         ],
-        "correct_answer": "three",
+        "correct_answer": "3",
         "accepted_answers": [
           "3",
           "three",
+          "third",
           "preferred",
           "identify"
         ]
@@ -241,7 +243,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "... Do this."
+        "text": "... Try this."
       },
       "nonverbals": [
         {
@@ -289,7 +291,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "That's nodding your head! Good job!"
+        "text": "Great job nodding your head! We were both nodding our heads!"
       },
       "nonverbals": [
         {
@@ -337,10 +339,11 @@
           "Option 2. The learner identified an emotion.",
           "Option 3. The learner copied an action."
         ],
-        "correct_answer": "three",
+        "correct_answer": "3",
         "accepted_answers": [
           "3",
           "three",
+          "third",
           "copied",
           "action"
         ]
@@ -459,7 +462,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Nice job shaking your head! Thank you for letting me help you!"
+        "text": "Nice job shaking your head! Thank you for shaking your head!"
       },
       "nonverbals": [
         {
@@ -494,12 +497,13 @@
         "choices": [
           "Option 1. The learner did not respond.",
           "Option 2. The learner responded corectly.",
-          "Option 3. The interactinon ended."
+          "Option 3. The interaction ended."
         ],
-        "correct_answer": "one",
+        "correct_answer": "1",
         "accepted_answers": [
           "1",
-          "one"
+          "one",
+          "first"
         ]
       },
       "feedback": {
@@ -594,7 +598,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Good job, that is a car!"
+        "text": "Great work, that is a car!"
       },
       "nonverbals": [
         {
@@ -632,12 +636,13 @@
           "Option 2. Labeling an object.",
           "Option 3. Following an instruction."
         ],
-        "correct_answer": "two",
+        "correct_answer": "2",
         "accepted_answers": [
           "2",
           "two",
           "to",
           "too",
+          "second",
           "labeling"
         ]
       },
@@ -653,7 +658,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The last SD we will present is the emotion labeling SD that teaches the learner to identify emotional context and map these observations to labels."
+        "text": "The last SD we will present is the emotion labeling SD that teaches the learner to identify emotional context and map these observations to labels. This is also a form of the tacting SD."
       },
       "summary": {
         "enabled": true,
@@ -749,10 +754,11 @@
           "Option 2. An object.",
           "Option 3. A preferred item."
         ],
-        "correct_answer": "one",
+        "correct_answer": "1",
         "accepted_answers": [
           "1",
           "one",
+          "first",
           "emotion"        ]
       },
       "feedback": {
@@ -908,7 +914,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Good job! How do I feel?"
+        "text": "Awesome job shaking your head! How do I feel?"
       },
       "nonverbals": [
         {
@@ -952,7 +958,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Good job! I do feel happy!"
+        "text": "Nice work! I do feel happy!"
       },
       "nonverbals": [
         {
@@ -1030,10 +1036,11 @@
           "Option 2. Repeat the original instruction.",
           "Option 3. Perform a high-probability SD."
         ],
-        "correct_answer": "three",
+        "correct_answer": "3",
         "accepted_answers": [
           "3",
           "three",
+          "third",
           "high probability"
         ]
       },

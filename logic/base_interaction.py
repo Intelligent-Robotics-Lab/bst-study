@@ -16,7 +16,7 @@ class BaseInteraction:
         self.current_section = None
         self.last_transcript = None
         self.steps = []
-        self.WAKE_WORDS = {"freeze", "free", "breeze"} # Removed "tree" and "trees" from here
+        self.WAKE_WORDS = {"freeze", "free", "breeze"} # Removed "tree" and "trees" from here since three is a valid option
         self.expr = ExpressionModule()
         self.accepting_input = True
         self.led_state = None
@@ -149,7 +149,7 @@ class BaseInteraction:
         self.state = "NAVIGATION"
         self.last_transcript = None
 
-        await self.say_text(expr, "Would you like to continue, repeat the step, repeat the section, or hear a summary?")
+        await self.say_text(expr, "Please say, continue, repeat the step, repeat the section, summary?")
 
         await self.prepare_for_input(agent)
 
@@ -210,13 +210,13 @@ class BaseInteraction:
 
                 continue
 
-            await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please say freeze and ask again.")
+            await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please signal to pause and ask again.")
             return "continue"
         
     """Added function to handle freeze requests in question since the responses will be different."""    
     async def handle_question_navigation(self, expr, agent, step, full_question):
 
-        await self.say_text(expr, "Would you like me to repeat the question, repeat the section, hear a summary, or continue?")
+        await self.say_text(expr, "Say, repeat the question, repeat the section, summary, or continue?")
 
         await self.prepare_for_input(agent)
 
@@ -281,85 +281,99 @@ class BaseInteraction:
 
             return "repeat_question"
 
-        await self.say_text(expr, "I didn't hear a response. I will repeat the question. If that is not what you wanted, please say freeze again.")
+        await self.say_text(expr, "Sorry, I didn't hear a response. I will repeat the question. If that is not what you wanted, please say freeze again.")
 
         return "repeat_question"
+    
+    async def flash_correct_led(self):
+        await self.set_led("orange")
+        await asyncio.sleep(1)
 
-    """Runs interactive multiple=choice question flow."""
+    def normalize_answer(self, text: str):
+        text = text.lower()
+
+        if any(x in text for x in ["1", "one", "first", "option one", "option 1"]):
+            return "1"
+        if any(x in text for x in ["2", "two", "to", "too", "second", "option two", "option 2"]):
+            return "2"
+        if any(x in text for x in ["3", "three", "third", "option three", "option 3"]):
+            return "3"
+
+        return None
+
     async def handle_knowledge_check(self, step, expr, agent):
-
         question = step.get("question", {})
         feedback = step.get("feedback", {})
-        correct_answer = (question.get("correct_answer") or "").lower()
+
+        correct_answer = self.normalize_answer(
+            str(question.get("correct_answer") or "")
+        )
+
         text = question.get("text", "")
         choices = question.get("choices", [])
         full_question = text + " " + " ".join(choices)
 
         retries_used = 0
-
-        await self.say_text(expr, full_question)
-
-        await self.prepare_for_input(agent)
-
         timeout = 0
 
-        while True:
+        await self.say_text(expr, full_question)
+        await self.prepare_for_input(agent)
+
+        while True: # If the robot is speaking continue to wait
             if self.is_speaking:
                 await asyncio.sleep(0.1)
                 continue
 
+            # Interruption handling
             if self.interrupted:
                 self.interrupted = False
 
                 action = await self.handle_question_navigation(expr, agent, step, full_question)
 
                 if action == "repeat_question":
-
                     await self.say_text(expr, full_question)
-
                     await self.prepare_for_input(agent)
-
                     timeout = 0
+                    retries_used = 0
                     continue
 
                 if action == "repeat_section":
                     return "repeat_section"
 
                 if action == "summary":
-
                     await self.play_summary(step, expr)
-
                     await self.prepare_for_input(agent)
-
                     timeout = 0
                     continue
 
                 if action == "continue":
-
                     await self.prepare_for_input(agent)
-
                     timeout = 0
                     continue
 
+            # Handling the transcripts
             transcript = agent.state.latest_transcript
 
             if not transcript:
                 await asyncio.sleep(0.1)
                 timeout += 1
 
-                if timeout >= 80:
+                if timeout >= 80: # Approximately an 8 second timeout
                     retries_used += 1
 
-                    if retries_used == 1:
-                        await self.say_text(expr, "I didn't hear a response. Please say Option 1, Option 2, or Option 3.")
-
+                    if retries_used < 2:
+                        await self.say_text(
+                            expr,
+                            "Sorry, I didn't hear a response. Please say Option 1, Option 2, Option 3, or say Repeat."
+                        )
                         await self.prepare_for_input(agent)
-
                         timeout = 0
                         continue
 
-                    await self.say_text(expr, f"Sorry, I didn't catch a response. The correct answer was option {correct_answer}. Lets continue.")
-
+                    await self.say_text(
+                        expr,
+                        f"Sorry, I wasn't able to get a response. To save time, we will move on. The correct answer was option {correct_answer}."
+                    )
                     return "timeout"
 
                 continue
@@ -371,46 +385,63 @@ class BaseInteraction:
 
             self.last_transcript = text
             agent.state.latest_transcript = None
-
             timeout = 0
 
             print(f"[ANSWER INPUT] {text}")
 
-            accepted_answers = question.get("accepted_answers", [])
+            # If repeat command
+            if "repeat" in text or "again" in text:
+                retries_used = 0
+                await self.say_text(expr, full_question)
+                await self.prepare_for_input(agent)
+                continue
 
-            if self.is_correct_answer(text, accepted_answers):
+            # Answer normalization
+            selected = self.normalize_answer(text)
 
+            if selected is None:
+                retries_used += 1
+
+                if retries_used < 2:
+                    await self.say_text(
+                        expr,
+                        "I didn't understand that. Please say Option 1, Option 2, Option 3, or say Repeat."
+                    )
+                    await self.prepare_for_input(agent)
+                    continue
+
+                await self.say_text(
+                    expr,
+                    f"Sorry, I wasn't able to get a response. To save time we will go on. The correct answer was option {correct_answer}."
+                )
+                return "invalid"
+
+            # Check for correctness
+            correct_answer = self.normalize_answer(
+                str(question.get("correct_answer") or "")
+            )
+
+            if selected == correct_answer:
+                await self.flash_correct_led()
                 await self.say_text(expr, feedback.get("correct", "Correct."))
-
                 return "correct"
 
-            await self.say_text(expr,feedback.get("incorrect", f"Sorry, the correct answer is option {correct_answer}."))
-
+            # Handling incorrect responses
+            await self.say_text(
+                expr,
+                feedback.get(
+                    "incorrect",
+                    f"Sorry, the correct answer is option {correct_answer}."
+                )
+            )
             return "incorrect"
 
     """Checks whether a transcript matches any accepted answer for the question."""
-    def is_correct_answer(self, transcript, accepted_answers):
-        if not transcript:
-            return False
-
-        normalized_text = re.sub(r"[^\w\s]", "", transcript.lower().strip())
-
-        accepted_answers = sorted(
-            [
-                str(answer).lower().strip()
-                for answer in accepted_answers
-            ],
-            key=len,
-            reverse=True
-        )
+    def is_correct_answer(self, text, accepted_answers):
+        text = text.lower().strip()
 
         for answer in accepted_answers:
-            normalized_answer = re.sub(r"[^\w\s]", "", answer)
-
-            if normalized_text == normalized_answer:
-                return True
-
-            if normalized_answer in normalized_text:
+            if answer.lower().strip() in text:
                 return True
 
         return False
@@ -488,6 +519,7 @@ class BaseInteraction:
             "green": "#00FF00",
             "blue": "#0000FF",
             "yellow": "#FFBB00",
+            "orange": "#FF8C00",
             "red": "#FF0000",
             "off": "#000000"
         }

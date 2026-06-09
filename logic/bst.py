@@ -17,11 +17,11 @@ async def BST():
         _furhats = await FurhatManager.initialize_furhat()
         print("[CONNECTED TO FURHAT]")
 
-    await Tutorial(agent=AGENT_TYPE).execute()
-    print("Executed tutorial")
+    # await Tutorial(agent=AGENT_TYPE).execute()
+    # print("Executed tutorial")
 
-    await Instruction(agent=AGENT_TYPE).execute()
-    print("Executed instruction")
+    # await Instruction(agent=AGENT_TYPE).execute()
+    # print("Executed instruction")
 
     await Modeling(agent=AGENT_TYPE).execute()
     print("Executed modeling")

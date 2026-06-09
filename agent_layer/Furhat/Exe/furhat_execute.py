@@ -8,6 +8,7 @@ EMBODIMENT_PROFILE = {
         "voice": "Danielle-generative (en-US) - Amazon Polly",
         "face_id": "adult - Rene"
     },
+    
     "kid": {
         "voice": "AnaNeural (en-US) - Microsoft Azure",
         "face_id": "child - Billy"
@@ -42,7 +43,7 @@ class FurhatBehavior:
 
         try:
             if face_id:
-                await furhat.request_face_config(face_id)
+                await furhat.request_face_config(face_id=face_id)
         except Exception as e:
             print("[WARN] face:", e)
 

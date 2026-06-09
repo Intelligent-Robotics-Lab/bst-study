@@ -3,3 +3,4 @@ requests
 python-dotenv
 furhat-realtime-api
 openai
+flask

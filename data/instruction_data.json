@@ -11,6 +11,16 @@
       },
       "summary": {
         "enabled": true,
+        "text": "This training will teach you how structured teaching interactions work through instruction, modeling, and rehearsal. You will learn how trainers guide learners through responses, reinforcement, and correction procedures. You will also practice the interaction yourself using information from the provided content sheet. "
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "intro",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
         "text": "Today you will learn how structured teaching interactions work through 3 phases: instruction, modeling, and rehearsal. In each phase, you will learn more about the process, and practice parts of the interaction yourself."
       },
       "nonverbals": []
@@ -51,7 +61,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Now that you know what to expect from the training, let’s start by learning the key parts of the teaching process."
+        "text": "Now that you know what to expect from the training, lets start by learning the key parts of the teaching process."
       },
       "nonverbals": []
     },
@@ -77,10 +87,11 @@
           "Option 2. Robot programming.",
           "Option 3. System setup."
         ],
-        "correct_answer": "one",
+        "correct_answer": "1",
         "accepted_answers": [
           "one",
           "1",
+          "first",
           "teaching",
           "interactions",
           "structured"
@@ -196,10 +207,11 @@
           "Option 2. Feedback.",
           "Option 3. The instruction."
         ],
-        "correct_answer": "three",
+        "correct_answer": "3",
         "accepted_answers": [
           "three",
           "3",
+          "third",
           "instruction"
         ]
       },
@@ -309,12 +321,13 @@
           "Option 2. Prompt the learner.",
           "Option 3. End the interaction."
         ],
-        "correct_answer": "two",
+        "correct_answer": "2",
         "accepted_answers": [
           "2",
           "two",
           "to",
           "too",
+          "second",
           "prompt",
           "prompting"
         ]
@@ -415,12 +428,13 @@
           "Option 2. It encourages future correct responses.",
           "Option 3. It ends the interaction."
         ],
-        "correct_answer": "two",
+        "correct_answer": "2",
         "accepted_answers": [
           "2",
           "two",
           "to",
           "too",
+          "second",
           "responses",
           "encourages",
           "future"
@@ -532,10 +546,11 @@
           "Option 2. Prompting and error correction.",
           "Option 3. End the trial."
         ],
-        "correct_answer": "one",
+        "correct_answer": "1",
         "accepted_answers": [
           "1",
           "one",
+          "first",
           "reinforce",
           "reinforcement"
         ]
