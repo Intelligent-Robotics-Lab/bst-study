@@ -1,6 +1,7 @@
 import asyncio
 import json
 import re
+import time
 from expression_module.expression_module import ExpressionModule
 from Perception.perception_client import PerceptionClient
 from Perception.sample_interaction import SampleInteractionAgent
@@ -20,6 +21,11 @@ class BaseInteraction:
         self.expr = ExpressionModule()
         self.accepting_input = True
         self.led_state = None
+        self.one_hand_up_start_time = None
+        self.one_hand_up_active = False
+        self.HAND_HOLD_THRESHOLD = 3.0
+        self.HAND_LAST_SEEN_TIME = 0
+        self.HAND_LOST_TIMEOUT = 0.5
 
     def load_steps(self):
         raise NotImplementedError
@@ -51,17 +57,99 @@ class BaseInteraction:
 
         print(f"\n[{self.get_module_name().upper()} COMPLETE]")
 
-    """Continuously listens to emotion and ASR events from the perception module"""
+    def debug_gesture(self, payload):
+        """
+        Prints raw gesture fields so you can verify perception is working.
+        Safe to leave on during development.
+        """
+        pred = payload.get("prediction", {})
+        motion = pred.get("motion", {})
+        meta = pred.get("meta", {})
+
+        print(
+            f"[GESTURE DEBUG] "
+            f"one_hand_up(meta)={meta.get('one_hand_up')} "
+            f"left={meta.get('left_hand_up')} "
+            f"right={meta.get('right_hand_up')} "
+            f"counter={motion.get('one_hand_up_counter')} "
+            f"last_action={pred.get('last_action')}"
+        )
+
+    def process_gesture(self, payload):
+        """
+        Converts raw gesture_update payload into a simple event.
+
+        Trigger rule:
+        - one_hand_up must be continuously detected for >= 2 seconds
+        - resets if gesture disappears for > 0.5 seconds
+        """
+
+        pred = payload.get("prediction", {})
+        meta = pred.get("meta", {})
+        motion = pred.get("motion", {})
+
+        # Debug raw input
+        self.debug_gesture(payload)
+
+        now = time.time()
+
+        # robust detection from multiple possible backend fields
+        is_up = (
+            meta.get("one_hand_up", False)
+            or meta.get("left_hand_up", False)
+            or meta.get("right_hand_up", False)
+        )
+
+        # if gesture is currently seen, update "last seen time"
+        if is_up:
+            self.HAND_LAST_SEEN_TIME = now
+
+            # start timing if not already started
+            if self.one_hand_up_start_time is None:
+                self.one_hand_up_start_time = now
+
+            held = now - self.one_hand_up_start_time
+
+            # trigger freeze only once after threshold
+            if held >= self.HAND_HOLD_THRESHOLD and not self.one_hand_up_active:
+                self.one_hand_up_active = True
+                print("[GESTURE] one_hand_up HELD -> FREEZE")
+                return "freeze"
+
+        else:
+            # reset if gesture disappears for too long
+            if now - self.HAND_LAST_SEEN_TIME > self.HAND_LOST_TIMEOUT:
+                self.one_hand_up_start_time = None
+                self.one_hand_up_active = False
+
+        return None
+
     async def run_perception(self, client, agent):
+        """
+        Main perception event loop.
+        Routes ASR + emotion + gesture events into handlers.
+        """
+
         async for event in client.events():
+
             event_type = event.get("event_type")
             payload = event.get("payload", {})
+
+            # DEBUG RAW STREAM (optional but useful)
+            # print(f"[PERCEPTION] {event_type}")
 
             if event_type == "emotion_update":
                 agent.handle_emotion(payload)
 
             elif event_type == "asr_update":
                 await self.handle_asr(payload, agent)
+
+            elif event_type == "gesture_update":
+                action = self.process_gesture(payload)
+
+                if action == "freeze":
+                    print("[PERCEPTION] FREEZE TRIGGERED (one_hand_up)")
+                    await self.trigger_freeze()
     
     """Processes ASR input, handles wake word detection, and forwards valid transcipts."""
     async def handle_asr(self, payload, agent):
@@ -124,6 +212,11 @@ class BaseInteraction:
     """Triggers interrupt state and provides LED feedback to indicate the word was detected."""
     async def trigger_freeze(self):
         self.interrupted = True
+
+        # reset gesture state so freeze doesn't loop
+        self.one_hand_up_start_time = None
+        self.one_hand_up_active = False
+
         await self.set_led("blue")
 
     """Function to turn on the green LED when listening"""

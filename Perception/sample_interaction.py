@@ -27,7 +27,7 @@ class SampleInteractionAgent:
         if not transcript:
             return
 
-        #print(f"[ASR PARTIAL] {transcript}")
+        # print(f"[ASR PARTIAL] {transcript}")
 
         # append new chunk
         self.partial_buffer.append(transcript)
@@ -70,6 +70,7 @@ class SampleInteractionAgent:
             self.state.latest_emotion = label
             self.state.latest_emotion_confidence = confidence
             #print(f"[EMOTION] {label} ({confidence})")
+
 
     def _react(self):
         transcript = (self.state.latest_transcript or "").lower()
