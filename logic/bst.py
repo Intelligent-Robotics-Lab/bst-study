@@ -29,8 +29,6 @@ async def BST():
     await DTT(agent=AGENT_TYPE).execute()
     print("Executed DTT")
 
-    # Should probably add some kind of conclusionary statements
-
     if AGENT_TYPE == "Furhat":
         await FurhatManager.shutdown_furhats()
         print("[PIPELINE COMPLETE - FURHAT READY]")
