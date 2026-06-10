@@ -17,9 +17,13 @@ class Tutorial(BaseInteraction):
         agent.state.latest_transcript = None
         self.last_transcript = None
 
-        await self.prepare_for_input(agent)   # turns green on
+        await self.prepare_for_input(agent)
+
+        retries_used = 0
+        timeout = 0
 
         while True:
+
             transcript = agent.state.latest_transcript
 
             if transcript:
@@ -30,11 +34,35 @@ class Tutorial(BaseInteraction):
                 self.last_transcript = text
                 agent.state.latest_transcript = None
 
-                await self.set_led("off") # When response received, stop listening
+                await self.set_led("off")
 
                 return text
 
             await asyncio.sleep(0.1)
+            timeout += 1
+
+            if timeout >= 80:  # Approximately an 8 second timeout
+
+                retries_used += 1
+
+                # Only allow 2 retries before moving on
+                if retries_used < 2:
+                    await self.say_text(
+                        self.expr,
+                        "Sorry, I didn't hear a response. Please try again."
+                    )
+
+                    await self.prepare_for_input(agent)
+                    timeout = 0
+                    continue
+
+                await self.say_text(
+                    self.expr,
+                    "Sorry, I still didn't hear a response. We will continue."
+                )
+
+                await self.set_led("off")
+                return None
 
     async def run_main_loop(self, agent):
         while self.current_index < len(self.steps):

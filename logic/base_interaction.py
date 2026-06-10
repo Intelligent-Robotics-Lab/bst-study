@@ -271,8 +271,15 @@ class BaseInteraction:
                 await self.prepare_for_input(agent)
                 continue
 
-            await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please signal to pause and ask again.")
+            await self.say_text(expr, "I wasn't able to understand your response, so I will continue. If you wanted something else, please raise your hand and ask again.")
             return "continue"
+        
+        await self.say_text(
+            expr,
+            "Sorry, I didn't hear a response. I will continue. If you need anything else, please raise your hand to pause again."
+        )
+        self.state = "LECTURE"
+        return "continue"
         
     async def handle_question_navigation(self, expr, agent, step, full_question):
         """Processes navigation commands while a knowledge check is paused,
@@ -332,11 +339,11 @@ class BaseInteraction:
                 timeout = 0
                 continue
 
-            await self.say_text(expr, "Sorry, I still didn't understand. I will repeat the question. If that is not what you wanted, please say freeze again.")
+            await self.say_text(expr, "Sorry, I still didn't understand. I will repeat the question. If that is not what you wanted, please raise your hand for a pause again.")
 
             return "repeat_question"
 
-        await self.say_text(expr, "Sorry, I didn't hear a response. I will repeat the question. If that is not what you wanted, please say freeze again.")
+        await self.say_text(expr, "Sorry, I didn't hear a response. I will repeat the question. If that is not what you wanted, please raise your hand and we can pause again.")
 
         return "repeat_question"
     
@@ -439,7 +446,12 @@ class BaseInteraction:
                     timeout = 0
                     continue
 
+                # Explicitly ask the user for an answer again after continue to prevent confusion
                 if action == "continue":
+                    await self.say_text(
+                        expr,
+                        "Please answer by saying Option 1, Option 2, Option 3, or say Repeat."
+                    )
                     await self.prepare_for_input(agent)
                     timeout = 0
                     continue
@@ -458,7 +470,7 @@ class BaseInteraction:
                     if retries_used < 2:
                         await self.say_text(
                             expr,
-                            "Sorry, I didn't hear a response. Please say Option 1, Option 2, Option 3, or say Repeat."
+                            "Sorry, I didn't hear a response. Please answer by saying Option 1, Option 2, Option 3, or say Repeat."
                         )
                         await self.prepare_for_input(agent)
                         timeout = 0
@@ -466,7 +478,7 @@ class BaseInteraction:
 
                     await self.say_text(
                         expr,
-                        f"Sorry, I wasn't able to get a response. To save time, we will move on. The correct answer was option {correct_answer}."
+                        f"Sorry, I wasn't able to hear a response. To save time, we will move on. The correct answer was option {correct_answer}."
                     )
                     return "timeout"
 
@@ -490,6 +502,16 @@ class BaseInteraction:
                 await self.prepare_for_input(agent)
                 continue
 
+            # Continue is not a valid answer during a knowledge check
+            if "continue" in text:
+                await self.say_text(
+                    expr,
+                    "Please answer by saying Option 1, Option 2, Option 3, or say Repeat."
+                )
+
+                await self.prepare_for_input(agent)
+                continue
+
             selected = self.normalize_answer(text)
 
             if selected is None:
@@ -499,7 +521,7 @@ class BaseInteraction:
                 if retries_used < 2:
                     await self.say_text(
                         expr,
-                        "I didn't understand that. Please say Option 1, Option 2, Option 3, or say Repeat."
+                        "I didn't understand that. Please answer by saying Option 1, Option 2, Option 3, or say Repeat."
                     )
                     await self.prepare_for_input(agent)
                     continue
