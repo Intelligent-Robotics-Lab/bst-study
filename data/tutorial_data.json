@@ -53,12 +53,21 @@
 
     {
       "section": "practice_response",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Remember that you can reference the LED sheet at any time for reminders of these topics as needed."
+      }
+    },
+
+    {
+      "section": "practice_response",
       "type": "interaction",
       "mode": "response",
       "success_text": "Great! Thank you for sharing!",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Let's do some practice. Once I indicate that I am listening, tell me your favorite animal."
+        "text": "Let's now do some practice. When responding, please speak clearly so that we can best hear you. Once I indicate to you that I am listening, tell me your favorite animal."
       }
     },
 
@@ -90,7 +99,7 @@
       "mode": "pause",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Next, we are going to practice pausing the interaction. To pause the interaction, raise your hand and wait until my LEDs turn blue indicating a have received your request. You can also use the command word found on the top left of your content sheet as backup but should stick to the gesture when possible. Try it yourself now by raising your hand."
+        "text": "Next, we are going to practice pausing the interaction. To pause the interaction, raise your hand for a few seconds and wait until my LEDs turn blue indicating they have received your request. You can also use the command word found on the top left of your content sheet as backup but should stick to the gesture when possible. Try it yourself now by raising your hand for a few seconds."
       }
     },
 
