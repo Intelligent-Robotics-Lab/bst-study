@@ -285,7 +285,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Following reinforcement of this SD, the initial instruction will be repeated. If correct, we reinforce and move on to the next trial, whereas if another incorrect response persists, we must repeat the procedure just described."
+        "text": "Following reinforcement of this SD, we go back to repeat the intial instruction again."
       },
       "nonverbals": []
     },
@@ -295,7 +295,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You will see this process demonstrated during the modeling phase and can refer to the flowchart on your content sheet to refresh your memory."
+        "text": "You will see this correction process demonstrated during the modeling phase and can refer to the flowchart on your content sheet to refresh your memory."
       },
       "nonverbals": []
     },

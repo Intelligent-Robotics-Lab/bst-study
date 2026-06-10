@@ -201,6 +201,61 @@ class BaseInteraction:
 
         return None
     
+    async def wait_for_any_response(self, agent):
+        """Waits for any user response during tutorial interactions."""
+        
+        print("[WAITING FOR RESPONSE]")
+
+        agent.state.latest_transcript = None
+        self.last_transcript = None
+
+        await self.prepare_for_input(agent)
+
+        retries_used = 0
+        timeout = 0
+
+        while True:
+
+            transcript = agent.state.latest_transcript
+
+            if transcript:
+                print(f"[FOUND TRANSCRIPT] {transcript}")
+
+                text = transcript.lower().strip()
+
+                self.last_transcript = text
+                agent.state.latest_transcript = None
+
+                await self.set_led("off")
+
+                return text
+
+            await asyncio.sleep(0.1)
+            timeout += 1
+
+            if timeout >= 60:  # Only a 6-second timeout for the tutorial phase as we expect faster answers
+
+                retries_used += 1
+
+                # Only allow 2 retries before moving on
+                if retries_used < 2:
+                    await self.say_text(
+                        self.expr,
+                        "Sorry, I didn't hear a response. Please try again."
+                    )
+
+                    await self.prepare_for_input(agent)
+                    timeout = 0
+                    continue
+
+                await self.say_text(
+                    self.expr,
+                    "Sorry, I still didn't hear a response. We will continue."
+                )
+
+                await self.set_led("off")
+                return None
+    
     # --------------------
     # NAVIGATION FUNCTIONS
     # --------------------
@@ -212,7 +267,7 @@ class BaseInteraction:
         self.state = "NAVIGATION"
         self.last_transcript = None
 
-        await self.say_text(expr, "Please say, continue, repeat the step, repeat the section, summary?")
+        await self.say_text(expr, "Please say, continue, repeat the section, repeat the statement, or summary?")
         await self.prepare_for_input(agent)
 
         timeout = 0
@@ -249,18 +304,22 @@ class BaseInteraction:
             print(f"[NAV INPUT] {text}")
 
             if "continue" in text:
+                await self.say_text(expr, "Continuing.")
                 self.state = "LECTURE"
                 return "continue"
 
             if "summary" in text:
+                await self.say_text(expr, "Here is a summary.")
                 self.state = "LECTURE"
                 return "summary"
 
             if "section" in text:
+                await self.say_text(expr, "Repeating that section.")
                 self.state = "LECTURE"
                 return "repeat_section"
 
             if "repeat" in text or "again" in text:
+                await self.say_text(expr, "Repeating that statement.")
                 self.state = "LECTURE"
                 return "repeat_step"
 
@@ -431,6 +490,7 @@ class BaseInteraction:
                 action = await self.handle_question_navigation(expr, agent, step, full_question)
 
                 if action == "repeat_question":
+                    await self.say_text(expr, "Repeating the question.")
                     await self.say_text(expr, full_question)
                     await self.prepare_for_input(agent)
                     timeout = 0
@@ -438,10 +498,13 @@ class BaseInteraction:
                     continue
 
                 if action == "repeat_section":
+                    await self.say_text(expr, "Repeating the section.")
                     return "repeat_section"
 
                 if action == "summary":
+                    await self.say_text(expr, "Here is a summary.")
                     await self.play_summary(step, expr)
+                    await self.say_text(expr, "Now, please answer Option 1, Option 2, Option 3, or say repeat.")
                     await self.prepare_for_input(agent)
                     timeout = 0
                     continue
@@ -646,7 +709,7 @@ class BaseInteraction:
             "green": "#00FF00",
             "blue": "#0000FF",
             "yellow": "#FFBB00",
-            "orange": "#FF8C00",
+            "orange": "#FF6F00",
             "red": "#FF0000",
             "off": "#000000"
         }
@@ -698,3 +761,93 @@ class BaseInteraction:
         await self.set_led("green")
 
         self.accepting_input = True
+
+    # -------------------
+    # TUTORIAL ACTIVITIES
+    # -------------------
+
+    async def handle_led_demo(self, step):
+        """Demonstrates an LED state by explaining its purpose
+        and displaying the specified LED color briefly."""
+
+        await self.execute_step(step)
+
+        await self.set_led(step.get("led"))
+
+        await asyncio.sleep(2)
+
+        await self.set_led("off")
+
+    async def handle_interaction(self, step, agent):
+        """Executes a tutorial interaction exercise depending on the content."""
+
+        mode = step.get("mode")
+
+        await self.execute_step(step)
+
+        if mode == "pause":
+            await self.prepare_for_input(agent)
+
+            while not self.interrupted:
+                await asyncio.sleep(0.1)
+
+            await asyncio.sleep(2)
+
+            self.interrupted = False
+
+            await self.set_led("off")
+
+            await self.say_text(
+                self.expr,
+                "Great! I detected your raised hand and paused the interaction."
+            )
+
+            return
+
+        # Everything else waits for a response
+        response = await self.wait_for_any_response(agent)
+
+        if mode == "response":
+
+            reply = step.get(
+                "success_text",
+                "Great! Thank you for sharing!"
+            )
+
+            await self.say_text(self.expr, reply)
+
+        elif mode == "question":
+
+            await self.say_text(
+                self.expr,
+                "Thanks for asking! For this tutorial, my favorite color is blue."
+            )
+
+        elif mode == "feedback":
+
+            color = step.get("feedback_led", "yellow")
+            duration = step.get("feedback_duration", 2)
+
+            await self.set_led(color)
+
+            await asyncio.sleep(duration)
+
+            await self.set_led("off")
+
+            await self.say_text(
+                self.expr,
+                "Great! While the LEDs were briefly yellow, I was demonstrating feedback processing."
+            )
+
+        elif mode == "red_demo":
+
+            await self.set_led("red")
+
+            await asyncio.sleep(2)
+
+            await self.set_led("off")
+
+            await self.say_text(
+                self.expr,
+                "The red LEDs indicate that I was unable to understand the response. During this study, you may occasionally see this signal or be asked to repeat what you said. Your patience is much appreciated."
+            )

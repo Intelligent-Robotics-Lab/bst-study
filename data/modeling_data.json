@@ -194,7 +194,7 @@
       "question": {
         "text": "What was the purpose of this interaction?",
         "choices": [
-          "Option 1. Practice imitation.",
+          "Option 1. To practice imitation.",
           "Option 2. Correct an error.",
           "Option 3. Identify a preferred reinforcer."
         ],
@@ -360,7 +360,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Next is the receptive SD. Unlike the imitative SD, the receptive SD relies on spoken instruction rather than copying an observed action. This would proceed as follows."
+        "text": "Next is the receptive SD. Unlike the imitative SD, the receptive SD relies on spoken instruction rather than copying an observed action. In this example we are also going to demonstrate prompting. This would proceed as follows."
       },
       "summary": {
         "enabled": true,
@@ -658,7 +658,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "The last SD we will present is the emotion labeling SD that teaches the learner to identify emotional context and map these observations to labels. This is also a form of the tacting SD."
+        "text": "The last SD we will present is the emotion labeling SD that teaches the learner to identify emotional context and map these observations to labels."
       },
       "summary": {
         "enabled": true,
@@ -1060,7 +1060,7 @@
       },
       "summary": {
         "enabled": true,
-        "text": "This section prepares the learner to move from observation into active practice by taking on the role of the trainer. The learner will complete the SDs themselves while following the same procedures demonstrated during modeling."
+        "text": "This section prepares the learner to move from observation into active rehearsal by taking on the role of the trainer. The learner will complete the SDs themselves while following the same procedures demonstrated during modeling."
       },
       "nonverbals": []
     },

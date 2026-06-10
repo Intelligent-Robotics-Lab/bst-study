@@ -3,28 +3,37 @@ from logic.base_interaction import BaseInteraction
 
 """This class contains the logic for navigating through the modeling phase."""
 class Modeling(BaseInteraction):
-    # Name for logic and debugging
+    """Implements the modeling phase of the study.
+
+    Loads modeling content from JSON and uses the shared
+    interaction functionality provided by BaseInteraction."""
+    
+    # MODULE DATA
+
     def get_module_name(self):
         return "modeling"
 
-    # Loads modeling steps from the JSON data
     def load_steps(self):
         with open("data/modeling_data.json", "r") as f:
             return json.load(f)["steps"]
+
+    # MAIN EXECUTE
 
     async def run_main_loop(self, agent):
 
         while self.current_index < len(self.steps):
 
             step = self.steps[self.current_index]
+            step_type = step.get("type")
             self.current_section = step.get("section")
 
             print(f"\n[INDEX] {self.current_index}/{len(self.steps)}")
             print(f"[SECTION] {self.current_section}")
-            print(f"[TYPE] {step.get('type')}")
+            print(f"[TYPE] {step_type}")
             print(f"[SPEAKING] {self.is_speaking}")
 
-            if step.get("type") == "knowledge_check":
+            # Knowledge checks are handled seperately from standard content steps
+            if step_type == "knowledge_check":
                 result = await self.handle_knowledge_check(step, self.expr, agent)
 
                 if result == "repeat_section":
@@ -36,6 +45,7 @@ class Modeling(BaseInteraction):
         
             await self.execute_step(step)
 
+            # If user requested a pause via hand-raise
             if self.interrupted:
                 self.interrupted = False
 
