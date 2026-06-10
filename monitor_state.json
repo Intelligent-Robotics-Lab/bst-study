@@ -1,1 +1,7 @@
-{"trial_sd": "SD_6", "trial_state": "SD"}
+{
+    "trial_sd": null,
+    "trial_state": "SD",
+    "transcript": null,
+    "emotion": "neutral",
+    "completed_sds": []
+}

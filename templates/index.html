@@ -7,66 +7,119 @@
         body {
             margin: 0;
             padding: 0;
-
-            background-color: #1e1e1e;
+            background: #1e1e1e;
             color: white;
-
             font-family: Arial, sans-serif;
+            min-height: 100vh;
 
             display: flex;
             justify-content: center;
             align-items: center;
-
-            height: 100vh;
-            text-align: center;
         }
 
         .container {
-            width: 90%;
-            max-width: 1400px;
+            width: 95%;
+            max-width: 1600px;
         }
 
         h1 {
+            text-align: center;
             font-size: 4rem;
-            margin-bottom: 50px;
             color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
         }
 
         .card {
             background: #2c2c2c;
-
             border-radius: 20px;
-
-            padding: 40px;
-            margin: 25px 0;
-
+            padding: 30px;
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
 
         .label {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: #bbbbbb;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .value {
-            font-size: 5rem;
+            font-size: 3rem;
             font-weight: bold;
             word-wrap: break-word;
-        }
-
-        .state {
-            color: #4CAF50;
         }
 
         .sd {
             color: #00BFFF;
         }
 
-        .timestamp {
+        .state {
+            color: #4CAF50;
+        }
+
+        .transcript {
+            color: #FFD54F;
+        }
+
+        .emotion {
+            color: #FF7B7B;
+        }
+
+        .progress-section {
             margin-top: 40px;
-            font-size: 1.5rem;
-            color: #888888;
+            background: #2c2c2c;
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .progress-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        .circles {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .sd-circle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #555;
+            border: 4px solid #888;
+            transition: 0.3s;
+        }
+
+        .circle.completed {
+            background: #4CAF50;
+            border-color: #6cff73;
+            box-shadow: 0 0 20px #4CAF50;
+        }
+
+        .circle-label {
+            margin-top: 10px;
+            font-size: 1.3rem;
+        }
+
+        .timestamp {
+            text-align: center;
+            margin-top: 25px;
+            color: #999;
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -77,14 +130,70 @@
 
     <h1>DTT Session Monitor</h1>
 
-    <div class="card">
-        <div class="label">Current SD</div>
-        <div id="sd" class="value sd">Waiting...</div>
+    <div class="grid">
+
+        <div class="card">
+            <div class="label">Current SD</div>
+            <div id="sd" class="value sd">Waiting...</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Trial State</div>
+            <div id="state" class="value state">---</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Current Transcript</div>
+            <div id="transcript" class="value transcript">---</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Emotion Detected</div>
+            <div id="emotion" class="value emotion">---</div>
+        </div>
+
     </div>
 
-    <div class="card">
-        <div class="label">Trial State</div>
-        <div id="state" class="value state">---</div>
+    <div class="progress-section">
+
+        <div class="progress-title">
+            SD Progress
+        </div>
+
+        <div class="circles">
+
+            <div class="sd-circle">
+                <div id="sd1" class="circle"></div>
+                <div class="circle-label">SD1</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd2" class="circle"></div>
+                <div class="circle-label">SD2</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd3" class="circle"></div>
+                <div class="circle-label">SD3</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd4" class="circle"></div>
+                <div class="circle-label">SD4</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd5" class="circle"></div>
+                <div class="circle-label">SD5</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd6" class="circle"></div>
+                <div class="circle-label">SD6</div>
+            </div>
+
+        </div>
+
     </div>
 
     <div id="updated" class="timestamp">
@@ -108,16 +217,47 @@ async function updateMonitor() {
         document.getElementById("state").textContent =
             data.trial_state || "---";
 
+        document.getElementById("transcript").textContent =
+            data.transcript || "---";
+
+        document.getElementById("emotion").textContent =
+            data.emotion || "---";
+
+        const completed = data.completed_sds || [];
+
+        console.log("Completed SDs:", completed);
+
+        for (let i = 1; i <= 6; i++) {
+
+            const circle = document.getElementById(`sd${i}`);
+
+            if (!circle) continue;
+
+            if (completed.includes(`SD_${i}`)) {
+                circle.classList.add("completed");
+            } else {
+                circle.classList.remove("completed");
+            }
+        }
+
         document.getElementById("updated").textContent =
             "Updated: " + new Date().toLocaleTimeString();
 
     }
     catch(err) {
 
+        console.error(err);
+
         document.getElementById("sd").textContent =
             "Connection Lost";
 
         document.getElementById("state").textContent =
+            "---";
+
+        document.getElementById("transcript").textContent =
+            "---";
+
+        document.getElementById("emotion").textContent =
             "---";
     }
 }

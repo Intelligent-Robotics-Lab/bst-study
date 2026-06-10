@@ -44,6 +44,24 @@
                         "timing": "during"
                       }
                     ]
+                },
+                "reinforce_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.95,
+                        "duration": 1.0,
+                        "timing": "during"
+                      }
+                    ]
                 }
             
             
@@ -132,6 +150,24 @@
                         "timing": "during"
                       }
                     ]
+                },
+                "reinforce_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.95,
+                        "duration": 1.0,
+                        "timing": "during"
+                      }
+                    ]
                 }
         },
 
@@ -166,6 +202,24 @@
                         "intensity": 1.5,
                         "duration": 0.75,
                         "repeats": 3,
+                        "timing": "during"
+                      }
+                    ]
+                },
+                "reinforce_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.95,
+                        "duration": 1.0,
                         "timing": "during"
                       }
                     ]
@@ -257,6 +311,24 @@
                         "timing": "during"
                       }
                     ]
+                },
+                "reinforce_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.95,
+                        "duration": 1.0,
+                        "timing": "during"
+                      }
+                    ]
                 }
         },
 
@@ -287,6 +359,24 @@
                         "timing": "during"
                       }
                     ]
+                },
+                "reinforce_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.95,
+                        "duration": 1.0,
+                        "timing": "during"
+                      }
+                    ]
                 }
         },
 
@@ -304,8 +394,8 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": "BALL! BALL! BALL! I WANT BALL! I WANT BALL! <BREAK=1>  Tuh tuh tuh tuh tuh tuh tuh tuh tuh tuh tuh",
-                        "volume": 80
+                        "text": "O O O! O! O O O O O O O! O",
+                        "volume": 85
                     },
 
                     "nonverbals": [
@@ -321,7 +411,7 @@
                         "action": "Roll",
                         "intensity": 0.7,
                         "duration": 1.5,
-                        "repeats": 7,
+                        "repeats": 5,
                         "timing": "during"
                       }
                     ]
@@ -369,6 +459,24 @@
                         "intensity": 0.75,
                         "duration": 0.75,
                         "repeats": 2,
+                        "timing": "during"
+                      }
+                    ]
+                },
+                "reinforce_behavior":
+                {
+                    "embodiment": "kid",
+
+                    "verbal": {
+                      "text": ""
+                    },
+
+                    "nonverbals" : [
+                      {
+                        "channel": "face",
+                        "action": "Happy",
+                        "intensity": 0.95,
+                        "duration": 1.0,
                         "timing": "during"
                       }
                     ]

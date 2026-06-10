@@ -12,13 +12,26 @@ def current_sd():
 
     try:
         with open("monitor_state.json", "r") as f:
-            return jsonify(json.load(f))
+            data = json.load(f)
 
-    except Exception:
+        return jsonify({
+            "trial_sd": data.get("trial_sd"),
+            "trial_state": data.get("trial_state"),
+            "transcript": data.get("transcript"),
+            "emotion": data.get("emotion"),
+            "completed_sds": data.get("completed_sds", [])
+        })
+
+    except Exception as e:
+        print(e)
+
         return jsonify({
             "trial_sd": None,
-            "trial_state": None
+            "trial_state": None,
+            "transcript": None,
+            "emotion": None,
+            "completed_sds": []
         })
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
