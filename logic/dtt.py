@@ -661,7 +661,7 @@ class DTT:
                 # Trainer inactivity timeout
                 # ----------------------------------
 
-                WAIT_TIMEOUT = 15
+                WAIT_TIMEOUT = 10
 
                 if (
                     state == CurrentState.USER
@@ -699,6 +699,7 @@ class DTT:
                             text=hint
                         )
                         agent.state.latest_transcript = None
+                        reset_inactivity_timer()
 
                 command = self.detect_system_command(
                     transcript
@@ -814,7 +815,8 @@ class DTT:
                         await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.REINFORCEMENT:
-                        
+                        print("REINFORCEMENT STARTED")
+                        print(f"Transcript = {transcript}")
                         transcript = agent.state.latest_transcript
 
                         print("REINFORCEMENT STARTED")
@@ -982,17 +984,20 @@ class DTT:
                         )
 
                         state = CurrentState.USER
-                        agent.state.latest_transcript = None
                         if trial["correctness"] == "Correct":
                             reinforcement_source = "correct"
                             trial_state = TrialState.REINFORCEMENT
-                            agent.state.latest_transcript = None
 
                         elif trial["correctness"] == "No Response":
                             trial_state = TrialState.PROMPTING
                             reset_inactivity_timer()
 
+
                         await self.turn_on_green_led(expr=expr)
+
+                        await asyncio.sleep(0.1)
+                        
+                        agent.state.latest_transcript = None
 
                         await asyncio.sleep(0.1)
 
@@ -1010,11 +1015,13 @@ class DTT:
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
-                        agent.state.latest_transcript = None
 
                         await self.turn_on_green_led(expr=expr)
                         await asyncio.sleep(0.1)
+                        
+                        agent.state.latest_transcript = None
 
+                        await asyncio.sleep(0.1)
                     elif trial_state == TrialState.KID_BEHAVIOR_HP:
                         await self.turn_off_green_led(expr=expr)
 
@@ -1034,7 +1041,10 @@ class DTT:
 
                         await self.turn_on_green_led(expr=expr)
                         await asyncio.sleep(0.1)
+                        
+                        agent.state.latest_transcript = None
 
+                        await asyncio.sleep(0.1)
                     elif trial_state == TrialState.KID_BEHAVIOR_RETRY:
                         await self.turn_off_green_led(expr=expr)
 
@@ -1046,18 +1056,18 @@ class DTT:
                         )
 
                         reinforcement_source = "retry"
-                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
-                        agent.state.latest_transcript = None
 
                         await self.turn_on_green_led(expr=expr)
                         await asyncio.sleep(0.1)
-                       
+                        
+                        agent.state.latest_transcript = None
 
-                    await asyncio.sleep(0.1)
+                        await asyncio.sleep(0.1)                       
 
+ 
                 elif state == CurrentState.TRAINER:
                     if trial_state == TrialState.FEEDBACK:
                         await self.turn_off_green_led(expr=expr)
@@ -1138,7 +1148,7 @@ class DTT:
                         if len(completed_sds) >= 6:
                                 #Play Final Thing wrapping everything up
                             final_trial = trial_data["SD_7"]    
-                            self.run_kid_behavior(expr=expr, behavior=final_trial["child_behavior"])
+                            await self.run_kid_behavior(expr=expr, behavior=final_trial["child_behavior"])
                             DTT_IN_PROGRESS = False
                             print("You're Done")
                         else:
