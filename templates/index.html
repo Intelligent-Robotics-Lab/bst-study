@@ -4,6 +4,7 @@
     <title>DTT Monitor</title>
 
     <style>
+        
         body {
             margin: 0;
             padding: 0;
@@ -172,6 +173,9 @@
         .phase.completed {
             opacity: 1;
         }
+        .transcript-card {
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 
@@ -195,15 +199,11 @@
             <div id="state" class="value state">---</div>
         </div>
 
-        <div class="card">
+        <div class="card transcript-card">
             <div class="label">Current Transcript</div>
             <div id="transcript" class="value transcript">---</div>
         </div>
 
-        <div class="card">
-            <div class="label">Emotion Detected</div>
-            <div id="emotion" class="value emotion">---</div>
-        </div>
 
     </div>
 
@@ -262,7 +262,10 @@
     <h1>Instruction Trial</h1>
 
     <div class="phase-list">
-
+        <div id="inst0" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Tutorial</div>
+        </div>
         <div id="inst1" class="phase pending">
             <div class="phase-circle"></div>
             <div>Introduction</div>
@@ -288,10 +291,6 @@
             <div>Full Process Walkthrough</div>
         </div>
 
-        <div id="inst6" class="phase pending">
-            <div class="phase-circle"></div>
-            <div>Modeling & Review</div>
-        </div>
 
     </div>
 
@@ -304,7 +303,10 @@
     <h1>Modeling Trial</h1>
 
     <div class="phase-list">
-
+        <div id="mod0" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Intro</div>
+        </div>
         <div id="mod1" class="phase pending">
             <div class="phase-circle"></div>
             <div>Manding and Motivation</div>
@@ -328,6 +330,10 @@
         <div id="mod5" class="phase pending">
             <div class="phase-circle"></div>
             <div>Emotion Labeling</div>
+        </div>
+        <div id="mod6" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Error Correction & Prompting</div>
         </div>
 
     </div>
@@ -357,7 +363,7 @@ function showScreen(screenName) {
 
 function updateInstructionPhases(currentPhase) {
 
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 0; i <= 6; i++) {
 
         const phase = document.getElementById(`inst${i}`);
 
@@ -413,8 +419,6 @@ async function updateMonitor() {
         document.getElementById("transcript").textContent =
             data.transcript || "---";
 
-        document.getElementById("emotion").textContent =
-            data.emotion || "---";
 
         const completed = data.completed_sds || [];
 
@@ -446,9 +450,6 @@ async function updateMonitor() {
             "---";
 
         document.getElementById("transcript").textContent =
-            "---";
-
-        document.getElementById("emotion").textContent =
             "---";
     }
 }

@@ -3,11 +3,13 @@ from logic.base_interaction import BaseInteraction
 from logic.monitor import update_monitor
 
 SECTION_TO_PHASE = {
+    "intro": 0,
     "manding": 1,
     "imitative": 2,
     "receptive": 3,
     "tacting": 4,
-    "emotion": 5
+    "emotion": 5,
+    "error_correction": 6
 }
 
 class Modeling(BaseInteraction):

@@ -43,18 +43,6 @@ class SDRecognizer:
 
             sd_id = self.sd_ids[i]
             sd = self.trial_data[sd_id]
-
-            # Special handling for emotion SDs
-            if sd.get("sd_type") == "Emotion":
-                expected_emotion = sd.get("emotion", "").lower()
-                print(
-                    f"Checking {sd_id}: "
-                    f"detected={detected_emotion} "
-                    f"expected={expected_emotion}"
-                    )
-                if detected_emotion != expected_emotion:
-                    continue
-
             score = self._cosine(query_emb, sd_emb)
             scores.append((score, sd_id))
 

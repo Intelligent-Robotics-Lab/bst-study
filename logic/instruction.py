@@ -3,13 +3,11 @@ from logic.base_interaction import BaseInteraction
 from logic.monitor import update_monitor
 
 SECTION_TO_PHASE = {
-    "intro": 1,
-    "instruction_intro": 2,
-    "skills_overview": 3,
-    "prompting_error_correction": 4,
-    "reinforcement_motivation": 5,
-    "full_process_walkthrough": 6,
-    "checkpoint": 6
+    "instruction_intro": 1,
+    "skills_overview": 2,
+    "prompting_error_correction": 3,
+    "reinforcement_motivation": 4,
+    "full_process_walkthrough": 5,
 }
 
 
@@ -30,7 +28,11 @@ class Instruction(BaseInteraction):
         with open("data/instruction_data.json", "r") as f:
             return json.load(f)["steps"]
 
-    # MAIN EXECUTE
+    async def run_main_loop(self, agent):
+        """Executes the primary module flow by iterating through all
+        instructional steps, handling knowledge checks, navigation
+        requests, and section replay behavior."""
+         # MAIN EXECUTE
 
     async def run_main_loop(self, agent):
         """Executes the primary module flow by iterating through all
