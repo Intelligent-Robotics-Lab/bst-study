@@ -1,9 +1,9 @@
 {
-  "trial_sd": null,
-  "trial_state": "SD",
+  "trial_sd": "SD_4",
+  "trial_state": "PROMPTING",
   "screen": "rehearsal",
-  "current_phase": 5,
-  "transcript": "Thank you.",
-  "emotion": "neutral",
+  "current_phase": 0,
+  "transcript": "Points to it being something With like trial data.",
+  "emotion": "happy",
   "completed_sds": []
 }

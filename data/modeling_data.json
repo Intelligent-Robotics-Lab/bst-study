@@ -1126,6 +1126,16 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
+        "text": "You can also watch the screen which will provide you with helpful information about the interaction state. If at any point something seems incorrect, such as the wrong SD number on the screen, you can just tell me, restart, and we will start the interaction over."
+      },
+      "nonverbals": []
+    },
+
+    {
+      "section": "transition_to_rehearsal",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
         "text": "Once I let you know that everything is ready by signaling that we are listening with the LEDs, you can begin the interactions by reading the first SD."
       },
       "nonverbals": []

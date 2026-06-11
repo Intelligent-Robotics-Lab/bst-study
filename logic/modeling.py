@@ -12,7 +12,6 @@ SECTION_TO_PHASE = {
     "error_correction": 6
 }
 
-
 class Modeling(BaseInteraction):
     """Implements the modeling phase of the study.
 
@@ -64,16 +63,6 @@ class Modeling(BaseInteraction):
             print(f"[SECTION] {self.current_section}")
             print(f"[PHASE] {phase}")
             print(f"[TYPE] {step.get('type')}")
-
-            if step.get("type") == "knowledge_check":
-
-                result = await self.handle_knowledge_check(
-                    step,
-                    self.expr,
-                    agent
-                )
-            print(f"[TYPE] {step_type}")
-            print(f"[SPEAKING] {self.is_speaking}")
 
             # Knowledge checks are handled seperately from standard content steps
             if step_type == "knowledge_check":

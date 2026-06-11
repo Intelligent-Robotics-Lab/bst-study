@@ -91,7 +91,7 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                        "text": ""
+                        "text": "Blue."
                     },
 
                     "nonverbals": [
@@ -100,19 +100,6 @@
                         "action": "Happy",
                         "intensity": 0.6,
                         "duration": 1.0,
-                        "timing": "during"
-                      },
-                      {
-                        "channel": "head",
-                        "action": "Shake",
-                        "intensity": 1.5,
-                        "duration": 0.75,
-                        "repeats": 3,
-                        "timing": "during"
-                      },
-                      {
-                        "channel": "gaze",
-                        "action": "user",
                         "timing": "during"
                       }
                     ]
