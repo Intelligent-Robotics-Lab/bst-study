@@ -7,84 +7,246 @@
         body {
             margin: 0;
             padding: 0;
-
-            background-color: #1e1e1e;
+            background: #1e1e1e;
             color: white;
-
             font-family: Arial, sans-serif;
+            min-height: 100vh;
 
             display: flex;
             justify-content: center;
             align-items: center;
-
-            height: 100vh;
-            text-align: center;
         }
 
         .container {
-            width: 90%;
-            max-width: 1400px;
+            width: 95%;
+            max-width: 1600px;
         }
 
         h1 {
+            text-align: center;
             font-size: 4rem;
-            margin-bottom: 50px;
             color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
         }
 
         .card {
             background: #2c2c2c;
-
             border-radius: 20px;
-
-            padding: 40px;
-            margin: 25px 0;
-
+            padding: 30px;
             box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
 
         .label {
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: #bbbbbb;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         .value {
-            font-size: 5rem;
+            font-size: 3rem;
             font-weight: bold;
             word-wrap: break-word;
-        }
-
-        .state {
-            color: #4CAF50;
         }
 
         .sd {
             color: #00BFFF;
         }
 
-        .timestamp {
+        .state {
+            color: #4CAF50;
+        }
+
+        .transcript {
+            color: #FFD54F;
+        }
+
+        .emotion {
+            color: #FF7B7B;
+        }
+
+        .progress-section {
             margin-top: 40px;
-            font-size: 1.5rem;
-            color: #888888;
+            background: #2c2c2c;
+            border-radius: 20px;
+            padding: 30px;
+        }
+
+        .progress-title {
+            font-size: 2rem;
+            margin-bottom: 25px;
+        }
+
+        .circles {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .sd-circle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #555;
+            border: 4px solid #888;
+            transition: 0.3s;
+        }
+
+        .circle.completed {
+            background: #4CAF50;
+            border-color: #6cff73;
+            box-shadow: 0 0 20px #4CAF50;
+        }
+
+        .circle-label {
+            margin-top: 10px;
+            font-size: 1.3rem;
+        }
+
+        .timestamp {
+            text-align: center;
+            margin-top: 25px;
+            color: #999;
+            font-size: 1.2rem;
+        }
+
+        /* Multi-screen support */
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .phase-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .phase {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #2c2c2c;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 2rem;
+            transition: 0.3s;
+        }
+
+        .phase-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #888;
+            background: #555;
+        }
+
+        .phase.completed .phase-circle {
+            background: #4CAF50;
+            border-color: #6cff73;
+            box-shadow: 0 0 15px #4CAF50;
+        }
+
+        .phase.pending {
+            opacity: 0.5;
+        }
+
+        .phase.completed {
+            opacity: 1;
         }
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- MONITOR SCREEN -->
+
+<div id="rehersal" class="container screen active">
 
     <h1>DTT Session Monitor</h1>
 
-    <div class="card">
-        <div class="label">Current SD</div>
-        <div id="sd" class="value sd">Waiting...</div>
+    <div class="grid">
+
+        <div class="card">
+            <div class="label">Current SD</div>
+            <div id="sd" class="value sd">Waiting...</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Trial State</div>
+            <div id="state" class="value state">---</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Current Transcript</div>
+            <div id="transcript" class="value transcript">---</div>
+        </div>
+
+        <div class="card">
+            <div class="label">Emotion Detected</div>
+            <div id="emotion" class="value emotion">---</div>
+        </div>
+
     </div>
 
-    <div class="card">
-        <div class="label">Trial State</div>
-        <div id="state" class="value state">---</div>
+    <div class="progress-section">
+
+        <div class="progress-title">
+            SD Progress
+        </div>
+
+        <div class="circles">
+
+            <div class="sd-circle">
+                <div id="sd1" class="circle"></div>
+                <div class="circle-label">SD1</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd2" class="circle"></div>
+                <div class="circle-label">SD2</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd3" class="circle"></div>
+                <div class="circle-label">SD3</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd4" class="circle"></div>
+                <div class="circle-label">SD4</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd5" class="circle"></div>
+                <div class="circle-label">SD5</div>
+            </div>
+
+            <div class="sd-circle">
+                <div id="sd6" class="circle"></div>
+                <div class="circle-label">SD6</div>
+            </div>
+
+        </div>
+
     </div>
 
     <div id="updated" class="timestamp">
@@ -93,7 +255,137 @@
 
 </div>
 
+<!-- INSTRUCTION SCREEN -->
+
+<div id="instruction" class="container screen">
+
+    <h1>Instruction Trial</h1>
+
+    <div class="phase-list">
+
+        <div id="inst1" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Introduction</div>
+        </div>
+
+        <div id="inst2" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Skills Training Overview</div>
+        </div>
+
+        <div id="inst3" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Prompting & Error Correction</div>
+        </div>
+
+        <div id="inst4" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Reinforcement & Motivation</div>
+        </div>
+
+        <div id="inst5" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Full Process Walkthrough</div>
+        </div>
+
+        <div id="inst6" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Modeling & Review</div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODELING SCREEN -->
+
+<div id="modeling" class="container screen">
+
+    <h1>Modeling Trial</h1>
+
+    <div class="phase-list">
+
+        <div id="mod1" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Manding and Motivation</div>
+        </div>
+
+        <div id="mod2" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Imitation</div>
+        </div>
+
+        <div id="mod3" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Reception</div>
+        </div>
+
+        <div id="mod4" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Tact and Labeling</div>
+        </div>
+
+        <div id="mod5" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Emotion Labeling</div>
+        </div>
+
+    </div>
+
+</div>
+
 <script>
+
+function showScreen(screenName) {
+
+    document.querySelectorAll(".screen")
+        .forEach(screen => screen.classList.remove("active"));
+
+    if (screenName === "instruction") {
+        document.getElementById("instruction")
+            .classList.add("active");
+    }
+    else if (screenName === "modeling") {
+        document.getElementById("modeling")
+            .classList.add("active");
+    }
+    else {
+        document.getElementById("rehersal")
+            .classList.add("active");
+    }
+}
+
+function updateInstructionPhases(currentPhase) {
+
+    for (let i = 1; i <= 6; i++) {
+
+        const phase = document.getElementById(`inst${i}`);
+
+        if (i <= currentPhase) {
+            phase.classList.add("completed");
+            phase.classList.remove("pending");
+        } else {
+            phase.classList.remove("completed");
+            phase.classList.add("pending");
+        }
+    }
+}
+
+function updateModelingPhases(currentPhase) {
+
+    for (let i = 1; i <= 5; i++) {
+
+        const phase = document.getElementById(`mod${i}`);
+
+        if (i <= currentPhase) {
+            phase.classList.add("completed");
+            phase.classList.remove("pending");
+        } else {
+            phase.classList.remove("completed");
+            phase.classList.add("pending");
+        }
+    }
+}
 
 async function updateMonitor() {
 
@@ -102,11 +394,42 @@ async function updateMonitor() {
         const response = await fetch("/current_sd");
         const data = await response.json();
 
+        showScreen(data.screen || "monitor");
+
+        if (data.screen === "instruction") {
+            updateInstructionPhases(data.current_phase || 0);
+        }
+
+        if (data.screen === "modeling") {
+            updateModelingPhases(data.current_phase || 0);
+        }
+
         document.getElementById("sd").textContent =
             data.trial_sd || "None";
 
         document.getElementById("state").textContent =
             data.trial_state || "---";
+
+        document.getElementById("transcript").textContent =
+            data.transcript || "---";
+
+        document.getElementById("emotion").textContent =
+            data.emotion || "---";
+
+        const completed = data.completed_sds || [];
+
+        for (let i = 1; i <= 6; i++) {
+
+            const circle = document.getElementById(`sd${i}`);
+
+            if (!circle) continue;
+
+            if (completed.includes(`SD_${i}`)) {
+                circle.classList.add("completed");
+            } else {
+                circle.classList.remove("completed");
+            }
+        }
 
         document.getElementById("updated").textContent =
             "Updated: " + new Date().toLocaleTimeString();
@@ -114,16 +437,48 @@ async function updateMonitor() {
     }
     catch(err) {
 
+        console.error(err);
+
         document.getElementById("sd").textContent =
             "Connection Lost";
 
         document.getElementById("state").textContent =
+            "---";
+
+        document.getElementById("transcript").textContent =
+            "---";
+
+        document.getElementById("emotion").textContent =
             "---";
     }
 }
 
 updateMonitor();
 setInterval(updateMonitor, 1000);
+
+/* TESTING ONLY - remove after verifying */
+
+// Press 1 = Monitor
+// Press 2 = Instruction
+// Press 3 = Modeling
+
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "1") {
+        showScreen("monitor");
+    }
+
+    if (e.key === "2") {
+        showScreen("instruction");
+        updateInstructionPhases(4);
+    }
+
+    if (e.key === "3") {
+        showScreen("modeling");
+        updateModelingPhases(3);
+    }
+
+});
 
 </script>
 

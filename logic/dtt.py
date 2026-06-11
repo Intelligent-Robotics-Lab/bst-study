@@ -11,6 +11,8 @@ from Perception.perception_client import PerceptionClient
 from logic.feedback import FeedbackHolder
 from logic.feedback import evaluate_dtt_session
 from dataclasses import dataclass
+from logic.monitor import update_monitor
+import time
 
 
 class CurrentState(Enum):
@@ -468,6 +470,58 @@ class DTT:
         )
 
         await asyncio.sleep(0.5)
+    async def turn_on_blue_led(self, expr):
+
+        turn = {
+            "embodiment": "trainer",
+            "verbal": {
+                "text": " "
+            },
+            "nonverbals": [
+                {
+                    "channel": "led",
+                    "action": "on",
+                    "color": "#0000FF",
+                    "duration": 2.0
+                }
+            ]
+        }
+
+        packet = expr.build(turn)
+
+        await expr.execute(
+            agent_type=self.agent,
+            embodiment="trainer",
+            packet=packet,
+        )
+
+        await asyncio.sleep(0.5)
+    async def turn_off_blue_led(self, expr):
+
+        turn = {
+            "embodiment": "kid",
+            "verbal": {
+                "text": " "
+            },
+            "nonverbals": [
+                {
+                    "channel": "led",
+                    "action": "off",
+                    "color": "#0000FF",
+                    "duration": 2.0
+                }
+            ]
+        }
+
+        packet = expr.build(turn)
+
+        await expr.execute(
+            agent_type=self.agent,
+            embodiment="trainer",
+            packet=packet,
+        )
+
+        await asyncio.sleep(0.5)
        
     async def flash_red_led(self, expr):
 
@@ -521,6 +575,28 @@ class DTT:
         await asyncio.sleep(
             sleep_time + 0.3
         )
+    def update_monitor_state(
+        self,
+        trial_sd,
+        trial_state,
+        transcript,
+        emotion,
+        completed_sds
+    ):
+        update_monitor(
+            screen="rehearsal",
+            trial_sd=trial_sd,
+            trial_state=(
+                trial_state.name
+                if trial_state
+                else None
+            ),
+            transcript=transcript,
+            emotion=emotion,
+            completed_sds=list(completed_sds)
+        )
+
+         
 #################################################################################
 #                           MAIN DTT LOOP                                       #
 #################################################################################
@@ -529,13 +605,21 @@ class DTT:
 
 
     async def main_dtt_loop(self):
+        global DTT_IN_PROGRESS
 
+        last_activity = time.monotonic()
+        prompt_given = False
+
+        def reset_inactivity_timer():
+            nonlocal last_activity, prompt_given
+            last_activity = time.monotonic()
+            prompt_given = False
         state = CurrentState.USER
         trial_state = TrialState.SD 
         trial_sd = None
         current_sd = None
         reinforcement_source = None
-
+        completed_sds = set()
         with open("data/trial_data.json", "r") as f:
             trial_data = json.load(f)["trial_data"]
 
@@ -573,12 +657,60 @@ class DTT:
                 self.current_trial_state = trial_state
                 self.current_trial_sd = trial_sd
                 transcript = agent.state.latest_transcript
+                emotion = agent.state.latest_emotion
+
+                # ----------------------------------
+                # Trainer inactivity timeout
+                # ----------------------------------
+
+                WAIT_TIMEOUT = 15
+
+                if (
+                    state == CurrentState.USER
+                    and trial_state in [
+                        TrialState.SD,
+                        TrialState.PROMPTING,
+                        TrialState.HP_SD,
+                        TrialState.RETRY_SD,
+                    ]
+                ):
+
+                    elapsed = time.monotonic() - last_activity
+
+                    if elapsed >= WAIT_TIMEOUT and not prompt_given:
+                        agent.state.latest_transcript = None
+
+                        prompt_given = True
+
+                        if trial_state == TrialState.SD:
+                            hint = "Please give the next instruction to the child."
+
+                        elif trial_state == TrialState.PROMPTING:
+                            hint = "Please try prompting the child?"
+
+                        elif trial_state == TrialState.HP_SD:
+                            hint = "Try presenting a high probability instruction."
+
+                        elif trial_state == TrialState.RETRY_SD:
+                            hint = "Try presenting the original instruction again."
+
+                        print(f"[TIMEOUT] {hint}")
+
+                        await self.speak_text(
+                            expr=expr,
+                            text=hint
+                        )
+                        agent.state.latest_transcript = None
+
                 command = self.detect_system_command(
                     transcript
                 )
 
+                self.update_monitor_state(trial_sd=trial_sd, trial_state=trial_state, transcript=transcript, emotion=emotion, completed_sds=completed_sds)
+
                 if command != SystemCommand.NONE:
 
+                    await self.turn_on_blue_led(expr=expr)
                     result = await self.handle_system_command(
                         command=command,
                         expr=expr,
@@ -606,6 +738,7 @@ class DTT:
                             result.current_sd
                         )
 
+                    await self.turn_off_blue_led(expr=expr)
                     continue
 
                 # -------------------------
@@ -617,22 +750,14 @@ class DTT:
                         feedback.user_utterances = []
                         feedback.child_utterances = []
                         trial_sd = None
-                        with open("monitor_state.json", "w") as f:
-                                json.dump(
-                                    {
-                                        "trial_sd": trial_sd,
-                                        "trial_state": trial_state.name
-                                    },
-                                    f
-                                )
-
+                       
                         transcript = agent.state.latest_transcript
                         emotion = agent.state.latest_emotion
 
                         print(f"[USER INPUT] transcript={transcript}")
 
                         if transcript and transcript != last_processed:
-
+                            reset_inactivity_timer()
                             last_processed = transcript
 
                             observed = {
@@ -646,14 +771,21 @@ class DTT:
 
                             current_sd = result["matched_sd_id"]
                             trial_sd = current_sd
-                            with open("monitor_state.json", "w") as f:
-                                json.dump(
-                                    {
-                                        "trial_sd": trial_sd,
-                                        "trial_state": trial_state.name
-                                    },
-                                    f
-                                )
+
+                            if current_sd is not None:
+                                print(f"current_sd={current_sd}")
+                                print(f"completed_sds={completed_sds}")
+                                if current_sd in completed_sds:
+
+                                    text = f"You have already completed {current_sd} please move onto a different SD."
+
+                                    await self.speak_text(expr=expr, text=text)
+
+                                    agent.state.latest_transcript = None
+                                    current_sd = None
+                                    trial_sd = None
+                                    continue
+                            
                             print(f"[SD DETECTED] {current_sd}")
 
                             feedback.reset()
@@ -684,12 +816,13 @@ class DTT:
                         await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.REINFORCEMENT:
-
+                        
                         transcript = agent.state.latest_transcript
 
                         print("REINFORCEMENT STARTED")
 
                         if transcript is not None:
+                            reset_inactivity_timer()
 
                             self.log_transcript(
                                 feedback=feedback,
@@ -702,7 +835,6 @@ class DTT:
                             print(f"Trial SD: {trial_sd}")
                             print(f"Current SD: {current_sd}")
 
-                            current_sd = None
 
                             print(f"Reinforcement_Source: {reinforcement_source}")
 
@@ -710,23 +842,42 @@ class DTT:
 
                                 state = CurrentState.USER
                                 trial_state = TrialState.HP_SD
+                                agent.state.latest_transcript = None
                                 reinforcement_source = None
+                                reset_inactivity_timer()
+                               
+                                
 
                             elif reinforcement_source == "hp_sds":
 
                                 state = CurrentState.USER
                                 trial_state = TrialState.RETRY_SD
+                                agent.state.latest_transcript = None
                                 reinforcement_source = None
+                                reset_inactivity_timer()
 
                             elif reinforcement_source in ["correct", "retry"]:
 
                                 state = CurrentState.TRAINER
                                 trial_state = TrialState.FEEDBACK
+                                agent.state.latest_transcript = None
                                 reinforcement_source = None
+                                reset_inactivity_timer()
+                            await self.turn_off_green_led(expr=expr)
+                            trial = trial_data[trial_sd]
+
+                            await self.run_kid_behavior(
+                                expr,
+                                trial["reinforce_behavior"]
+                            )
+
+                            current_sd = None
+
 
                         await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.PROMPTING:
+                        await self.turn_on_green_led(expr=expr)
 
                         result = await self.handle_sd_recognition(
                             transcript=agent.state.latest_transcript,
@@ -741,6 +892,7 @@ class DTT:
                         )
 
                         if result:
+                            reset_inactivity_timer()
 
                             last_processed = result["last_processed"]
                             current_sd = result["current_sd"]
@@ -756,20 +908,22 @@ class DTT:
                         await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.HP_SD:
+                        await self.turn_on_green_led(expr=expr)
 
                         result = await self.handle_sd_recognition(
                             transcript=agent.state.latest_transcript,
                             emotion=agent.state.latest_emotion,
-                            recognizer=hp_recognizer,              # HP recognizer
+                            recognizer=hp_recognizer,              
                             feedback=feedback,
                             trial_state=trial_state,
-                            expected_sd=None,                      # Any HP SD is acceptable
+                            expected_sd=None,                     
                             next_trial_state=TrialState.KID_BEHAVIOR_HP,
                             state=state,
                             last_processed=last_processed,
                         )
 
                         if result:
+                            reset_inactivity_timer()
 
                             last_processed = result["last_processed"]
                             current_sd = result["current_sd"]
@@ -785,6 +939,7 @@ class DTT:
                         await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.RETRY_SD:
+                        await self.turn_on_green_led(expr=expr)
 
                         result = await self.handle_sd_recognition(
                             transcript=agent.state.latest_transcript,
@@ -799,6 +954,7 @@ class DTT:
                         )
 
                         if result:
+                            reset_inactivity_timer()
 
                             last_processed = result["last_processed"]
                             current_sd = result["current_sd"]
@@ -832,9 +988,12 @@ class DTT:
                         if trial["correctness"] == "Correct":
                             reinforcement_source = "correct"
                             trial_state = TrialState.REINFORCEMENT
+                            agent.state.latest_transcript = None
 
                         elif trial["correctness"] == "No Response":
                             trial_state = TrialState.PROMPTING
+                            reset_inactivity_timer()
+
                         await self.turn_on_green_led(expr=expr)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_2:
@@ -848,10 +1007,11 @@ class DTT:
                         )
 
                         reinforcement_source = "prompting"
-                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
+                        agent.state.latest_transcript = None
+
                         await self.turn_on_green_led(expr=expr)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_HP:
@@ -866,10 +1026,11 @@ class DTT:
 
                         current_sd = None
                         reinforcement_source = "hp_sds"
-                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
+                        agent.state.latest_transcript = None
+
                         await self.turn_on_green_led(expr=expr)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_RETRY:
@@ -883,10 +1044,11 @@ class DTT:
                         )
 
                         reinforcement_source = "retry"
-                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
+                        agent.state.latest_transcript = None
+
                         await self.turn_on_green_led(expr=expr)
                        
 
@@ -965,24 +1127,25 @@ class DTT:
                         await expr.execute(agent_type=self.agent, embodiment="trainer", packet=packet)
                         agent.state.latest_transcript = None
                         await self.turn_on_green_led(expr=expr)
+                        if trial_sd is not None:
+                            completed_sds.add(trial_sd)
 
-                        state = CurrentState.USER
-                        trial_state = TrialState.SD
+                        print(f"Completed SDs: {completed_sds}")
+                        if len(completed_sds) >= 6:
+                                #Play Final Thing wrapping everything up
+                            final_trial = trial_data["SD_7"]    
+                            self.run_kid_behavior(expr=expr, behavior=final_trial["child_behavior"])
+                            DTT_IN_PROGRESS = False
+                            print("You're Done")
+                        else:
+                            state = CurrentState.USER
+                            trial_state = TrialState.SD
                     
 
         finally:
             perception_task.cancel()
 
-            
-
-
-
-
-
-
-
-
-
+        
        
 def __main__():
     DTT.main_dtt_loop()

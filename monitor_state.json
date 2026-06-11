@@ -1,1 +1,11 @@
+{
+    "screen": "rehearsal",
+    "trial_sd": null,
+    "trial_state": "SD",
+    "transcript": null,
+    "emotion": "surprise",
+    "completed_sds": [
+        "SD_1"
+    ]
+}
 {"trial_sd": null, "trial_state": "SD"}

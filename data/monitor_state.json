@@ -1,0 +1,12 @@
+{
+  "trial_sd": null,
+  "trial_state": "SD",
+  "screen": "rehearsal",
+  "current_phase": 2,
+  "transcript": "Is that right? You should Think so.",
+  "emotion": "surprise",
+  "completed_sds": [
+    "SD_3",
+    "SD_6"
+  ]
+}
