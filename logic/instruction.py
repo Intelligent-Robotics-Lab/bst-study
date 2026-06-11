@@ -32,18 +32,17 @@ class Instruction(BaseInteraction):
 
     # MAIN EXECUTE
 
+    async def run_main_loop(self, agent):
+        """Executes the primary module flow by iterating through all
+        instructional steps, handling knowledge checks, navigation
+        requests, and section replay behavior."""
+
         update_monitor(
             screen="instruction",
             current_phase=1
         )
 
         last_phase = None
-
-    async def run_main_loop(self, agent):
-        """Executes the primary module flow by iterating through all
-        instructional steps, handling knowledge checks, navigation
-        requests, and section replay behavior."""
-        
         while self.current_index < len(self.steps):
 
             step = self.steps[self.current_index]
@@ -69,16 +68,6 @@ class Instruction(BaseInteraction):
             print(f"[SECTION] {self.current_section}")
             print(f"[PHASE] {phase}")
             print(f"[TYPE] {step.get('type')}")
-            print(f"[SPEAKING] {self.is_speaking}")
-
-            if step.get("type") == "knowledge_check":
-
-                result = await self.handle_knowledge_check(
-                    step,
-                    self.expr,
-                    agent
-                )
-            print(f"[TYPE] {step_type}")
             print(f"[SPEAKING] {self.is_speaking}")
 
             # Knowledge checks are handled seperately from standard content steps
