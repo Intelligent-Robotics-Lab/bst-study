@@ -14,6 +14,14 @@
       },
       "nonverbals": [
         {
+          "channel": "head",
+          "action": "Smile",
+          "intensity": 1.0,
+          "duration": 0.5,
+          "repeats": 1,
+          "timing": "after"
+        },
+        {
           "channel": "face",
           "action": "Happy",
           "intensity": 0.5,
@@ -163,6 +171,14 @@
         "text": "Ball, great! Let's work to get the ball next!"
       },
       "nonverbals": [
+        {
+          "channel": "head",
+          "action": "Smile",
+          "intensity": 1.5,
+          "duration": 1.5,
+          "repeats": 1,
+          "timing": "during"
+        },
         {
           "channel": "face",
           "action": "Happy",
@@ -676,9 +692,11 @@
       },
       "nonverbals": [
         {
-          "channel": "face",
-          "action": "VeryHappy",
-          "intensity": 0.75,
+          "channel": "head",
+          "action": "BigSmile",
+          "intensity": 1.5,
+          "duration": 2.0,
+          "repeats": 1,
           "timing": "after"
         },
         {
@@ -791,9 +809,11 @@
       },
       "nonverbals": [
         {
-          "channel": "face",
-          "action": "VeryHappy",
-          "intensity": 0.8,
+          "channel": "head",
+          "action": "BigSmile",
+          "intensity": 1.5,
+          "duration": 2.0,
+          "repeats": 1,
           "timing": "after"
         },
         {
@@ -835,9 +855,11 @@
       },
       "nonverbals": [
         {
-          "channel": "face",
-          "action": "VeryHappy",
-          "intensity": 1.0,
+          "channel": "head",
+          "action": "BigSmile",
+          "intensity": 2.0,
+          "duration": 2.0,
+          "repeats": 1,
           "timing": "after"
         },
         {
@@ -853,7 +875,7 @@
       "type": "content",
       "embodiment": "kid",
       "verbal": {
-        "text": "Happy?"
+        "text": "Happy."
       },
       "nonverbals": [
         {
@@ -918,9 +940,11 @@
       },
       "nonverbals": [
         {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 1.0,
+          "channel": "head",
+          "action": "BigSmile",
+          "intensity": 1.5,
+          "duration": 2.0,
+          "repeats": 1,
           "timing": "after"
         },
         {
@@ -962,10 +986,12 @@
       },
       "nonverbals": [
         {
-          "channel": "face",
-          "action": "Happy",
-          "intensity": 1.0,
-          "timing": "during"
+          "channel": "head",
+          "action": "BigSmile",
+          "intensity": 0.5,
+          "duration": 1.0,
+          "repeats": 1,
+          "timing": "after"
         },
         {
           "channel": "gaze",
