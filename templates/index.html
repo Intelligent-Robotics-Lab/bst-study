@@ -4,13 +4,33 @@
     <title>DTT Monitor</title>
 
     <style>
+
+        :root {
+
+            /*
+            * Main scaling variable.
+            *
+            * Increase 1.0 -> 1.25 or 1.5 for larger TVs.
+            * Decrease to 0.8 for smaller displays.
+            */
+
+            --scale: min(
+                1,
+                calc(100vw / 1920),
+                calc(100vh / 1080)
+            );
+        }
+
         body {
             margin: 0;
             padding: 0;
             background: #1e1e1e;
             color: white;
             font-family: Arial, sans-serif;
-            min-height: 100vh;
+
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
 
             display: flex;
             justify-content: center;
@@ -19,37 +39,38 @@
 
         .container {
             width: 95%;
-            max-width: 1600px;
+            max-width: calc(1600px * var(--scale));
         }
 
         h1 {
             text-align: center;
-            font-size: 4rem;
+            font-size: calc(4rem * var(--scale));
             color: #4CAF50;
-            margin-bottom: 30px;
+            margin-bottom: calc(30px * var(--scale));
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            gap: calc(25px * var(--scale));
         }
 
         .card {
             background: #2c2c2c;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            border-radius: calc(20px * var(--scale));
+            padding: calc(30px * var(--scale));
+            box-shadow: 0 0 calc(20px * var(--scale))
+                rgba(0,0,0,0.4);
         }
 
         .label {
-            font-size: 1.5rem;
+            font-size: calc(1.5rem * var(--scale));
             color: #bbbbbb;
-            margin-bottom: 10px;
+            margin-bottom: calc(10px * var(--scale));
         }
 
         .value {
-            font-size: 3rem;
+            font-size: calc(3rem * var(--scale));
             font-weight: bold;
             word-wrap: break-word;
         }
@@ -71,21 +92,21 @@
         }
 
         .progress-section {
-            margin-top: 40px;
+            margin-top: calc(40px * var(--scale));
             background: #2c2c2c;
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: calc(20px * var(--scale));
+            padding: calc(30px * var(--scale));
         }
 
         .progress-title {
-            font-size: 2rem;
-            margin-bottom: 25px;
+            font-size: calc(2rem * var(--scale));
+            margin-bottom: calc(25px * var(--scale));
         }
 
         .circles {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: calc(40px * var(--scale));
             flex-wrap: wrap;
         }
 
@@ -96,30 +117,35 @@
         }
 
         .circle {
-            width: 80px;
-            height: 80px;
+            width: calc(80px * var(--scale));
+            height: calc(80px * var(--scale));
+
             border-radius: 50%;
             background: #555;
-            border: 4px solid #888;
+
+            border: calc(4px * var(--scale))
+                solid #888;
+
             transition: 0.3s;
         }
 
         .circle.completed {
             background: #4CAF50;
             border-color: #6cff73;
-            box-shadow: 0 0 20px #4CAF50;
+            box-shadow: 0 0 calc(20px * var(--scale))
+                #4CAF50;
         }
 
         .circle-label {
-            margin-top: 10px;
-            font-size: 1.3rem;
+            margin-top: calc(10px * var(--scale));
+            font-size: calc(1.3rem * var(--scale));
         }
 
         .timestamp {
             text-align: center;
-            margin-top: 25px;
+            margin-top: calc(25px * var(--scale));
             color: #999;
-            font-size: 1.2rem;
+            font-size: calc(1.2rem * var(--scale));
         }
 
         /* Multi-screen support */
@@ -135,34 +161,47 @@
         .phase-list {
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            max-width: 1000px;
+            gap: calc(20px * var(--scale));
+
+            max-width: calc(1000px * var(--scale));
+
             margin: 0 auto;
         }
 
         .phase {
             display: flex;
             align-items: center;
-            gap: 20px;
+
+            gap: calc(20px * var(--scale));
+
             background: #2c2c2c;
-            padding: 25px;
-            border-radius: 15px;
-            font-size: 2rem;
+
+            padding: calc(25px * var(--scale));
+
+            border-radius: calc(15px * var(--scale));
+
+            font-size: calc(2rem * var(--scale));
+
             transition: 0.3s;
         }
 
         .phase-circle {
-            width: 40px;
-            height: 40px;
+            width: calc(40px * var(--scale));
+            height: calc(40px * var(--scale));
+
             border-radius: 50%;
-            border: 3px solid #888;
+
+            border: calc(3px * var(--scale))
+                solid #888;
+
             background: #555;
         }
 
         .phase.completed .phase-circle {
             background: #4CAF50;
             border-color: #6cff73;
-            box-shadow: 0 0 15px #4CAF50;
+            box-shadow: 0 0 calc(15px * var(--scale))
+                #4CAF50;
         }
 
         .phase.pending {
@@ -172,6 +211,7 @@
         .phase.completed {
             opacity: 1;
         }
+
     </style>
 </head>
 
@@ -179,7 +219,7 @@
 
 <!-- MONITOR SCREEN -->
 
-<div id="rehersal" class="container screen active">
+<div id="rehearsal" class="container screen active">
 
     <h1>DTT Session Monitor</h1>
 
@@ -262,7 +302,10 @@
     <h1>Instruction Trial</h1>
 
     <div class="phase-list">
-
+        <div id="inst0" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Tutorial</div>
+        </div>
         <div id="inst1" class="phase pending">
             <div class="phase-circle"></div>
             <div>Introduction</div>
@@ -288,10 +331,6 @@
             <div>Full Process Walkthrough</div>
         </div>
 
-        <div id="inst6" class="phase pending">
-            <div class="phase-circle"></div>
-            <div>Modeling & Review</div>
-        </div>
 
     </div>
 
@@ -304,7 +343,10 @@
     <h1>Modeling Trial</h1>
 
     <div class="phase-list">
-
+        <div id="mod0" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Intro</div>
+        </div>
         <div id="mod1" class="phase pending">
             <div class="phase-circle"></div>
             <div>Manding and Motivation</div>
@@ -329,6 +371,10 @@
             <div class="phase-circle"></div>
             <div>Emotion Labeling</div>
         </div>
+        <div id="mod6" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Error Correction & Prompting</div>
+        </div>
 
     </div>
 
@@ -350,14 +396,14 @@ function showScreen(screenName) {
             .classList.add("active");
     }
     else {
-        document.getElementById("rehersal")
+        document.getElementById("rehearsal")
             .classList.add("active");
     }
 }
 
 function updateInstructionPhases(currentPhase) {
 
-    for (let i = 1; i <= 6; i++) {
+    for (let i = 0; i <= 6; i++) {
 
         const phase = document.getElementById(`inst${i}`);
 

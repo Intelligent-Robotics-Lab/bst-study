@@ -1,6 +1,7 @@
 import json
 import asyncio
 from logic.base_interaction import BaseInteraction
+from logic.monitor import update_monitor
 
 class Tutorial(BaseInteraction):
     """Implements the tutorial phase of the study.
@@ -20,9 +21,16 @@ class Tutorial(BaseInteraction):
 
     # MAIN EXECUTION LOOP
 
+
     async def run_main_loop(self, agent):
         """Executes the tutorial sequence. Iterates through the steps
         and routes to the appropriate interactions."""
+
+        # Tutorial = Instruction screen, phase 0
+        update_monitor(
+            screen="instruction",
+            current_phase=0
+        )
 
         while self.current_index < len(self.steps):
 
@@ -46,13 +54,25 @@ class Tutorial(BaseInteraction):
                 if self.interrupted:
                     self.interrupted = False
 
-                    action = await self.handle_navigation(self.expr, agent, step)
+                    action = await self.handle_navigation(
+                        self.expr,
+                        agent,
+                        step
+                    )
 
                     if action == "repeat_step":
                         continue
 
                     if action == "repeat_section":
-                        self.current_index = self.find_section_start(self.current_section)
+                        self.current_index = self.find_section_start(
+                            self.current_section
+                        )
                         continue
 
-            self.current_index += 1    
+            self.current_index += 1
+
+        # Tutorial complete -> move to Instruction phase 1
+        update_monitor(
+            screen="instruction",
+            current_phase=1
+        )
