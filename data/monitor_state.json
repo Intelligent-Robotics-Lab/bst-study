@@ -1,8 +1,8 @@
 {
   "trial_sd": null,
   "trial_state": "SD",
-  "screen": "rehearsal",
-  "current_phase": 2,
+  "screen": "modeling",
+  "current_phase": 5,
   "transcript": "Is that right? You should Think so.",
   "emotion": "surprise",
   "completed_sds": [
