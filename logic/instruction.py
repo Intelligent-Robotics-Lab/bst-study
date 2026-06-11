@@ -13,19 +13,24 @@ SECTION_TO_PHASE = {
 }
 
 
-"""This class contains all of the logic for navigating through the instruction module."""
 class Instruction(BaseInteraction):
 
     # Module name used for logic and runtime identification
+    """Implements the instruction phase of the study.
+
+    Loads instruction content from JSON and uses the shared
+    interaction functionality provided by BaseInteraction."""
+    
+    # MODULE DATA
+
     def get_module_name(self):
         return "instruction"
 
-    # Loads instruction phase steps from the JSON data
     def load_steps(self):
         with open("data/instruction_data.json", "r") as f:
             return json.load(f)["steps"]
 
-    async def run_main_loop(self, agent):
+    # MAIN EXECUTE
 
         update_monitor(
             screen="instruction",
@@ -34,9 +39,15 @@ class Instruction(BaseInteraction):
 
         last_phase = None
 
+    async def run_main_loop(self, agent):
+        """Executes the primary module flow by iterating through all
+        instructional steps, handling knowledge checks, navigation
+        requests, and section replay behavior."""
+        
         while self.current_index < len(self.steps):
 
             step = self.steps[self.current_index]
+            step_type = step.get("type")
             self.current_section = step.get("section")
 
             phase = SECTION_TO_PHASE.get(
@@ -67,6 +78,12 @@ class Instruction(BaseInteraction):
                     self.expr,
                     agent
                 )
+            print(f"[TYPE] {step_type}")
+            print(f"[SPEAKING] {self.is_speaking}")
+
+            # Knowledge checks are handled seperately from standard content steps
+            if step_type == "knowledge_check":
+                result = await self.handle_knowledge_check(step, self.expr, agent)
 
                 if result == "repeat_section":
                     self.current_index = self.find_section_start(
@@ -79,6 +96,7 @@ class Instruction(BaseInteraction):
 
             await self.execute_step(step)
 
+            # If user requested a pause via hand-raise
             if self.interrupted:
 
                 self.interrupted = False

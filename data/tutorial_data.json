@@ -1,102 +1,135 @@
 {
-"type": "tutorial_module",
-"steps": [
-{
-  "section": "tutorial_intro",
-  "type": "content",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Hello and welcome! Before we begin, let's spend some time getting familiar with how to interact with me. We will learn how the LED indicators work and practice a few short interactions together."
-  }
-},
+  "type": "tutorial_module",
+  "steps": [
 
-{
-  "section": "leds",
-  "type": "led_demo",
-  "led": "green",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "When my LEDs are green, as you will see, it is your turn to speak and that means I am actively listening."
-  }
-},
+    {
+      "section": "tutorial_intro",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Hello and welcome! Before we begin, let's spend some time getting familiar with how to interact with me. We will learn how the LED indicators work and practice a few short interactions together."
+      }
+    },
 
-{
-  "section": "leds",
-  "type": "led_demo",
-  "led": "blue",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "When you see blue, I have detected a pause request and will stop at the next appropriate point."
-  }
-},
+    {
+      "section": "leds",
+      "type": "led_demo",
+      "led": "green",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "When my LEDs are green, as I will show, it is your turn to speak and that means I am actively listening."
+      }
+    },
 
-{
-  "section": "leds",
-  "type": "led_demo",
-  "led": "yellow",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "If yellow, I am processing information or preparing feedback."
-  }
-},
+    {
+      "section": "leds",
+      "type": "led_demo",
+      "led": "blue",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "When you see blue, I have detected a pause request and will stop at the next appropriate point."
+      }
+    },
 
-{
-  "section": "leds",
-  "type": "led_demo",
-  "led": "red",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Lastly, if you see red, it means I was unable to clearly understand what was said and may ask for the response again."
-  }
-},
+    {
+      "section": "leds",
+      "type": "led_demo",
+      "led": "yellow",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "If yellow, I am processing information or preparing feedback."
+      }
+    },
 
-{
-  "section": "practice_response",
-  "type": "interaction",
-  "mode": "response",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Lets do some practice now. Once I indicate to you that I am listening, tell me your favorite animal."
-  }
-},
+    {
+      "section": "leds",
+      "type": "led_demo",
+      "led": "red",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Lastly, if you see red, it means I was unable to clearly understand what was said and may ask for the response again."
+      }
+    },
 
-{
-  "section": "practice_question",
-  "type": "interaction",
-  "mode": "question",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Now lets practice asking a simple question. Ask me what my favorite color is."
-  }
-},
+    {
+      "section": "practice_response",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Remember that you can reference the LED sheet at any time for reminders of these topics as needed."
+      }
+    },
 
-{
-  "section": "feedback_demo",
-  "type": "interaction",
-  "mode": "feedback",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Now, tell me your favorite season."
-  }
-},
+    {
+      "section": "practice_response",
+      "type": "interaction",
+      "mode": "response",
+      "success_text": "Great! Thank you for sharing!",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Let's now do some practice. When responding, please speak clearly so that we can best hear you. Once I indicate to you that I am listening, tell me your favorite animal."
+      }
+    },
 
-{
-  "section": "pause_practice",
-  "type": "interaction",
-  "mode": "pause",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Finally, use the pause commands found on the top left of your sheet to practice pausing me."
-  }
-},
+    {
+      "section": "practice_question",
+      "type": "interaction",
+      "mode": "question",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Now let's practice asking a question. Ask me what my favorite color is."
+      }
+    },
 
-{
-  "section": "tutorial_complete",
-  "type": "content",
-  "embodiment": "trainer",
-  "verbal": {
-    "text": "Excellent. You now know what the LED indicators mean and how to interact with me. We are ready to begin by moving into the bulk of the training."
-  }
-}
-]
+    {
+      "section": "feedback_demo",
+      "type": "interaction",
+      "mode": "feedback",
+      "feedback_led": "yellow",
+      "feedback_duration": 2,
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Now, tell me your favorite season. After you respond, watch how the LEDs will turn yellow while I am processing feedback."
+      }
+    },
+
+    {
+      "section": "pause_practice",
+      "type": "interaction",
+      "mode": "pause",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Next, we are going to practice pausing the interaction. To pause the interaction, raise your hand for a few seconds and wait until my LEDs turn blue indicating they have received your request. You can also use the command word found on the top left of your content sheet as backup but should stick to the gesture when possible. Try it yourself now by raising your hand for a few seconds."
+      }
+    },
+
+    {
+      "section": "pause_practice",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "During training, whenever this happens I will ask whether you would like to continue, repeat the step, repeat the section, or hear a summary. These commands help you review information as needed and can be found in the same Navigation Commands box."
+      }
+    },
+
+    {
+      "section": "red_practice",
+      "type": "interaction",
+      "mode": "red_demo",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "Finally, let's go over what happens when I cannot understand a response. What is your favorite color?"
+      }
+    },
+
+    {
+      "section": "tutorial_complete",
+      "type": "content",
+      "embodiment": "trainer",
+      "verbal": {
+        "text": "This is the end of the tutorial. You now know what the LED indicators mean and how to interact with me. We are ready to begin the training."
+      }
+    }
+
+  ]
 }
