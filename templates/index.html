@@ -4,33 +4,14 @@
     <title>DTT Monitor</title>
 
     <style>
-
-        :root {
-
-            /*
-            * Main scaling variable.
-            *
-            * Increase 1.0 -> 1.25 or 1.5 for larger TVs.
-            * Decrease to 0.8 for smaller displays.
-            */
-
-            --scale: min(
-                1,
-                calc(100vw / 1920),
-                calc(100vh / 1080)
-            );
-        }
-
+        
         body {
             margin: 0;
             padding: 0;
             background: #1e1e1e;
             color: white;
             font-family: Arial, sans-serif;
-
-            width: 100vw;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
 
             display: flex;
             justify-content: center;
@@ -39,38 +20,37 @@
 
         .container {
             width: 95%;
-            max-width: calc(1600px * var(--scale));
+            max-width: 1600px;
         }
 
         h1 {
             text-align: center;
-            font-size: calc(4rem * var(--scale));
+            font-size: 4rem;
             color: #4CAF50;
-            margin-bottom: calc(30px * var(--scale));
+            margin-bottom: 30px;
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: calc(25px * var(--scale));
+            gap: 25px;
         }
 
         .card {
             background: #2c2c2c;
-            border-radius: calc(20px * var(--scale));
-            padding: calc(30px * var(--scale));
-            box-shadow: 0 0 calc(20px * var(--scale))
-                rgba(0,0,0,0.4);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
         }
 
         .label {
-            font-size: calc(1.5rem * var(--scale));
+            font-size: 1.5rem;
             color: #bbbbbb;
-            margin-bottom: calc(10px * var(--scale));
+            margin-bottom: 10px;
         }
 
         .value {
-            font-size: calc(3rem * var(--scale));
+            font-size: 3rem;
             font-weight: bold;
             word-wrap: break-word;
         }
@@ -92,21 +72,21 @@
         }
 
         .progress-section {
-            margin-top: calc(40px * var(--scale));
+            margin-top: 40px;
             background: #2c2c2c;
-            border-radius: calc(20px * var(--scale));
-            padding: calc(30px * var(--scale));
+            border-radius: 20px;
+            padding: 30px;
         }
 
         .progress-title {
-            font-size: calc(2rem * var(--scale));
-            margin-bottom: calc(25px * var(--scale));
+            font-size: 2rem;
+            margin-bottom: 25px;
         }
 
         .circles {
             display: flex;
             justify-content: center;
-            gap: calc(40px * var(--scale));
+            gap: 40px;
             flex-wrap: wrap;
         }
 
@@ -117,35 +97,30 @@
         }
 
         .circle {
-            width: calc(80px * var(--scale));
-            height: calc(80px * var(--scale));
-
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
             background: #555;
-
-            border: calc(4px * var(--scale))
-                solid #888;
-
+            border: 4px solid #888;
             transition: 0.3s;
         }
 
         .circle.completed {
             background: #4CAF50;
             border-color: #6cff73;
-            box-shadow: 0 0 calc(20px * var(--scale))
-                #4CAF50;
+            box-shadow: 0 0 20px #4CAF50;
         }
 
         .circle-label {
-            margin-top: calc(10px * var(--scale));
-            font-size: calc(1.3rem * var(--scale));
+            margin-top: 10px;
+            font-size: 1.3rem;
         }
 
         .timestamp {
             text-align: center;
-            margin-top: calc(25px * var(--scale));
+            margin-top: 25px;
             color: #999;
-            font-size: calc(1.2rem * var(--scale));
+            font-size: 1.2rem;
         }
 
         /* Multi-screen support */
@@ -161,47 +136,34 @@
         .phase-list {
             display: flex;
             flex-direction: column;
-            gap: calc(20px * var(--scale));
-
-            max-width: calc(1000px * var(--scale));
-
+            gap: 20px;
+            max-width: 1000px;
             margin: 0 auto;
         }
 
         .phase {
             display: flex;
             align-items: center;
-
-            gap: calc(20px * var(--scale));
-
+            gap: 20px;
             background: #2c2c2c;
-
-            padding: calc(25px * var(--scale));
-
-            border-radius: calc(15px * var(--scale));
-
-            font-size: calc(2rem * var(--scale));
-
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 2rem;
             transition: 0.3s;
         }
 
         .phase-circle {
-            width: calc(40px * var(--scale));
-            height: calc(40px * var(--scale));
-
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-
-            border: calc(3px * var(--scale))
-                solid #888;
-
+            border: 3px solid #888;
             background: #555;
         }
 
         .phase.completed .phase-circle {
             background: #4CAF50;
             border-color: #6cff73;
-            box-shadow: 0 0 calc(15px * var(--scale))
-                #4CAF50;
+            box-shadow: 0 0 15px #4CAF50;
         }
 
         .phase.pending {
@@ -211,7 +173,9 @@
         .phase.completed {
             opacity: 1;
         }
-
+        .transcript-card {
+            grid-column: 1 / -1;
+        }
     </style>
 </head>
 
@@ -219,7 +183,7 @@
 
 <!-- MONITOR SCREEN -->
 
-<div id="rehearsal" class="container screen active">
+<div id="rehersal" class="container screen active">
 
     <h1>DTT Session Monitor</h1>
 
@@ -235,15 +199,11 @@
             <div id="state" class="value state">---</div>
         </div>
 
-        <div class="card">
+        <div class="card transcript-card">
             <div class="label">Current Transcript</div>
             <div id="transcript" class="value transcript">---</div>
         </div>
 
-        <div class="card">
-            <div class="label">Emotion Detected</div>
-            <div id="emotion" class="value emotion">---</div>
-        </div>
 
     </div>
 
@@ -396,7 +356,7 @@ function showScreen(screenName) {
             .classList.add("active");
     }
     else {
-        document.getElementById("rehearsal")
+        document.getElementById("rehersal")
             .classList.add("active");
     }
 }
@@ -459,8 +419,6 @@ async function updateMonitor() {
         document.getElementById("transcript").textContent =
             data.transcript || "---";
 
-        document.getElementById("emotion").textContent =
-            data.emotion || "---";
 
         const completed = data.completed_sds || [];
 
@@ -492,9 +450,6 @@ async function updateMonitor() {
             "---";
 
         document.getElementById("transcript").textContent =
-            "---";
-
-        document.getElementById("emotion").textContent =
             "---";
     }
 }

@@ -1,12 +1,9 @@
 {
-  "trial_sd": null,
-  "trial_state": "SD",
-  "screen": "modeling",
+  "trial_sd": "SD_4",
+  "trial_state": "HP_SD",
+  "screen": "rehearsal",
   "current_phase": 5,
-  "transcript": "Is that right? You should Think so.",
+  "transcript": "I think I fixed it.",
   "emotion": "surprise",
-  "completed_sds": [
-    "SD_3",
-    "SD_6"
-  ]
+  "completed_sds": []
 }

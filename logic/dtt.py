@@ -567,14 +567,12 @@ class DTT:
             packet,
         )
 
-        sleep_time = (
-            len(
-                behavior["verbal"]["text"]
-            ) / 14
-        ) * 1.15
-        await asyncio.sleep(
-            sleep_time + 0.3
+        sleep_time = min(
+            (len(behavior["verbal"]["text"]) / 14) * 1.15,
+            3.0
         )
+
+        await asyncio.sleep(sleep_time + 1.3)
     def update_monitor_state(
         self,
         trial_sd,
@@ -996,6 +994,8 @@ class DTT:
 
                         await self.turn_on_green_led(expr=expr)
 
+                        await asyncio.sleep(0.1)
+
                     elif trial_state == TrialState.KID_BEHAVIOR_2:
                         await self.turn_off_green_led(expr=expr)
 
@@ -1013,6 +1013,7 @@ class DTT:
                         agent.state.latest_transcript = None
 
                         await self.turn_on_green_led(expr=expr)
+                        await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_HP:
                         await self.turn_off_green_led(expr=expr)
@@ -1032,6 +1033,7 @@ class DTT:
                         agent.state.latest_transcript = None
 
                         await self.turn_on_green_led(expr=expr)
+                        await asyncio.sleep(0.1)
 
                     elif trial_state == TrialState.KID_BEHAVIOR_RETRY:
                         await self.turn_off_green_led(expr=expr)
@@ -1044,12 +1046,14 @@ class DTT:
                         )
 
                         reinforcement_source = "retry"
+                        agent.state.latest_transcript = None
 
                         state = CurrentState.USER
                         trial_state = TrialState.REINFORCEMENT
                         agent.state.latest_transcript = None
 
                         await self.turn_on_green_led(expr=expr)
+                        await asyncio.sleep(0.1)
                        
 
                     await asyncio.sleep(0.1)

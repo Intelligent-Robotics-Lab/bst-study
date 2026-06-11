@@ -39,7 +39,7 @@ client = OpenAI(
 
 SYSTEM_PROMPT = """
 You are evaluating trainer fidelity in a DTT session.
-
+Participant's Name = __________
 Trainer Persona:
 supportive
 
@@ -159,7 +159,7 @@ Improvement Rules:
 
 Feedback Statement Rules:
 
-* Address Carter directly.
+* Address Particpant directly.
 * Maximum 2 sentences.
 * Maximum 40 words.
 * Focus on the single most important observation.
