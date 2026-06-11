@@ -11,6 +11,7 @@ from Perception.perception_client import PerceptionClient
 from logic.feedback import FeedbackHolder
 from logic.feedback import evaluate_dtt_session
 from dataclasses import dataclass
+from logic.monitor import update_monitor
 import time
 
 
@@ -582,23 +583,20 @@ class DTT:
         emotion,
         completed_sds
     ):
-        with open("monitor_state.json", "w") as f:
-            json.dump(
-                {
-                    "trial_sd": trial_sd,
-                    "trial_state": (
-                        trial_state.name
-                        if trial_state else None
-                    ),
-                    "transcript": transcript,
-                    "emotion": emotion,
-                    "completed_sds": list(completed_sds)
-                },
-                f,
-                indent=4
-            )
+        update_monitor(
+            screen="rehearsal",
+            trial_sd=trial_sd,
+            trial_state=(
+                trial_state.name
+                if trial_state
+                else None
+            ),
+            transcript=transcript,
+            emotion=emotion,
+            completed_sds=list(completed_sds)
+        )
 
-    
+         
 #################################################################################
 #                           MAIN DTT LOOP                                       #
 #################################################################################
@@ -607,6 +605,7 @@ class DTT:
 
 
     async def main_dtt_loop(self):
+        global DTT_IN_PROGRESS
 
         last_activity = time.monotonic()
         prompt_given = False
@@ -687,7 +686,7 @@ class DTT:
                             hint = "Please give the next instruction to the child."
 
                         elif trial_state == TrialState.PROMPTING:
-                            hint = "The child has not responded yet. What would you do next?"
+                            hint = "Please try prompting the child?"
 
                         elif trial_state == TrialState.HP_SD:
                             hint = "Try presenting a high probability instruction."
@@ -1132,9 +1131,15 @@ class DTT:
                             completed_sds.add(trial_sd)
 
                         print(f"Completed SDs: {completed_sds}")
-
-                        state = CurrentState.USER
-                        trial_state = TrialState.SD
+                        if len(completed_sds) >= 6:
+                                #Play Final Thing wrapping everything up
+                            final_trial = trial_data["SD_7"]    
+                            self.run_kid_behavior(expr=expr, behavior=final_trial["child_behavior"])
+                            DTT_IN_PROGRESS = False
+                            print("You're Done")
+                        else:
+                            state = CurrentState.USER
+                            trial_state = TrialState.SD
                     
 
         finally:

@@ -381,8 +381,8 @@
         },
 
         "SD_6": {
-            "sd": "How do I feel?",
-            "sd_type": "Emotion",
+            "sd": "Show me your suprised face?",
+            "sd_type": "Reception",
             "correctness": "No Response",
             "challenge": "Medium",
             "pb_response_type": "AR",
@@ -400,13 +400,6 @@
 
                     "nonverbals": [
                       {
-                        "channel": "face",
-                        "action": "Happy",
-                        "intensity": 0.8,
-                        "duration": 1.0,
-                        "timing": "during"
-                      },
-                      {
                         "channel": "head",
                         "action": "Roll",
                         "intensity": 0.7,
@@ -421,16 +414,16 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Suprised",
+                      "text": "",
                       "volume": 60
                     },
 
                     "nonverbals" : [
                       {
                         "channel": "head",
-                        "action": "GazeAway",
-                        "intensity": 1.0,
-                        "duration": 1.5,
+                        "action": "Surprise",
+                        "intensity": 4.0,
+                        "duration": 5.0,
                         "repeats": 1,
                         "timing": "during"
                       }
@@ -441,24 +434,16 @@
                     "embodiment": "kid",
 
                     "verbal": {
-                      "text": "Suprised!",
+                      "text": "",
                       "volume": 60
                     },
 
                     "nonverbals" : [
                       {
-                        "channel": "face",
-                        "action": "Suprised",
-                        "intensity": 0.75,
-                        "duration": 1.0,
-                        "timing": "during"
-                      },
-                      {
                         "channel": "head",
-                        "action": "Nod",
-                        "intensity": 0.75,
-                        "duration": 0.75,
-                        "repeats": 2,
+                        "action": "Surprise",
+                        "intensity": 4.0,
+                        "duration": 5.0,
                         "timing": "during"
                       }
                     ]

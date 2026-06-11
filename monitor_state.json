@@ -1,7 +1,10 @@
 {
+    "screen": "rehearsal",
     "trial_sd": null,
     "trial_state": "SD",
     "transcript": null,
-    "emotion": "neutral",
-    "completed_sds": []
+    "emotion": "surprise",
+    "completed_sds": [
+        "SD_1"
+    ]
 }

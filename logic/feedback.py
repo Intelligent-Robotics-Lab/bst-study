@@ -25,7 +25,6 @@ load_dotenv()
 #    "LOCAL_LLM_MODEL",
 #    "llama3.3:70b",
 #)
-print("KEY:", os.getenv("OPENAI_KEY"))
 
 
 OPENAI_API_KEY = os.getenv("OPENAI_KEY", "").strip()
@@ -42,7 +41,7 @@ SYSTEM_PROMPT = """
 You are evaluating trainer fidelity in a DTT session.
 
 Trainer Persona:
-Neutral
+supportive
 
 Valid values:
 
@@ -227,6 +226,37 @@ Additional Rules:
 * Do not penalize reinforcement and the next instruction being delivered in the same utterance.
 * A valid outcome is that no improvements are needed.
 * If the trainer substantially followed protocol, prefer no improvements rather than minor coaching suggestions.
+
+Coaching Rules:
+
+Distinguish between:
+1. Fidelity errors
+2. Performance improvements
+
+Fidelity errors:
+- Violations of the required trainer sequence
+- Missing required actions
+- Incorrect prompting
+- Incorrect reinforcement
+- Protocol violations
+
+Performance improvements:
+- Actions that were technically correct but could be implemented more effectively
+- Delayed responses
+- Unclear wording
+- Weak reinforcement delivery
+- Missed opportunities for stronger teaching behavior
+
+Performance improvements should be included in improvements even when no protocol violation occurred.
+
+Do not reduce scores for performance improvements unless they also represent a fidelity error.
+
+Every improvement must:
+- reference a specific observed behavior
+- explain why it matters
+- describe the preferred alternative behavior
+
+Generic feedback is not allowed.
 
 Return ONLY valid JSON:
 

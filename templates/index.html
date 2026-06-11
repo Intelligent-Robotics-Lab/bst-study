@@ -121,12 +121,65 @@
             color: #999;
             font-size: 1.2rem;
         }
+
+        /* Multi-screen support */
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .phase-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .phase {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #2c2c2c;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 2rem;
+            transition: 0.3s;
+        }
+
+        .phase-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 3px solid #888;
+            background: #555;
+        }
+
+        .phase.completed .phase-circle {
+            background: #4CAF50;
+            border-color: #6cff73;
+            box-shadow: 0 0 15px #4CAF50;
+        }
+
+        .phase.pending {
+            opacity: 0.5;
+        }
+
+        .phase.completed {
+            opacity: 1;
+        }
     </style>
 </head>
 
 <body>
 
-<div class="container">
+<!-- MONITOR SCREEN -->
+
+<div id="rehersal" class="container screen active">
 
     <h1>DTT Session Monitor</h1>
 
@@ -202,7 +255,137 @@
 
 </div>
 
+<!-- INSTRUCTION SCREEN -->
+
+<div id="instruction" class="container screen">
+
+    <h1>Instruction Trial</h1>
+
+    <div class="phase-list">
+
+        <div id="inst1" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Introduction</div>
+        </div>
+
+        <div id="inst2" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Skills Training Overview</div>
+        </div>
+
+        <div id="inst3" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Prompting & Error Correction</div>
+        </div>
+
+        <div id="inst4" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Reinforcement & Motivation</div>
+        </div>
+
+        <div id="inst5" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Full Process Walkthrough</div>
+        </div>
+
+        <div id="inst6" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Modeling & Review</div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- MODELING SCREEN -->
+
+<div id="modeling" class="container screen">
+
+    <h1>Modeling Trial</h1>
+
+    <div class="phase-list">
+
+        <div id="mod1" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Manding and Motivation</div>
+        </div>
+
+        <div id="mod2" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Imitation</div>
+        </div>
+
+        <div id="mod3" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Reception</div>
+        </div>
+
+        <div id="mod4" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Tact and Labeling</div>
+        </div>
+
+        <div id="mod5" class="phase pending">
+            <div class="phase-circle"></div>
+            <div>Emotion Labeling</div>
+        </div>
+
+    </div>
+
+</div>
+
 <script>
+
+function showScreen(screenName) {
+
+    document.querySelectorAll(".screen")
+        .forEach(screen => screen.classList.remove("active"));
+
+    if (screenName === "instruction") {
+        document.getElementById("instruction")
+            .classList.add("active");
+    }
+    else if (screenName === "modeling") {
+        document.getElementById("modeling")
+            .classList.add("active");
+    }
+    else {
+        document.getElementById("rehersal")
+            .classList.add("active");
+    }
+}
+
+function updateInstructionPhases(currentPhase) {
+
+    for (let i = 1; i <= 6; i++) {
+
+        const phase = document.getElementById(`inst${i}`);
+
+        if (i <= currentPhase) {
+            phase.classList.add("completed");
+            phase.classList.remove("pending");
+        } else {
+            phase.classList.remove("completed");
+            phase.classList.add("pending");
+        }
+    }
+}
+
+function updateModelingPhases(currentPhase) {
+
+    for (let i = 1; i <= 5; i++) {
+
+        const phase = document.getElementById(`mod${i}`);
+
+        if (i <= currentPhase) {
+            phase.classList.add("completed");
+            phase.classList.remove("pending");
+        } else {
+            phase.classList.remove("completed");
+            phase.classList.add("pending");
+        }
+    }
+}
 
 async function updateMonitor() {
 
@@ -210,6 +393,16 @@ async function updateMonitor() {
 
         const response = await fetch("/current_sd");
         const data = await response.json();
+
+        showScreen(data.screen || "monitor");
+
+        if (data.screen === "instruction") {
+            updateInstructionPhases(data.current_phase || 0);
+        }
+
+        if (data.screen === "modeling") {
+            updateModelingPhases(data.current_phase || 0);
+        }
 
         document.getElementById("sd").textContent =
             data.trial_sd || "None";
@@ -224,8 +417,6 @@ async function updateMonitor() {
             data.emotion || "---";
 
         const completed = data.completed_sds || [];
-
-        console.log("Completed SDs:", completed);
 
         for (let i = 1; i <= 6; i++) {
 
@@ -264,6 +455,30 @@ async function updateMonitor() {
 
 updateMonitor();
 setInterval(updateMonitor, 1000);
+
+/* TESTING ONLY - remove after verifying */
+
+// Press 1 = Monitor
+// Press 2 = Instruction
+// Press 3 = Modeling
+
+document.addEventListener("keydown", (e) => {
+
+    if (e.key === "1") {
+        showScreen("monitor");
+    }
+
+    if (e.key === "2") {
+        showScreen("instruction");
+        updateInstructionPhases(4);
+    }
+
+    if (e.key === "3") {
+        showScreen("modeling");
+        updateModelingPhases(3);
+    }
+
+});
 
 </script>
 
