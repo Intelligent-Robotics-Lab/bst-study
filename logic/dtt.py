@@ -661,7 +661,7 @@ class DTT:
                 # Trainer inactivity timeout
                 # ----------------------------------
 
-                WAIT_TIMEOUT = 10
+                WAIT_TIMEOUT = 12
 
                 if (
                     state == CurrentState.USER
@@ -756,7 +756,6 @@ class DTT:
                         print(f"[USER INPUT] transcript={transcript}")
 
                         if transcript and transcript != last_processed:
-                            reset_inactivity_timer()
                             last_processed = transcript
 
                             observed = {
@@ -772,6 +771,8 @@ class DTT:
                             trial_sd = current_sd
 
                             if current_sd is not None:
+                                reset_inactivity_timer()
+                                
                                 print(f"current_sd={current_sd}")
                                 print(f"completed_sds={completed_sds}")
                                 if current_sd in completed_sds:
@@ -892,13 +893,12 @@ class DTT:
                         )
 
                         if result:
-                            reset_inactivity_timer()
 
                             last_processed = result["last_processed"]
                             current_sd = result["current_sd"]
 
                             if result["success"]:
-
+                                reset_inactivity_timer()
                                 state = result["next_state"]
                                 trial_state = result["next_trial_state"]
 
@@ -923,13 +923,12 @@ class DTT:
                         )
 
                         if result:
-                            reset_inactivity_timer()
 
                             last_processed = result["last_processed"]
                             current_sd = result["current_sd"]
 
                             if result["success"]:
-
+                                reset_inactivity_timer()
                                 state = result["next_state"]
                                 trial_state = result["next_trial_state"]
 
@@ -954,13 +953,12 @@ class DTT:
                         )
 
                         if result:
-                            reset_inactivity_timer()
 
                             last_processed = result["last_processed"]
                             current_sd = result["current_sd"]
 
                             if result["success"]:
-
+                                reset_inactivity_timer()
                                 state = result["next_state"]
                                 trial_state = result["next_trial_state"]
 
