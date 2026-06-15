@@ -30,9 +30,11 @@ class Modeling(BaseInteraction):
     # MAIN EXECUTE
 
     async def run_main_loop(self, agent):
+        """Executes the primary module flow by iterating through all
+        instructional steps, handling knowledge checks, navigation
+        requests, and section replay behavior."""
 
-        print(">>> MODELING MAIN LOOP STARTED <<<")
-
+        # Set the monitor to the first phase of modeling
         update_monitor(
             screen="modeling",
             current_phase=0
@@ -50,6 +52,7 @@ class Modeling(BaseInteraction):
                 self.current_section
             )
 
+            # Update the screen everytime a new portion of modeling has been entered
             if phase is not None and phase != last_phase:
 
                 update_monitor(
@@ -114,6 +117,7 @@ class Modeling(BaseInteraction):
 
             self.current_index += 1
 
+        # Switch the monitor to the rehearsal stage once all execution is complete for modeling
         update_monitor(
             screen="rehearsal",
             current_phase=0

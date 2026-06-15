@@ -1,7 +1,7 @@
 {
   "trial_sd": "SD_6",
   "trial_state": "PROMPTING",
-  "screen": "rehearsal",
+  "screen": "instruction",
   "current_phase": 0,
   "transcript": "Good luck. You guys know. You guys know the password. Computer, right",
   "emotion": "neutral",

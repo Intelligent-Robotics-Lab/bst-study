@@ -28,11 +28,7 @@ class Instruction(BaseInteraction):
         with open("data/instruction_data.json", "r") as f:
             return json.load(f)["steps"]
 
-    async def run_main_loop(self, agent):
-        """Executes the primary module flow by iterating through all
-        instructional steps, handling knowledge checks, navigation
-        requests, and section replay behavior."""
-         # MAIN EXECUTE
+    # MAIN EXECUTION LOOP
 
     async def run_main_loop(self, agent):
         """Executes the primary module flow by iterating through all

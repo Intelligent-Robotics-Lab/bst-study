@@ -203,7 +203,7 @@ class BaseInteraction:
     
     async def wait_for_any_response(self, agent):
         """Waits for any user response during tutorial interactions."""
-        
+
         print("[WAITING FOR RESPONSE]")
 
         agent.state.latest_transcript = None
@@ -215,6 +215,9 @@ class BaseInteraction:
         timeout = 0
 
         while True:
+            # User raised hand to pause the interaction
+            if self.interrupted:
+                return None
 
             transcript = agent.state.latest_transcript
 
@@ -806,6 +809,14 @@ class BaseInteraction:
 
         # Everything else waits for a response
         response = await self.wait_for_any_response(agent)
+
+        # Pause request occured while waiting for a response
+        if self.interrupted:
+            return
+        
+        # Timed out twice and moved on
+        if response is None:
+            return
 
         if mode == "response":
 
