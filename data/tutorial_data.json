@@ -108,7 +108,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "During training, whenever this happens I will ask whether you would like to continue, repeat the step, repeat the section, or hear a summary. These commands help you review information as needed and can be found in the same Navigation Commands box."
+        "text": "During training, whenever this happens I will ask whether you would like to continue, repeat the step, repeat the section, or hear a summary. These commands help you review information as needed and can be found in the box titled, 'Navigation Commands', in the top left corner of your sheet."
       }
     },
 

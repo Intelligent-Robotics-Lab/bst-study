@@ -28,17 +28,14 @@ class Instruction(BaseInteraction):
         with open("data/instruction_data.json", "r") as f:
             return json.load(f)["steps"]
 
-    # MAIN EXECUTION LOOP
+    # MAIN EXECUTE
 
     async def run_main_loop(self, agent):
         """Executes the primary module flow by iterating through all
         instructional steps, handling knowledge checks, navigation
         requests, and section replay behavior."""
 
-        update_monitor(
-            screen="instruction",
-            current_phase=1
-        )
+        update_monitor(screen="instruction", current_phase=1)
 
         last_phase = None
         while self.current_index < len(self.steps):
@@ -47,19 +44,11 @@ class Instruction(BaseInteraction):
             step_type = step.get("type")
             self.current_section = step.get("section")
 
-            phase = SECTION_TO_PHASE.get(
-                self.current_section,
-                1
-            )
+            phase = SECTION_TO_PHASE.get(self.current_section, 1)
 
             # Only update webpage when phase changes
             if phase != last_phase:
-
-                update_monitor(
-                    screen="instruction",
-                    current_phase=phase
-                )
-
+                update_monitor(screen="instruction", current_phase=phase)
                 last_phase = phase
 
             print(f"\n[INDEX] {self.current_index}")
@@ -73,9 +62,7 @@ class Instruction(BaseInteraction):
                 result = await self.handle_knowledge_check(step, self.expr, agent)
 
                 if result == "repeat_section":
-                    self.current_index = self.find_section_start(
-                        self.current_section
-                    )
+                    self.current_index = self.find_section_start(self.current_section)
                     continue
 
                 self.current_index += 1
@@ -88,32 +75,20 @@ class Instruction(BaseInteraction):
 
                 self.interrupted = False
 
-                action = await self.handle_navigation(
-                    self.expr,
-                    agent,
-                    step
-                )
+                action = await self.handle_navigation(self.expr, agent, step)
 
                 if action == "repeat_step":
                     continue
 
                 if action == "repeat_section":
-                    self.current_index = self.find_section_start(
-                        self.current_section
-                    )
+                    self.current_index = self.find_section_start(self.current_section)
                     continue
 
                 if action == "summary":
-                    await self.play_summary(
-                        step,
-                        self.expr
-                    )
+                    await self.play_summary(step, self.expr)
                     continue
 
             self.current_index += 1
 
         # Instruction module finished
-        update_monitor(
-            screen="modeling",
-            current_phase=1
-        )
+        update_monitor(screen="modeling", current_phase=1)

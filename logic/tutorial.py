@@ -28,10 +28,7 @@ class Tutorial(BaseInteraction):
         to the appropriate tutorial activity handler."""
         
         # Set the monitor to indicate that we are in "phase 0" of instruction -> the tutorial
-        update_monitor(
-            screen="instruction",
-            current_phase=0
-        )
+        update_monitor(screen="instruction", current_phase=0)
 
         while self.current_index < len(self.steps):
 
@@ -49,32 +46,20 @@ class Tutorial(BaseInteraction):
 
             # Interactive tutorial exercises
             elif step_type == "interaction":
+                await self.handle_interaction(step, agent)
 
-                await self.handle_interaction(
-                    step,
-                    agent
-                )
-
-                # Allow normal pause navigation after
-                # interaction steps (except pause practice,
-                # which handles itself internally)
+                # Allow normal pause navigation after interaction steps
+                # (except pause practice which handles itself internally)
                 if self.interrupted:
-
                     self.interrupted = False
 
-                    action = await self.handle_navigation(
-                        self.expr,
-                        agent,
-                        step
-                    )
+                    action = await self.handle_navigation(self.expr, agent, step)
 
                     if action == "repeat_step":
                         continue
 
                     if action == "repeat_section":
-                        self.current_index = self.find_section_start(
-                            self.current_section
-                        )
+                        self.current_index = self.find_section_start(self.current_section)
                         continue
 
                     if action == "summary":
@@ -82,26 +67,19 @@ class Tutorial(BaseInteraction):
 
             # Standard content steps
             else:
-
                 await self.execute_step(step)
 
                 if self.interrupted:
 
                     self.interrupted = False
 
-                    action = await self.handle_navigation(
-                        self.expr,
-                        agent,
-                        step
-                    )
+                    action = await self.handle_navigation(self.expr, agent, step)
 
                     if action == "repeat_step":
                         continue
 
                     if action == "repeat_section":
-                        self.current_index = self.find_section_start(
-                            self.current_section
-                        )
+                        self.current_index = self.find_section_start(self.current_section)
                         continue
 
                     if action == "summary":
@@ -110,7 +88,4 @@ class Tutorial(BaseInteraction):
             self.current_index += 1
 
         # Tutorial complete -> move to Instruction phase 1
-        update_monitor(
-            screen="instruction",
-            current_phase=1
-        )
+        update_monitor(screen="instruction", current_phase=1)
