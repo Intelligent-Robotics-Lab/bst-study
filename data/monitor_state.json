@@ -1,9 +1,15 @@
 {
   "trial_sd": "SD_6",
-  "trial_state": "PROMPTING",
+  "trial_state": "FEEDBACK",
   "screen": "instruction",
   "current_phase": 1,
-  "transcript": "Good luck. You guys know. You guys know the password. Computer, right",
-  "emotion": "neutral",
-  "completed_sds": []
+  "transcript": null,
+  "emotion": "happy",
+  "completed_sds": [
+    "SD_4",
+    "SD_1",
+    "SD_5",
+    "SD_3",
+    "SD_2"
+  ]
 }

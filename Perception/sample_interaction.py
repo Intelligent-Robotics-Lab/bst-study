@@ -4,15 +4,15 @@ from typing import Optional
 
 from Perception.perception_client import PerceptionClient
 
-
 @dataclass
 class InteractionState:
     latest_transcript: Optional[str] = None
     latest_emotion: Optional[str] = None
     latest_emotion_confidence: Optional[float] = None
 
-
 class SampleInteractionAgent:
+    """Simple agent that reacts to ASR and emotion events from the perception server."""
+
     def __init__(self, silence_timeout=5.0):
         self.state = InteractionState()
 
@@ -98,8 +98,8 @@ class SampleInteractionAgent:
             print("[AGENT] Stopping interaction.")
             return
 
-
 async def main():
+
     client = PerceptionClient(
         server_host="141.210.88.210",
         server_port=8000
@@ -116,7 +116,6 @@ async def main():
 
         # elif event_type == "emotion_update":
         #     agent.handle_emotion(payload)
-
 
 if __name__ == "__main__":
     asyncio.run(main())

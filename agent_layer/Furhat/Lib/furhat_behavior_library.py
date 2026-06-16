@@ -6,9 +6,10 @@ tracking_stop_event = {}
 current_attention = {}
 face_task = {}
 
-"""This function turns the cleaned data packet and outputs its paramters onto the agent of choice for Furhat.
-One singular function is used to control the behavior of both robots."""
 async def generic_behavior(furhat, embodiment, packet):
+    """This function turns the cleaned data packet and outputs its paramters onto the agent of choice for Furhat.
+    One singular function is used to control the behavior of both robots."""
+
     # Clean up the packet to make it usable
     speech = packet.get("speech") or {}
     nonverbals = packet.get("nonverbals", {})
@@ -123,7 +124,6 @@ async def generic_behavior(furhat, embodiment, packet):
     # Adjust system volume before speech based on the inputted value, set the default to 60 as done previously:
     volume = speech.get("volume", 50)
 
-
     # This function will only work if the system config function is added into the virtual v
     try:
         await behavior.change_volume(furhat=furhat, volume=volume)
@@ -140,12 +140,8 @@ async def generic_behavior(furhat, embodiment, packet):
     # Keep speech as the primary synchonization anchor
     text = (speech.get("text") or "").strip()
 
- # Keep speech as the primary synchronization anchor
-    text = (speech.get("text") or "").strip()
-
     if text:
         try:
-
             # Split on:
             # <BREAK>
             # <BREAK=1>
@@ -157,29 +153,18 @@ async def generic_behavior(furhat, embodiment, packet):
 
             # No break tags present
             if len(parts) == 1:
-
-                await behavior.speak_text(
-                    furhat=furhat,
-                    message=text
-                )
+                await behavior.speak_text(furhat=furhat, message=text)
 
             else:
-
-                # Format returned by re.split:
-                # [speech, pause, speech, pause, speech...]
-
+                # Format returned by re.split: [speech, pause, speech, pause, speech...]
                 speech_chunk = parts[0]
 
                 if speech_chunk.strip():
-                    await behavior.speak_text(
-                        furhat=furhat,
-                        message=speech_chunk.strip()
-                    )
+                    await behavior.speak_text(furhat=furhat, message=speech_chunk.strip())
 
                 index = 1
 
                 while index < len(parts):
-
                     pause_value = parts[index]
                     next_chunk = parts[index + 1] if index + 1 < len(parts) else ""
 
@@ -195,16 +180,12 @@ async def generic_behavior(furhat, embodiment, packet):
                     await asyncio.sleep(pause_seconds)
 
                     if next_chunk.strip():
-                        await behavior.speak_text(
-                            furhat=furhat,
-                            message=next_chunk.strip()
-                        )
+                        await behavior.speak_text(furhat=furhat, message=next_chunk.strip())
 
                     index += 2
 
         except Exception as e:
             print("[WARN] speech failed:", e)
-
 
     if gesture_task:
         try:
@@ -213,8 +194,7 @@ async def generic_behavior(furhat, embodiment, packet):
             print("[WARN] gesture failed:", e)
 
     if after_gesture:
-        # Debug print
-        print("[AFTER GESTURE STARTING]", after_gesture)
+        print("[AFTER GESTURE STARTING]", after_gesture) # Debug print
 
         try:
             await behavior.start_gesture(furhat, after_gesture["action"], after_gesture.get("intensity", 1.0), after_gesture.get("duration", 1.0), after_gesture.get("repeats", 1))

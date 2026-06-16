@@ -10,10 +10,7 @@ SECTION_TO_PHASE = {
     "full_process_walkthrough": 5,
 }
 
-
 class Instruction(BaseInteraction):
-
-    # Module name used for logic and runtime identification
     """Implements the instruction phase of the study.
 
     Loads instruction content from JSON and uses the shared
