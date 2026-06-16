@@ -30,13 +30,12 @@ class Modeling(BaseInteraction):
     # MAIN EXECUTE
 
     async def run_main_loop(self, agent):
+        """Executes the primary module flow by iterating through all
+        instructional steps, handling knowledge checks, navigation
+        requests, and section replay behavior."""
 
-        print(">>> MODELING MAIN LOOP STARTED <<<")
-
-        update_monitor(
-            screen="modeling",
-            current_phase=0
-        )
+        # Set the monitor to the first phase of modeling
+        update_monitor(screen="modeling", current_phase=0)
         print("MONITOR SET TO MODELING")
         last_phase = None
 
@@ -46,17 +45,11 @@ class Modeling(BaseInteraction):
             step_type = step.get("type")
             self.current_section = step.get("section")
 
-            phase = SECTION_TO_PHASE.get(
-                self.current_section
-            )
+            phase = SECTION_TO_PHASE.get(self.current_section)
 
+            # Update the screen everytime a new portion of modeling has been entered
             if phase is not None and phase != last_phase:
-
-                update_monitor(
-                    screen="modeling",
-                    current_phase=phase
-                )
-
+                update_monitor(screen="modeling", current_phase=phase)
                 last_phase = phase
 
             print(f"\n[INDEX] {self.current_index}/{len(self.steps)}")
@@ -69,11 +62,7 @@ class Modeling(BaseInteraction):
                 result = await self.handle_knowledge_check(step, self.expr, agent)
 
                 if result == "repeat_section":
-
-                    self.current_index = self.find_section_start(
-                        self.current_section
-                    )
-
+                    self.current_index = self.find_section_start(self.current_section)
                     continue
 
                 self.current_index += 1
@@ -83,38 +72,21 @@ class Modeling(BaseInteraction):
 
             # If user requested a pause via hand-raise
             if self.interrupted:
-
                 self.interrupted = False
-
-                action = await self.handle_navigation(
-                    self.expr,
-                    agent,
-                    step
-                )
+                action = await self.handle_navigation(self.expr, agent, step)
 
                 if action == "repeat_step":
                     continue
 
                 if action == "repeat_section":
-
-                    self.current_index = self.find_section_start(
-                        self.current_section
-                    )
-
+                    self.current_index = self.find_section_start(self.current_section)
                     continue
 
                 if action == "summary":
-
-                    await self.play_summary(
-                        step,
-                        self.expr
-                    )
-
+                    await self.play_summary(step, self.expr)
                     continue
 
             self.current_index += 1
 
-        update_monitor(
-            screen="rehearsal",
-            current_phase=0
-        )
+        # Switch the monitor to the rehearsal stage once all execution is complete for modeling
+        update_monitor(screen="rehearsal", current_phase=0)

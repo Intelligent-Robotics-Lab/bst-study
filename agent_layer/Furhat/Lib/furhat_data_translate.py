@@ -1,5 +1,5 @@
-"""Function to translate the data packets from the expression module into a usable format for the Furhat robot."""
 def translate_packet_furhat(packet):
+    """Function to translate the data packets from the expression module into a usable format for the Furhat robot."""
 
     speech = packet.get("speech") or {}
     nonverbals = packet.get("nonverbals", [])

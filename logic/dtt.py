@@ -5,9 +5,9 @@ from expression_module.expression_module import ExpressionModule
 # from logic.feedback import evaluate_dtt_session
 from logic.sd_recognizer import SDRecognizer
 from enum import Enum
-from Perception.sample_interaction import SampleInteractionAgent
-from Perception.sample_interaction import InteractionState
-from Perception.perception_client import PerceptionClient
+from perception.sample_interaction import SampleInteractionAgent
+from perception.sample_interaction import InteractionState
+from perception.perception_client import PerceptionClient
 from logic.feedback import FeedbackHolder
 from logic.feedback import evaluate_dtt_session
 from dataclasses import dataclass

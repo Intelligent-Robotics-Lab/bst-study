@@ -466,7 +466,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Let's put it all together. Please follow along with the provided flowchart."
+        "text": "As we do this, please follow along with the provided flowchart."
       },
       "summary": {
         "enabled": true,

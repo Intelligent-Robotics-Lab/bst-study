@@ -381,14 +381,14 @@
         },
 
         "SD_6": {
-            "sd": "Show me your suprised face?",
+            "sd": "Show me your happy face.",
             "sd_type": "Reception",
             "correctness": "No Response",
             "challenge": "Medium",
             "pb_response_type": "AR",
             "action": null,
             "object": null,
-            "emotion": "Surprise",
+            "emotion": "Happy",
             "child_behavior": 
                 {
                     "embodiment": "kid",
@@ -421,10 +421,9 @@
                     "nonverbals" : [
                       {
                         "channel": "head",
-                        "action": "Surprise",
-                        "intensity": 4.0,
-                        "duration": 5.0,
-                        "repeats": 1,
+                        "action": "BigSmile",
+                        "intensity": 2.0,
+                        "duration": 3.0,
                         "timing": "during"
                       }
                     ]
@@ -441,9 +440,9 @@
                     "nonverbals" : [
                       {
                         "channel": "head",
-                        "action": "Surprise",
-                        "intensity": 4.0,
-                        "duration": 5.0,
+                        "action": "BigSmile",
+                        "intensity": 2.5,
+                        "duration": 3.0,
                         "timing": "during"
                       }
                     ]
@@ -475,7 +474,7 @@
           "child_behavior": {
             "embodiment": "trainer",
             "verbal": {
-              "text": "That concludes today’s session. Thank you for your participation."
+              "text": "That concludes todays session. Thank you for your participation."
             },
             "nonverbals": [
               {
