@@ -3,15 +3,15 @@ import json
 import re
 import time
 from expression_module.expression_module import ExpressionModule
-from Perception.perception_client import PerceptionClient
-from Perception.sample_interaction import SampleInteractionAgent
+from perception.perception_client import PerceptionClient
+from perception.sample_interaction import SampleInteractionAgent
 
 class BaseInteraction:
     """Base class for instructional interactions.
 
     Provides shared functionality for perception handling, navigation, knowledge checks, LED control, 
     speech output, and freeze-state management."""
-    
+
     def __init__(self, agent=None):
         """Initializes shared interaction state, perception tracking,
         speech control flags, LED status, and gesture-detection timers."""
@@ -34,15 +34,12 @@ class BaseInteraction:
         self.hand_lost_timeout = 0.5
 
     def load_steps(self):
-        """Loads and returns instructional steps for the current module."""
         raise NotImplementedError
 
     def get_module_name(self):
-        """Returns the name of the current instructional module."""
         return "base"
 
     async def run_main_loop(self, agent):
-        """Executes the primary instructional flow for the module."""
         raise NotImplementedError
 
     async def execute(self):
@@ -158,8 +155,6 @@ class BaseInteraction:
         return None
 
     def debug_gesture(self, payload):
-        """Prints gesture-related perception data for debugging and validation. 
-        Useful for verifying gesture detection during development."""
 
         pred = payload.get("prediction", {})
         motion = pred.get("motion", {})
@@ -203,7 +198,6 @@ class BaseInteraction:
         return None
     
     async def wait_for_any_response(self, agent):
-        """Waits for any user response during tutorial interactions."""
 
         print("[WAITING FOR RESPONSE]")
 
@@ -411,8 +405,6 @@ class BaseInteraction:
         return "repeat_question"
     
     async def play_summary(self, step, expr):
-        """Retrieves and presents the summary associated with the current
-        instructional section."""
 
         current_section = step.get("section")
 
@@ -446,8 +438,6 @@ class BaseInteraction:
         await self.say_text(expr, summary_text)
 
     def find_section_start(self, section):
-        """Finds and returns the index of the first step belonging to
-        the specified instructional section."""
 
         for i, step in enumerate(self.steps):
             if step.get("section") == section:
@@ -636,8 +626,6 @@ class BaseInteraction:
         return None
 
     def is_correct_answer(self, text, accepted_answers):
-        """Determines whether a user response matches any accepted answer
-        for the current question."""
 
         text = text.lower().strip()
 
@@ -648,8 +636,6 @@ class BaseInteraction:
         return False
 
     async def flash_correct_led(self):
-        """Temporarily displays the correct-answer LED indication to provide
-        feedback following a successful response."""
         await self.set_led("orange")
         await asyncio.sleep(1)
 
@@ -658,8 +644,6 @@ class BaseInteraction:
     # ------------------------
 
     async def say_text(self, expr, text):
-        """Speaks a text message through the expression module while managing
-        speaking state and visual turn-taking indicators."""
 
         text = text or ""
 
@@ -734,13 +718,9 @@ class BaseInteraction:
         await self.expr.execute(agent_type=self.agent, embodiment="trainer", packet=self.expr.build(turn))
 
     async def signal_listening(self):
-        """Updates visual feedback to indicate that the system is actively
-        listening for user input."""
         await self.set_led("green")
 
     async def trigger_freeze(self):
-        """Activates the interaction pause state and updates visual feedback
-        to indicate that a freeze request was received."""
 
         self.interrupted = True
 
@@ -771,15 +751,9 @@ class BaseInteraction:
     # -------------------
 
     async def handle_led_demo(self, step):
-        """Demonstrates an LED state by explaining its purpose
-        and displaying the specified LED color briefly."""
-
         await self.execute_step(step)
-
         await self.set_led(step.get("led"))
-
         await asyncio.sleep(2)
-
         await self.set_led("off")
 
     async def handle_interaction(self, step, agent):

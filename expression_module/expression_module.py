@@ -30,7 +30,7 @@ class ExpressionModule:
         return {
             "text": verbal.get("text"),
             "style": verbal.get("style", "neutral"),
-            "volume": verbal.get("volume", 35),
+            "volume": verbal.get("volume", 60),
             "audio": verbal.get("audio"),
             "interrupt": verbal.get("interrupt", False)
         }
@@ -82,7 +82,6 @@ class ExpressionModule:
         return []
 
     async def execute(self, agent_type, embodiment, packet):
-        """Sends the built packet to the agent_layer for execution and prints the packet for debugging purposes."""
 
         print("\nExecuting Packet")
         print(packet)

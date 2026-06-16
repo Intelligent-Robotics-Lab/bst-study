@@ -424,7 +424,6 @@
                         "action": "BigSmile",
                         "intensity": 2.0,
                         "duration": 3.0,
-                        "repeats": 1,
                         "timing": "during"
                       }
                     ]

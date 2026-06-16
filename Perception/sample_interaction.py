@@ -2,7 +2,7 @@ import asyncio
 from dataclasses import dataclass
 from typing import Optional
 
-from Perception.perception_client import PerceptionClient
+from perception.perception_client import PerceptionClient
 
 @dataclass
 class InteractionState:
