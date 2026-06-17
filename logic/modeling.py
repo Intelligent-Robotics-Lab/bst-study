@@ -36,6 +36,7 @@ class Modeling(BaseInteraction):
 
         # Set the monitor to the first phase of modeling
         update_monitor(screen="modeling", current_phase=0)
+        await self.set_attention("kid", "down")
         print("MONITOR SET TO MODELING")
         last_phase = None
 
@@ -87,6 +88,10 @@ class Modeling(BaseInteraction):
                     continue
 
             self.current_index += 1
+
+        # At the end of modeling, set both robots to attend the user before rehearsal begins
+        await self.set_attention("trainer", "user")
+        await self.set_attention("kid", "user")
 
         # Switch the monitor to the rehearsal stage once all execution is complete for modeling
         update_monitor(screen="rehearsal", current_phase=0)

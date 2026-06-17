@@ -680,6 +680,23 @@ class BaseInteraction:
 
         self.is_speaking = False
 
+    async def set_attention(self, embodiment, target):
+        """Send an explicit gaze target through the expression module."""
+        if target is None:
+            return
+
+        packet = self.expr.build({
+            "verbal": None,
+            "nonverbals": [
+                {
+                    "channel": "gaze",
+                    "action": target,
+                }
+            ]
+        })
+
+        await self.expr.execute(agent_type=self.agent, embodiment=embodiment, packet=packet)
+
     async def set_led(self, state):
         """Updates the robot's LED state and sends the corresponding
         visual feedback command through the expression module."""
