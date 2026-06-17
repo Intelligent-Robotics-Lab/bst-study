@@ -13,7 +13,7 @@ async def generic_behavior(furhat, embodiment, packet):
     # Clean up the packet to make it usable
     speech = packet.get("speech") or {}
     nonverbals = packet.get("nonverbals", {})
-    attention_target = packet.get("attention_target", "user")
+    attention_target = packet.get("attention_target")
     listening = packet.get("listening", False)
 
     # Added in face reset fix
@@ -45,40 +45,45 @@ async def generic_behavior(furhat, embodiment, packet):
     except Exception as e:
         print("[WARN] listen toggle failed:", e)
 
-    # Clean up the tracking events
-    previous_attention = current_attention.get(embodiment)
-    attention_changed = (previous_attention != attention_target)
+    # If the trainer has no current attention state, default it to user. Not for child too.
+    if attention_target is None and embodiment == "trainer" and current_attention.get(embodiment) is None:
+        attention_target = "user"
 
-    if attention_changed:
-        await behavior.stop_tracking(embodiment, tracking_task, tracking_stop_event)
+    # Only change attention when a gaze override is explicitly provided or the trainer needs its default initial gaze.
+    if attention_target is not None:
+        previous_attention = current_attention.get(embodiment)
+        attention_changed = (previous_attention != attention_target)
 
-    # Attention control
-    try:
         if attention_changed:
+            await behavior.stop_tracking(embodiment, tracking_task, tracking_stop_event)
 
-            if attention_target == "user":
+        # Attention control
+        try:
+            if attention_changed:
 
-                print(f"[TRACK USER START] {embodiment}")
+                if attention_target == "user":
 
-                tracking_stop_event[embodiment] = asyncio.Event()
+                    print(f"[TRACK USER START] {embodiment}")
 
-                tracking_task[embodiment] = asyncio.create_task(
-                    behavior.track_user_loop(furhat, embodiment, tracking_stop_event[embodiment], refresh_rate=0.5))
+                    tracking_stop_event[embodiment] = asyncio.Event()
 
-            else:
-                target = behavior.resolve_look_target(embodiment, attention_target)
+                    tracking_task[embodiment] = asyncio.create_task(
+                        behavior.track_user_loop(furhat, embodiment, tracking_stop_event[embodiment], refresh_rate=0.5))
 
-                print(f"[LOOK TARGET] {attention_target}: {target}")
+                else:
+                    target = behavior.resolve_look_target(embodiment, attention_target)
 
-                await furhat.request_attend_location(
-                    x=target["x"],
-                    y=target["y"],
-                    z=target["z"]
-                )
-            current_attention[embodiment] = attention_target
+                    print(f"[LOOK TARGET] {attention_target}: {target}")
 
-    except Exception as e:
-        print("[WARN] attention failed:", e)
+                    await furhat.request_attend_location(
+                        x=target["x"],
+                        y=target["y"],
+                        z=target["z"]
+                    )
+                current_attention[embodiment] = attention_target
+
+        except Exception as e:
+            print("[WARN] attention failed:", e)
 
     # Facial expressions
     if nonverbals.get("face"):

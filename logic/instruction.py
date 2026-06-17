@@ -33,6 +33,7 @@ class Instruction(BaseInteraction):
         requests, and section replay behavior."""
 
         update_monitor(screen="instruction", current_phase=1)
+        await self.set_attention("kid", "down")
 
         last_phase = None
         while self.current_index < len(self.steps):

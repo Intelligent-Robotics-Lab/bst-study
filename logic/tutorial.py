@@ -29,6 +29,7 @@ class Tutorial(BaseInteraction):
         
         # Set the monitor to indicate that we are in "phase 0" of instruction -> the tutorial
         update_monitor(screen="instruction", current_phase=0)
+        await self.set_attention("kid", "down")
 
         while self.current_index < len(self.steps):
 

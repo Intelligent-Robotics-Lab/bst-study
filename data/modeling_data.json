@@ -200,7 +200,11 @@
       "verbal": {
         "text": "Question for you."
       },
-      "nonverbals": []
+      "nonverbals": [{
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }]
     },
 
     {
@@ -331,7 +335,11 @@
       "verbal": {
         "text": "Because the learner responded correctly, reinforcement was delivered immediately."
       },
-      "nonverbals": []
+      "nonverbals": [{
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }]
     },
 
     {
@@ -501,7 +509,11 @@
       "verbal": {
         "text": "Quick question for you."
       },
-      "nonverbals": []
+      "nonverbals": [{
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }]
     },
 
     {
@@ -638,7 +650,11 @@
       "verbal": {
         "text": "This shows correct labeling followed by reinforcement due to the correct learner response."
       },
-      "nonverbals": []
+      "nonverbals": [{
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }]
     },
 
     {
@@ -758,7 +774,11 @@
       "verbal": {
         "text": "This interaction displays correct emotion identification followed by reinforcement."
       },
-      "nonverbals": []
+      "nonverbals": [{
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }]
     },
 
     {
@@ -1008,7 +1028,11 @@
       "verbal": {
         "text": "This interaction showed an example of proper error correction sequencing."
       },
-      "nonverbals": []
+      "nonverbals": [{
+          "channel": "gaze",
+          "action": "user",
+          "timing": "during"
+        }]
     },
 
     {
