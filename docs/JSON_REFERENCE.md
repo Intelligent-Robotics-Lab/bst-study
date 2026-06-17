@@ -20,6 +20,8 @@ Each JSON entry represents a single interaction step or trial and typically incl
 
 The system reads these files at runtime and converts them into robot behavior packets.
 
+> **Note**: Some paramters are only used in certain phases currently but available across the entire system.
+
 ---
 
 # General Structure
@@ -58,9 +60,9 @@ A typical entry follows this pattern:
 
 * Type: string
 * Allowed values:
-
   * `content`
   * `knowledge_check`
+  * `led_demo or interaction` (tutorial only)  
 * Description: Defines how the entry is executed in the study flow
 
 ---
@@ -95,6 +97,8 @@ Defines speech output for the robot.
 ```
 
 ## Fields
+
+> **Note**: Default output parameters for these values can be altered in `expression_module/expression_module.py`
 
 * **text** (string): Spoken content
 * **style** (string): Speech style (e.g., instructional, conversational)
@@ -163,7 +167,7 @@ Used in instruction and modeling phases to reinforce learning. Only applicable i
 
 # Child Behavior (Modeling and Rehearsal Only)
 
-Used when simulating a learner response during modeling. Example can be seen below:
+Used when simulating a learner response during modeling. An example of the verbal and nonverbal sections put together is as follows:
 
 ```json
 "child_behavior": 
@@ -202,6 +206,60 @@ Used when simulating a learner response during modeling. Example can be seen bel
     ]
 }
 ```
+
+# SD (Stimulus Discriminative) Configuration
+Defines characteristics of the SD trial.
+
+```json
+"sd": "What do you want to work for?",
+"sd_type": "Manding",
+"correctness": "Correct",
+"challenge": null,
+"pb_response_type": null,
+"action": null,
+"object": null,
+"emotion": "",
+```
+
+The `sd` field is the primary behavioral trigger used by the SD recognizer.
+
+It MUST exactly match the spoken stimulus presented to the participant.
+
+This field is NOT optional in practice and is used for:
+- Speech recognition matching
+- State transitions in DTT logic
+- Correct/incorrect response evaluation
+- Step progression in interaction flow
+
+> **Critical**: The SD recognizer performs semantic matching against this field.
+> Small changes in wording may break recognition accuracy.
+
+## SD Fields
+
+### Required
+
+- **sd** (string)
+  - The exact stimulus presented to the participant
+  - Must match spoken prompt or be semantically equivalent
+  - Used directly by SD recognizer for classification
+
+### Optional (used in DTT logic only)
+
+- **sd_type** (string)
+  - Category of stimulus (e.g., Manding, Reception)
+  - Used for analytics and grouping only
+
+- **correctness** (string)
+  - Expected response classification (Correct / Incorrect)
+  - Used for reinforcement logic
+
+### Future / Experimental Fields
+
+- **challenge**
+- **pb_response_type**
+- **action**
+- **object**
+- **emotion**
 
 ---
 
@@ -301,7 +359,12 @@ This schema is designed to support:
 * Instructional modeling and feedback
 * Modular robot behavior execution
 
-For system-level architecture, see:
+# Questions
+If there are any bugs or issues found, please open an issue ticket here:
+
+https://github.com/Intelligent-Robotics-Lab/bst-study/issues
+
+For system-level architecture, reference:
 
 * `docs/ARCHITECTURE.md` (coming soon)
-* [CONTRIBUTING.md](CONTRIBUTING.md)
+* [Contributions Guide](CONTRIBUTING.md)

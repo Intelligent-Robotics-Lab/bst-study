@@ -99,7 +99,7 @@ Before launching, ensure:
 - The Furhat is powered on and connected to the same network as your local machine.
 - Furhat IPs are configured correctly.
 - The perception dashboard shows incoming events: http://141.210.88.210:8000/debug/live
-- A valid OpenAI key exists in your .env file with the name `OPENAI_KEY`
+- A valid OpenAI key exists in your .env file with the variable name `OPENAI_KEY`
 
 1. Create and activate a virtual environment:
 ```powershell
@@ -243,7 +243,7 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 
 - [Contributing Guide](docs/CONTRIBUTING.md)
 - Architecture Guide (Coming Soon)
-- JSON Reference (Coming Soon)
+- [JSON Reference](docs/JSON_REFERENCE.md)
 
 ## Contributing
 
