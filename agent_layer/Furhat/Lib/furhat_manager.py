@@ -8,9 +8,9 @@ FURHAT_KID_IP = "141.210.88.254"
 
 _furhats = {}
 
-"""Function that connects both Furhat robots and halts execution of other functions until done."""
 async def initialize_furhat():
     """Connect both robots once at startup"""
+    
     print("Connecting trainer...")
     _furhats["trainer"] = await behavior.connect_furhat(FURHAT_TRAINER_IP)
 
@@ -22,9 +22,9 @@ async def initialize_furhat():
 def get_furhat(embodiment):
     return _furhats.get(embodiment)
 
-"""Function to disconnect from connected Furhat robots."""
 async def shutdown_furhats():
-    """Disconnect ONLY at full program end"""
+    """Disconnect from connected Furhat robots."""
+
     for name, furhat in _furhats.items():
         try:
             await furhat.disconnect()

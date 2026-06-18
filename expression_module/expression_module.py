@@ -1,14 +1,14 @@
 import asyncio
 import agent_layer.agent_layer as agent_layer
 
-"""Converts generic signals into a high-level expression format to be passed into the agent_layer"""
 class ExpressionModule:
+    """Converts generic signals into a high-level expression format to be passed into the agent_layer"""
 
     def __init__(self):
         pass
 
-    """Build converts steps into generic packet behavior to be called into the agent_layer for transformation"""
     def build(self, step):
+        """Converts steps into generic packet behavior to be called into the agent_layer for transformation"""
 
         verbal = step.get("verbal")
         nonverbals = step.get("nonverbals")
@@ -21,6 +21,7 @@ class ExpressionModule:
         return packet
 
     def _build_speech(self, verbal):
+        """Handles missing or None verbal content and applies defaults for optional fields."""
 
         if verbal is None:
             return None
@@ -35,6 +36,7 @@ class ExpressionModule:
         }
 
     def _build_nonverbals(self, nonverbals):
+        """Handles missing or None nonverbal content and applies defaults for optional fields."""
 
         # Handle missing or None safely
         if not nonverbals:
@@ -79,7 +81,6 @@ class ExpressionModule:
         # Fallback safety
         return []
 
-    # Execution of the agent
     async def execute(self, agent_type, embodiment, packet):
 
         print("\nExecuting Packet")
@@ -88,6 +89,7 @@ class ExpressionModule:
         await agent_layer.agent_layer(agent_type=agent_type, embodiment=embodiment, packet=packet)
 
     async def fake_agent(self, packet):
+        """Simple function to print the packet for debugging without calling the agent_layer."""
 
         if packet["speech"]:
             print("SPEAK:", packet["speech"]["text"])

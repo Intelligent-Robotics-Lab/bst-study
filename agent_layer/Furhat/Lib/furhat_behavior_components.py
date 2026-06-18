@@ -5,13 +5,14 @@ import random
 """This file contains all of the helper functions that get called into the generic behavior function"""
 
 async def connect_furhat(IP_ADDRESS):
+    """Connects to the Furhat at the sepcified IP address and returns the furhat object."""
     furhat = AsyncFurhatClient(IP_ADDRESS)
     await furhat.connect()
     print("Connected")
     return furhat
 
 async def start_gesture(furhat, gesture, intensity, duration, number_repeat):
-    # List of Gestures: BigSmile, Blink, BrowFrown, BrowRaise, CloseEyes, ExpressAnger, ExpressDisgust, ExpressFear, ExpressSad, GazeAway, Nod, Oh, OpenEyes, Roll, Shake, Smile, Surprise, Thoughtful, Wink
+    """Starts a gesture on the Furhat with the specified parameters."""
     for _ in range(number_repeat):
         await furhat.request_gesture_start(
             name=gesture, 
@@ -21,9 +22,11 @@ async def start_gesture(furhat, gesture, intensity, duration, number_repeat):
         await asyncio.sleep(duration)
 
 async def change_volume(furhat, volume):
+    """Changes the system volume to the inputted level (0-100)."""
     await furhat.request_system_config(volume=volume)
 
 async def speak_text(furhat, message):
+    """Sends a speak request to the Furhat with the inputted text and waits for it to finish."""
     try:
         await furhat.request_speak_text(text=message, wait=True, abort=False)
 
@@ -32,7 +35,6 @@ async def speak_text(furhat, message):
     except Exception as e:
         print("[WARN] speak_text:", e)
 
-"""Mapping high-level function names to low-level Furhat parameters."""
 # "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP", "EYEBROW_DOWN"
 face_param_mapping = {
     "Happy": {
@@ -93,14 +95,14 @@ face_param_mapping = {
     }
 }
 
-"""Maps the emotion label to the face parameters above."""
 def resolve_face_params(face_expression: str):
+    """Resolves a high-level emotion keyword into specific facial parameters."""
     return face_param_mapping.get(
         face_expression,
         face_param_mapping["Neutral"])
 
-"""Function to hold the face expression for a request duration."""
 async def hold_face_expressions(furhat, face_params, duration=5):
+    """Holds the specified facial expression for the duration by continuously sending the face parameters."""
     end_time = asyncio.get_event_loop().time() + duration
 
     while asyncio.get_event_loop().time() < end_time:
@@ -108,16 +110,17 @@ async def hold_face_expressions(furhat, face_params, duration=5):
 
         await asyncio.sleep(0.25)
 
-"""Scales the facial parameters by a percentage factor. For example an intensity of 0.5 represents 50% of the max features found above."""
 def scale_face_params(face_params, intensity: float):
-    # Scales all face parameters by intensity (0-1)
+    """Scales the facial parameters by a percentage factor. For example an intensity of 0.5 represents 50% of the max features found above."""
+    
     return{
         k: v * intensity
         for k, v in face_params.items()
     }
 
-"""Function to smoothly switch facial expression without snapping. NOTE: Still a work in progress."""
 async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
+    """Function to smoothly switch facial expression without snapping. NOTE: Still a work in progress."""
+
     scaled = scale_face_params(face_params, intensity)
 
     end_time = asyncio.get_event_loop().time() + duration
@@ -131,8 +134,9 @@ async def switch_face(furhat, face_params, duration=2.0, intensity=1.0):
 
         await asyncio.sleep(0.25)
 
-"""Function to add in active listening when listening is set. NOTE: This has yet to be implemented and is not finished"""
 async def active_listening_loop(furhat, embodiment, stop_event):
+    """Function to add in active listening when listening is set. NOTE: This has yet to be implemented and is not finished"""
+
     try:
         while not stop_event.is_set():
             try:
@@ -154,24 +158,26 @@ async def active_listening_loop(furhat, embodiment, stop_event):
     except asyncio.CancelledError:
         pass
 
-"""Function to map keywords to fixed positions, just for "robot" as of now. Allows them to attend to each other reliably in the modeling phase."""
 def resolve_look_target(embodiment, target):
+    """Function to map keywords to fixed positions, just for "robot" as of now. Allows them to attend to each other reliably in the modeling phase."""
 
     LOOK_MAP = {
         "trainer": {
             "robot":   {"x": -1.25, "y": 0.0, "z": 1.0},
             "neutral": {"x": 0.0,  "y": 0.0, "z": 1.0},
+            "down":    {"x": 0.0, "y": -1.0, "z": 0.5},
         },
         "kid": {
             "robot":   {"x": 1.5,  "y": 0.0, "z": 1.0},
             "neutral": {"x": 0.0,  "y": 0.0,  "z": 1.0},
+            "down":    {"x": 0.0, "y": -0.35, "z": 1.0},
         }
     }
 
     return LOOK_MAP.get(embodiment, LOOK_MAP["trainer"]).get(target, LOOK_MAP["trainer"]["neutral"])
 
-"""Function to track the user and have the robots gaze follow the user throughout the interaction."""
 async def track_user_loop(furhat, embodiment, stop_event, refresh_rate=0.5):
+    """Function to track the user and have the robots gaze follow the user throughout the interaction."""
 
     print(f"[TRACK LOOP STARTED] {embodiment}")
 
@@ -188,9 +194,10 @@ async def track_user_loop(furhat, embodiment, stop_event, refresh_rate=0.5):
     except Exception as e:
         print(f"[TRACK LOOP ERROR] {e}")
 
-"""Function to stop the tracking loop and save necessary parameters."""
 async def stop_tracking(embodiment, tracking_task, tracking_stop_event):
-    print("f[STOP TRACKING] {embodiment}")
+    """Function to stop the tracking loop and save necessary parameters."""
+
+    print(f"[STOP TRACKING] {embodiment}")
     if embodiment in tracking_stop_event:
         tracking_stop_event[embodiment].set()
 
@@ -210,20 +217,21 @@ async def stop_tracking(embodiment, tracking_task, tracking_stop_event):
     tracking_task.pop(embodiment, None)
     tracking_stop_event.pop(embodiment, None)
 
-"""Set LED color function (used for listening, freeze, etc.)"""
 async def set_led(furhat, color):
+    """Set LED color function (used for listening, freeze, etc.)"""
+
     try:
         await furhat.request_led_set(color)
     except Exception as e:
         print("LED error", e)
 
-"""Clear the LED lights (whenever the robot is speaking)"""
 async def clear_led(furhat):
+    """Clear the LED lights (whenever the robot is speaking)"""
+
     try:
         await furhat.request_led_set("#000000")
     except Exception as e:
         print("[LED ERROR]", e)
-
 
 AUDIO_URLS = {
     "scream": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/scream.wav",
@@ -231,7 +239,10 @@ AUDIO_URLS = {
     #"cry": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/cry.wav",
     #"clap": "https://raw.githubusercontent.com/cplaming/SoundEffectRepo/main/clap.wav",
 }
+
 async def play_audio(furhat, audio):
+    """Function to play specific audio clip from a URL."""
+
     url = AUDIO_URLS.get(audio)
 
     if not url:

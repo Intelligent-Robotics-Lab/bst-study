@@ -2,11 +2,11 @@ import asyncio
 import json
 from collections.abc import AsyncIterator
 from typing import Any
-
 import websockets
 
-
 class PerceptionClient:
+    """Client for connecting to the perception server and receiving events."""
+
     def __init__(self, server_host: str = "localhost", server_port: int = 8000):
         self.server_host = server_host
         self.server_port = server_port

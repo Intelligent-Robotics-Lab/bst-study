@@ -1,5 +1,5 @@
-"""Function to translate the data packets from the expression module into a usable format for the Furhat robot."""
 def translate_packet_furhat(packet):
+    """Function to translate the data packets from the expression module into a usable format for the Furhat robot."""
 
     speech = packet.get("speech") or {}
     nonverbals = packet.get("nonverbals", [])
@@ -37,7 +37,7 @@ def translate_packet_furhat(packet):
             "led": [],
         },
 
-        "attention_target": "user",
+        "attention_target": None, # No longer has default to add in looking down capability
         "listening": listening,
     }
 
@@ -90,7 +90,7 @@ def translate_packet_furhat(packet):
         elif channel == "gaze":
             output["nonverbals"]["gaze"].append(entry)
 
-            if action in ("robot", "user", "neutral",):
+            if action in ("robot", "user", "neutral", "down"):
                 gaze_override = action
 
 
@@ -112,6 +112,9 @@ def translate_packet_furhat(packet):
 
         elif gaze_override == "user":
             output["attention_target"] = ("user")
+
+        elif gaze_override == "down":
+            output["attention_target"] = ("down")
 
         else:
             output["attention_target"] = ("neutral")

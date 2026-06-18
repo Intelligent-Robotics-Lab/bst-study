@@ -6,13 +6,14 @@ tracking_stop_event = {}
 current_attention = {}
 face_task = {}
 
-"""This function turns the cleaned data packet and outputs its paramters onto the agent of choice for Furhat.
-One singular function is used to control the behavior of both robots."""
 async def generic_behavior(furhat, embodiment, packet):
+    """This function turns the cleaned data packet and outputs its paramters onto the agent of choice for Furhat.
+    One singular function is used to control the behavior of both robots."""
+
     # Clean up the packet to make it usable
     speech = packet.get("speech") or {}
     nonverbals = packet.get("nonverbals", {})
-    attention_target = packet.get("attention_target", "user")
+    attention_target = packet.get("attention_target")
     listening = packet.get("listening", False)
 
     # Added in face reset fix
@@ -44,40 +45,45 @@ async def generic_behavior(furhat, embodiment, packet):
     except Exception as e:
         print("[WARN] listen toggle failed:", e)
 
-    # Clean up the tracking events
-    previous_attention = current_attention.get(embodiment)
-    attention_changed = (previous_attention != attention_target)
+    # If the trainer has no current attention state, default it to user. Not for child too.
+    if attention_target is None and embodiment == "trainer" and current_attention.get(embodiment) is None:
+        attention_target = "user"
 
-    if attention_changed:
-        await behavior.stop_tracking(embodiment, tracking_task, tracking_stop_event)
+    # Only change attention when a gaze override is explicitly provided or the trainer needs its default initial gaze.
+    if attention_target is not None:
+        previous_attention = current_attention.get(embodiment)
+        attention_changed = (previous_attention != attention_target)
 
-    # Attention control
-    try:
         if attention_changed:
+            await behavior.stop_tracking(embodiment, tracking_task, tracking_stop_event)
 
-            if attention_target == "user":
+        # Attention control
+        try:
+            if attention_changed:
 
-                print(f"[TRACK USER START] {embodiment}")
+                if attention_target == "user":
 
-                tracking_stop_event[embodiment] = asyncio.Event()
+                    print(f"[TRACK USER START] {embodiment}")
 
-                tracking_task[embodiment] = asyncio.create_task(
-                    behavior.track_user_loop(furhat, embodiment, tracking_stop_event[embodiment], refresh_rate=0.5))
+                    tracking_stop_event[embodiment] = asyncio.Event()
 
-            else:
-                target = behavior.resolve_look_target(embodiment, attention_target)
+                    tracking_task[embodiment] = asyncio.create_task(
+                        behavior.track_user_loop(furhat, embodiment, tracking_stop_event[embodiment], refresh_rate=0.5))
 
-                print(f"[LOOK TARGET] {attention_target}: {target}")
+                else:
+                    target = behavior.resolve_look_target(embodiment, attention_target)
 
-                await furhat.request_attend_location(
-                    x=target["x"],
-                    y=target["y"],
-                    z=target["z"]
-                )
-            current_attention[embodiment] = attention_target
+                    print(f"[LOOK TARGET] {attention_target}: {target}")
 
-    except Exception as e:
-        print("[WARN] attention failed:", e)
+                    await furhat.request_attend_location(
+                        x=target["x"],
+                        y=target["y"],
+                        z=target["z"]
+                    )
+                current_attention[embodiment] = attention_target
+
+        except Exception as e:
+            print("[WARN] attention failed:", e)
 
     # Facial expressions
     if nonverbals.get("face"):
@@ -123,7 +129,6 @@ async def generic_behavior(furhat, embodiment, packet):
     # Adjust system volume before speech based on the inputted value, set the default to 60 as done previously:
     volume = speech.get("volume", 50)
 
-
     # This function will only work if the system config function is added into the virtual v
     try:
         await behavior.change_volume(furhat=furhat, volume=volume)
@@ -140,12 +145,8 @@ async def generic_behavior(furhat, embodiment, packet):
     # Keep speech as the primary synchonization anchor
     text = (speech.get("text") or "").strip()
 
- # Keep speech as the primary synchronization anchor
-    text = (speech.get("text") or "").strip()
-
     if text:
         try:
-
             # Split on:
             # <BREAK>
             # <BREAK=1>
@@ -157,29 +158,18 @@ async def generic_behavior(furhat, embodiment, packet):
 
             # No break tags present
             if len(parts) == 1:
-
-                await behavior.speak_text(
-                    furhat=furhat,
-                    message=text
-                )
+                await behavior.speak_text(furhat=furhat, message=text)
 
             else:
-
-                # Format returned by re.split:
-                # [speech, pause, speech, pause, speech...]
-
+                # Format returned by re.split: [speech, pause, speech, pause, speech...]
                 speech_chunk = parts[0]
 
                 if speech_chunk.strip():
-                    await behavior.speak_text(
-                        furhat=furhat,
-                        message=speech_chunk.strip()
-                    )
+                    await behavior.speak_text(furhat=furhat, message=speech_chunk.strip())
 
                 index = 1
 
                 while index < len(parts):
-
                     pause_value = parts[index]
                     next_chunk = parts[index + 1] if index + 1 < len(parts) else ""
 
@@ -195,16 +185,12 @@ async def generic_behavior(furhat, embodiment, packet):
                     await asyncio.sleep(pause_seconds)
 
                     if next_chunk.strip():
-                        await behavior.speak_text(
-                            furhat=furhat,
-                            message=next_chunk.strip()
-                        )
+                        await behavior.speak_text(furhat=furhat, message=next_chunk.strip())
 
                     index += 2
 
         except Exception as e:
             print("[WARN] speech failed:", e)
-
 
     if gesture_task:
         try:
@@ -213,8 +199,7 @@ async def generic_behavior(furhat, embodiment, packet):
             print("[WARN] gesture failed:", e)
 
     if after_gesture:
-        # Debug print
-        print("[AFTER GESTURE STARTING]", after_gesture)
+        print("[AFTER GESTURE STARTING]", after_gesture) # Debug print
 
         try:
             await behavior.start_gesture(furhat, after_gesture["action"], after_gesture.get("intensity", 1.0), after_gesture.get("duration", 1.0), after_gesture.get("repeats", 1))

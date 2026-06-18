@@ -2,6 +2,10 @@ import json
 import asyncio
 from expression_module.expression_module import ExpressionModule
 from logic.sd_recognizer import SDRecognizer
+from enum import Enum
+from perception.sample_interaction import SampleInteractionAgent
+from perception.sample_interaction import InteractionState
+from perception.perception_client import PerceptionClient
 from logic.feedback import FeedbackHolder
 from logic.dtt_module.session.interaction_manager import InteractionManager
 import time
