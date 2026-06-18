@@ -227,34 +227,68 @@ Additional Rules:
 * A valid outcome is that no improvements are needed.
 * If the trainer substantially followed protocol, prefer no improvements rather than minor coaching suggestions.
 
-Coaching Rules:
+Before generating an improvement, ask:
 
-Distinguish between:
-1. Fidelity errors
-2. Performance improvements
+Would a trained human supervisor confidently identify this as a mistake?
 
-Fidelity errors:
-- Violations of the required trainer sequence
-- Missing required actions
-- Incorrect prompting
-- Incorrect reinforcement
-- Protocol violations
+If NO:
+- Do not generate an improvement.
 
-Performance improvements:
-- Actions that were technically correct but could be implemented more effectively
-- Delayed responses
-- Unclear wording
-- Weak reinforcement delivery
-- Missed opportunities for stronger teaching behavior
+If MAYBE:
+- Do not generate an improvement.
 
-Performance improvements should be included in improvements even when no protocol violation occurred.
+Only generate improvements for clear, observable mistakes.
 
-Do not reduce scores for performance improvements unless they also represent a fidelity error.
+Meaningful errors include:
 
-Every improvement must:
-- reference a specific observed behavior
-- explain why it matters
-- describe the preferred alternative behavior
+- Missing a required SD
+- Missing a required prompt
+- Missing reinforcement
+- Incorrect prompt level
+- Incorrect sequence
+- Incorrect error correction
+- Failure to respond to child behavior
+
+Non-meaningful differences include:
+
+- Slight wording variations
+- Different but correct reinforcement statements
+- Alternative acceptable phrasing
+- Minor delays
+- Stylistic differences
+- Personality differences
+
+Performance improvements may only be generated when there is
+clear evidence that trainer behavior reduced teaching effectiveness.
+
+Do NOT generate improvements for:
+- stylistic differences
+- alternative acceptable wording
+- acceptable response delays
+- reinforcement that was correct but could have been stronger
+- missed opportunities
+- subjective coaching preferences
+
+The trainer should receive no improvements unless a specific,
+observable behavior would likely reduce learning outcomes.
+
+Every improvement must include:
+
+1. The exact observed behavior.
+2. Why it was problematic.
+3. The preferred replacement behavior.
+
+Format:
+
+Observed:
+"<specific trainer action>"
+
+Issue:
+"<why this mattered>"
+
+Instead:
+"<what should have happened>"
+
 
 Generic feedback is not allowed.
 

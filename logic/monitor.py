@@ -1,6 +1,6 @@
 import json
 import os
-
+from enum import Enum
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 MONITOR_FILE = os.path.join(
@@ -9,16 +9,38 @@ MONITOR_FILE = os.path.join(
     "monitor_state.json"
 )
 
+
+
+
+
+def _serialize(value):
+
+    if isinstance(value, Enum):
+        return value.name
+
+    if isinstance(value, set):
+        return list(value)
+
+    return value
+
+
 def update_monitor(**kwargs):
+
     print("[MONITOR UPDATE]", kwargs)
 
     try:
         with open(MONITOR_FILE, "r") as f:
             data = json.load(f)
-    except:
+
+    except Exception:
         data = {}
 
-    data.update(kwargs)
+    serialized = {
+        key: _serialize(value)
+        for key, value in kwargs.items()
+    }
+
+    data.update(serialized)
 
     with open(MONITOR_FILE, "w") as f:
         json.dump(data, f, indent=2)
