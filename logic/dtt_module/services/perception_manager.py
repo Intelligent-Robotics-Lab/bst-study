@@ -1,10 +1,10 @@
 import asyncio
 
-from Perception.sample_interaction import (
+from perception.sample_interaction import (
     SampleInteractionAgent,
 )
 
-from Perception.perception_client import (
+from perception.perception_client import (
     PerceptionClient,
 )
 

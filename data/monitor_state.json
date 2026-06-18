@@ -1,11 +1,9 @@
 {
-  "trial_sd": "SD_4",
-  "trial_state": "FEEDBACK",
-  "screen": "rehearsal",
+  "trial_sd": "SD_1",
+  "trial_state": "KID_BEHAVIOR_1",
+  "screen": "instruction",
   "current_phase": 0,
-  "transcript": null,
+  "transcript": "What do you want to work for? Four",
   "emotion": "neutral",
-  "completed_sds": [
-    "SD_1"
-  ]
+  "completed_sds": []
 }
