@@ -12,10 +12,11 @@ class BaseInteraction:
     Provides shared functionality for perception handling, navigation, knowledge checks, LED control, 
     speech output, and freeze-state management."""
 
-    def __init__(self, agent=None):
+    def __init__(self, agent=None, study_config=None):
         """Initializes shared interaction state, perception tracking,
         speech control flags, LED status, and gesture-detection timers."""
         self.agent = agent
+        self.study_config = study_config or {}
         self.state = "IDLE"
         self.is_speaking = False
         self.interrupted = False
