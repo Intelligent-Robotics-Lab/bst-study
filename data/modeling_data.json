@@ -216,7 +216,7 @@
         "choices": [
           "Option 1. To practice imitation.",
           "Option 2. Correct an error.",
-          "Option 3. Identify a preferred reinforcer."
+          "Option 3. Identify a preferred item or activity."
         ],
         "correct_answer": "3",
         "accepted_answers": [
@@ -229,7 +229,7 @@
       },
       "feedback": {
         "correct": "Correct! The manding SD helps establish what the learner wants to work for.",
-        "incorrect": "Sorry, the correct answer is option 3, identify a preferred reinforcer. "
+        "incorrect": "Sorry, the correct answer is option 3, identify a preferred item or activity. "
       },
       "nonverbals": []
     },
