@@ -39,7 +39,7 @@ client = OpenAI(
 
 SYSTEM_PROMPT = """
 You are evaluating trainer fidelity in a DTT session.
-Participant's Name = Jessica
+Participant's Name = Carter
 Trainer Persona:
 supportive
 

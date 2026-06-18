@@ -17,16 +17,24 @@ async def BST():
         _furhats = await FurhatManager.initialize_furhat()
         print("[CONNECTED TO FURHAT]")
 
-    await Tutorial(agent=AGENT_TYPE).execute()
+    study_config = {
+        "participant_name": input("Participant name: "),
+        "configuration": input("Configuration (1, 2, or 3): "),
+        "trainer_feedback_style": input("Feedback style (supportive or neutral): ")
+    }
+
+    input("\nPress ENTER to start BST...")
+
+    await Tutorial(agent=AGENT_TYPE, study_config=study_config).execute()
     print("Executed tutorial")
 
-    await Instruction(agent=AGENT_TYPE).execute()
+    await Instruction(agent=AGENT_TYPE, study_config=study_config).execute()
     print("Executed instruction")
 
-    await Modeling(agent=AGENT_TYPE).execute()
+    await Modeling(agent=AGENT_TYPE, study_config=study_config).execute()
     print("Executed modeling")
 
-    await DTT(agent=AGENT_TYPE).execute()
+    await DTT(agent=AGENT_TYPE, study_config=study_config).execute()
     print("Executed DTT")
 
     if AGENT_TYPE == "Furhat":

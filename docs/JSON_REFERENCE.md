@@ -324,6 +324,37 @@ Keep formatting consistent across all data files in `data/`.
 
 ---
 
+# Extending the JSON Schema
+
+The framework is designed to support new parameters and behavior types as research needs evolve.
+
+When adding a new parameter:
+
+1. Add the parameter to the appropriate JSON structure
+- Define the new field within the relevant JSON block (e.g., verbal, nonverbal, SD configuration, child behavior).
+- Provide sensible default values when possible.
+2. Pass the parameter through the Expression Module
+- Update expression_module/expression_module.py so the new parameter is included in the generated behavior packet.
+- All parameters should be preserved and forwarded through the packet structure, even if they are not currently used by the active robot embodiment.
+3. Update Agent Layer Translation (if needed)
+- If the parameter affects robot behavior, add handling in: `agent_layer/Furhat/Lib/furhat_data_translate.py`
+- Other embodiment-specific translators as applicable.
+Not every parameter requires execution logic, but all parameters should be capable of passing through the system.
+4. Implement Execution Logic (if needed)
+- If the parameter changes robot behavior, add support in the relevant execution layer.
+- Examples:
+  - New gesture types
+  - LED behaviors
+  - Voice parameters
+  - Attention targets
+
+Recommended Data Flow
+JSON Content -> Expression Module -> Behavior Packet -> Agent Layer Translation -> Robot Execution 
+
+> **Best Practice:** New parameters should be introduced in a way that preserves backward compatibility with existing JSON files whenever possible.
+
+---
+
 # Best Practices
 
 * Keep entries small and modular

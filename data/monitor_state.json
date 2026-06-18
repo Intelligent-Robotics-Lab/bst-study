@@ -1,7 +1,11 @@
 {
   "trial_sd": "SD_4",
   "trial_state": "FEEDBACK",
+  "screen": "rehearsal",
+  "current_phase": 0,
   "transcript": null,
   "emotion": "neutral",
-  "completed_sds": []
+  "completed_sds": [
+    "SD_1"
+  ]
 }
