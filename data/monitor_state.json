@@ -1,7 +1,6 @@
 {
-  "screen": "rehearsal",
-  "trial_sd": null,
-  "trial_state": "SD",
+  "trial_sd": "SD_4",
+  "trial_state": "FEEDBACK",
   "transcript": null,
   "emotion": "neutral",
   "completed_sds": []
