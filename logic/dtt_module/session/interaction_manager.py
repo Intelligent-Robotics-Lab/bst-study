@@ -40,7 +40,7 @@ class InteractionManager:
         ) * 1.15
 
         await asyncio.sleep(
-            sleep_time + 0.3
+            sleep_time + 0.5
         )
 
     async def set_led(self, expr, color, action, flash, embodiment):

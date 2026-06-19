@@ -1,11 +1,7 @@
 {
-  "trial_sd": "SD_1",
+  "trial_sd": null,
   "trial_state": "SD",
-  "screen": "instruction",
-  "current_phase": 0,
   "transcript": null,
   "emotion": "neutral",
-  "completed_sds": [
-    "SD_1"
-  ]
+  "completed_sds": []
 }
