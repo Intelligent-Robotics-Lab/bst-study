@@ -278,7 +278,9 @@ class DTT:
             trial_data=hp_trial_data
         )
 
-        feedback = FeedbackHolder()
+        feedback = FeedbackHolder(
+            study_config=self.study_config
+        )
 
         return (
             expr,
