@@ -13,10 +13,6 @@ async def BST():
 
     global _furhats
 
-    if AGENT_TYPE == "Furhat":
-        _furhats = await FurhatManager.initialize_furhat()
-        print("[CONNECTED TO FURHAT]")
-
     study_config = {
         "participant_name": input("Participant name: "),
         "configuration": input("Configuration (1, 2, or 3): "),
@@ -25,18 +21,24 @@ async def BST():
 
     input("\nPress ENTER to start BST...")
 
-    #await Tutorial(agent=AGENT_TYPE, study_config=study_config).execute()
-    #print("Executed tutorial")
-
-    #await Instruction(agent=AGENT_TYPE, study_config=study_config).execute()
-    #print("Executed instruction")
-
-    #await Modeling(agent=AGENT_TYPE, study_config=study_config).execute()
-    #print("Executed modeling")
-
-    await DTT(agent=AGENT_TYPE, study_config=study_config).execute()
-    print("Executed DTT")
-
     if AGENT_TYPE == "Furhat":
-        await FurhatManager.shutdown_furhats()
-        print("[PIPELINE COMPLETE - FURHAT READY]")
+        _furhats = await FurhatManager.initialize_furhat()
+        print("[CONNECTED TO FURHAT]")
+
+    try:
+        await Tutorial(agent=AGENT_TYPE, study_config=study_config).execute()
+        print("Executed tutorial")
+
+        await Instruction(agent=AGENT_TYPE, study_config=study_config).execute()
+        print("Executed instruction")
+
+        await Modeling(agent=AGENT_TYPE, study_config=study_config).execute()
+        print("Executed modeling")
+
+        await DTT(agent=AGENT_TYPE, study_config=study_config).execute()
+        print("Executed DTT")
+
+    finally:
+        if AGENT_TYPE == "Furhat":
+            await FurhatManager.shutdown_furhats()
+            print("[PIPELINE COMPLETE - FURHAT READY]")
