@@ -1,0 +1,96 @@
+{
+  "saved_at": "20260622_124856",
+  "study_config": {
+    "participant_name": "Connor",
+    "configuration": "1",
+    "trainer_feedback_style": "supportive"
+  },
+  "event_log": {
+    "trial_id": "Receptive Instruction",
+    "trial_context": {
+      "trial_type": null,
+      "child_response": null,
+      "expected_trainer_sequence": []
+    },
+    "precomputed_analysis": {
+      "sd_score": 0,
+      "prompt_score": 100,
+      "reinforcement_score": 100,
+      "sequencing_score": 100,
+      "error_correction_score": 100,
+      "overall_preliminary_score": 80,
+      "actual_sequence": []
+    },
+    "trainer_behavior": [],
+    "interaction_history": [
+      {
+        "trial_state": "sd",
+        "text": "Can you not Your head",
+        "recognized_as": "Receptive Instruction",
+        "successful": true,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "prompting",
+        "text": "What am I holding?",
+        "recognized_as": "Tacting and Labeling",
+        "successful": false,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "prompting",
+        "text": "Can you now Hide your head.",
+        "recognized_as": null,
+        "successful": false,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "prompting",
+        "text": "Nod your head.",
+        "recognized_as": "Receptive Instruction",
+        "successful": true,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "Good job.",
+        "recognized_as": "Receptive Instruction",
+        "successful": true,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "hp_sd",
+        "text": "Shake your head.",
+        "recognized_as": "SD_1",
+        "successful": true,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "French Yeah.",
+        "recognized_as": null,
+        "successful": false,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "retry sd",
+        "text": "Nod your head.",
+        "recognized_as": "Receptive Instruction",
+        "successful": true,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "Amazing job",
+        "recognized_as": "Receptive Instruction",
+        "successful": true,
+        "corrected_later": false
+      }
+    ],
+    "recovery_metrics": {
+      "failed_attempts": 3,
+      "corrected_attempts": 0,
+      "recovery_ratio": 0.0
+    }
+  }
+}
