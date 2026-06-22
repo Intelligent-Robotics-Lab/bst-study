@@ -111,6 +111,11 @@
             box-shadow: 0 0 20px #4CAF50;
         }
 
+        .circle.active {
+            border-color: #FFD700;
+            box-shadow: 0 0 20px #FFD700;
+        }
+
         .circle-label {
             margin-top: 10px;
             font-size: 1.3rem;
@@ -411,24 +416,58 @@ async function updateMonitor() {
         }
 
         document.getElementById("sd").textContent =
-            data.trial_sd || "None";
+            data.trial_name || "None";
+
+        // Map backend trial state to user-friendly labels for the website
+        const stateLabels = {
+            "SD": "SD",
+            "KID_BEHAVIOR_1": "Child Behavior 1",
+            "REINFORCEMENT": "Reinforcement",
+            "PROMPTING": "Prompting",
+            "KID_BEHAVIOR_2": "Child Behavior 2",
+            "HP_SD": "High-Probability SD",
+            "KID_BEHAVIOR_HP": "Child Behavior HP",
+            "RETRY_SD": "Retry SD",
+            "KID_BEHAVIOR_RETRY": "Child Behavior Retry",
+            "FEEDBACK": "Feedback",
+            // fallback for lowercase values if any are sent directly
+            "sd": "SD",
+            "kid behavior 1": "Child Behavior 1",
+            "reinforcement": "Reinforcement",
+            "prompting": "Prompting",
+            "kid behavior 2": "Child Behavior 2",
+            "hp_sd": "High-Probability SD",
+            "kid behavior HP": "Child Behavior HP",
+            "retry sd": "Retry SD",
+            "kid behavior retry": "Child Behavior Retry",
+            "feedback": "Feedback",
+        };
 
         document.getElementById("state").textContent =
-            data.trial_state || "---";
+            stateLabels[data.trial_state] ||
+            stateLabels[(data.trial_state || "").toLowerCase()] ||
+            data.trial_state ||
+            "---";
 
         document.getElementById("transcript").textContent =
             data.transcript || "---";
 
+        const activeSdNumber = data.trial_sd_number;
+        const completedSdNumbers = data.completed_sd_numbers || [];
 
-        const completed = data.completed_sds || [];
-
+        // Highlight the active SD cell based on backend-provided number
         for (let i = 1; i <= 6; i++) {
 
             const circle = document.getElementById(`sd${i}`);
 
             if (!circle) continue;
 
-            if (completed.includes(`SD_${i}`)) {
+            circle.classList.toggle(
+                "active",
+                activeSdNumber === i
+            );
+
+            if (completedSdNumbers.includes(i)) {
                 circle.classList.add("completed");
             } else {
                 circle.classList.remove("completed");

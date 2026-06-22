@@ -33,12 +33,16 @@ def current_sd():
             "screen": data.get("screen", "rehearsal"),
             "current_phase": data.get("current_phase", 0),
 
+            # Frontend gets trial_name + SD display number from backend
+            "trial_name": data.get("trial_name"),
+            "trial_sd_number": data.get("trial_sd_number"),
             "trial_sd": data.get("trial_sd"),
             "trial_state": data.get("trial_state"),
             "transcript": data.get("transcript"),
             "emotion": data.get("emotion"),
 
-            "completed_sds": data.get("completed_sds", [])
+            "completed_sds": data.get("completed_sds", []),
+            "completed_sd_numbers": data.get("completed_sd_numbers", []),
         })
 
     except Exception as e:
@@ -49,12 +53,15 @@ def current_sd():
             "screen": "rehearsal",
             "current_phase": 0,
 
+            "trial_name": None,
+            "trial_sd_number": None,
             "trial_sd": None,
             "trial_state": None,
             "transcript": None,
             "emotion": None,
 
-            "completed_sds": []
+            "completed_sds": [],
+            "completed_sd_numbers": [],
         })
 
 

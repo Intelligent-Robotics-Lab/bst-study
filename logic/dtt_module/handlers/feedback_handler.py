@@ -129,7 +129,7 @@ class FeedbackHandler:
 
         if len(ctx.completed_sds) >= 6:
 
-            final_trial = trial_data["SD_7"]
+            final_trial = trial_data["Session Complete"]
 
             await self.interaction.run_behavior(
                 expr=expr,
