@@ -9,6 +9,7 @@ class TrialContext:
 
     trial_sd: str | None = None
     current_sd: str | None = None
+    latin_square_configuration: int = 1
 
     reinforcement_source: str | None = None
     last_processed: str | None = None

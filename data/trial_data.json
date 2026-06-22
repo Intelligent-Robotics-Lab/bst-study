@@ -1,6 +1,6 @@
 {
     "trial_data": {
-        "SD_1": {
+        "Manding": {
             "sd": "What do you want to work for?",
             "sd_type": "Manding",
             "correctness": "Correct",
@@ -67,7 +67,7 @@
             
         },
 
-        "SD_2": {
+        "Receptive Instruction": {
             "sd": "Nod your head.",
             "sd_type": "Reception",
             "correctness": "No Response",
@@ -118,7 +118,7 @@
                       {
                         "channel": "head",
                         "action": "Nod",
-                        "intensity": 1.0,
+                        "intensity": 1.5,
                         "duration": 0.75,
                         "repeats": 2,
                         "timing": "during"
@@ -144,7 +144,7 @@
                       {
                         "channel": "head",
                         "action": "Nod",
-                        "intensity": 1.5,
+                        "intensity": 2.0,
                         "duration": 0.75,
                         "repeats": 3,
                         "timing": "during"
@@ -171,7 +171,7 @@
                 }
         },
 
-        "SD_3": {
+        "Imitation": {
             "sd": "Can you do this?",
             "sd_type": "Imitation",
             "correctness": "Correct",
@@ -199,7 +199,7 @@
                       {
                         "channel": "head",
                         "action": "Shake",
-                        "intensity": 1.5,
+                        "intensity": 2,
                         "duration": 0.75,
                         "repeats": 3,
                         "timing": "during"
@@ -226,7 +226,7 @@
                 }
         },
 
-        "SD_4": {
+        "Tacting and Labeling": {
             "sd": "What am I holding?",
             "sd_type": "Labeling",
             "correctness": "No Response",
@@ -332,7 +332,7 @@
                 }
         },
 
-        "SD_5": {
+        "Emotion Labeling": {
             "sd": "How do I feel?",
             "sd_type": "Emotion",
             "correctness": "Correct",
@@ -380,7 +380,7 @@
                 }
         },
 
-        "SD_6": {
+        "Receptive Expression": {
             "sd": "Show me your happy face.",
             "sd_type": "Reception",
             "correctness": "No Response",
@@ -466,7 +466,7 @@
                     ]
                 }
         },
-        "SD_7": {
+        "Session Complete": {
           "sd": "Session complete",
           "sd_type": "Conclusion",
           "correctness": "Correct",

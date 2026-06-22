@@ -7,6 +7,7 @@ from perception.sample_interaction import SampleInteractionAgent
 from perception.sample_interaction import InteractionState
 from perception.perception_client import PerceptionClient
 from logic.feedback import FeedbackHolder
+from logic.latin_square import get_sd_display_number
 from logic.dtt_module.session.interaction_manager import InteractionManager
 import time
 from logic.dtt_module.handlers.sd_handler import SDHandler
@@ -243,9 +244,23 @@ class DTT:
         # Context
         # --------------------------------------------------
 
+        configuration = 1
+        if self.study_config is not None:
+            try:
+                configuration = int(
+                    self.study_config.get(
+                        "configuration",
+                        1,
+                    )
+                )
+            except (TypeError, ValueError):
+                configuration = 1
+
+        # Store chosen Latin Square configuration in session context
         self.ctx = TrialContext(
             state=CurrentState.USER,
             trial_state=TrialState.SD,
+            latin_square_configuration=configuration,
         )
 
     async def execute(self):
@@ -347,12 +362,32 @@ class DTT:
                 # Monitor
                 # ---------------------------------
 
+                # Compute the display SD cell number from the selected Latin Square
+                trial_sd_number = None
+                if ctx.trial_sd is not None:
+                    trial_sd_number = get_sd_display_number(
+                        ctx.trial_sd,
+                        ctx.latin_square_configuration,
+                    )
+
+                completed_sd_numbers = []
+                for completed_trial_name in ctx.completed_sds:
+                    completed_number = get_sd_display_number(
+                        completed_trial_name,
+                        ctx.latin_square_configuration,
+                    )
+                    if completed_number is not None:
+                        completed_sd_numbers.append(completed_number)
+
                 update_monitor(
+                    trial_name=ctx.trial_sd,
+                    trial_sd_number=trial_sd_number,
                     trial_sd=ctx.trial_sd,
                     trial_state=ctx.trial_state,
                     transcript=ctx.transcript,
                     emotion=ctx.emotion,
                     completed_sds=ctx.completed_sds,
+                    completed_sd_numbers=completed_sd_numbers,
                 )
 
                 # ---------------------------------
