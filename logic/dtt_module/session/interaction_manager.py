@@ -92,5 +92,5 @@ class InteractionManager:
             2.5
         )
 
-        await asyncio.sleep(sleep_time + 0.5)
+        await asyncio.sleep(sleep_time + 1.0)
     
