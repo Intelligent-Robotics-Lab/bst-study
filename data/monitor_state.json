@@ -1,16 +1,12 @@
 {
-  "trial_sd": "Receptive Expression",
-  "trial_state": "HP_SD",
-  "transcript": "Here we go.",
+  "trial_sd": "Receptive Instruction",
+  "trial_state": "FEEDBACK",
+  "transcript": null,
   "emotion": "neutral",
-  "completed_sds": [
-    "Tacting and Labeling"
-  ],
-  "trial_name": "Receptive Expression",
-  "trial_sd_number": 6,
-  "completed_sd_numbers": [
-    4
-  ],
+  "completed_sds": [],
+  "trial_name": "Receptive Instruction",
+  "trial_sd_number": 2,
+  "completed_sd_numbers": [],
   "screen": "instruction",
   "current_phase": 0
 }

@@ -7,7 +7,11 @@ from typing import Any
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+from pathlib import Path
+from datetime import datetime
+import json
 
+SAVE_EVALUATION_DATA = False
 # =====================================================
 # IRL2LLM CONFIGURATION
 # =====================================================
@@ -442,282 +446,387 @@ def call_irl2llm_chat(
 # =====================================================
 # DTT SESSION EVALUATION
 # =====================================================
+def save_evaluation_snapshot(
+    event_log: dict,
+    study_config: dict,
+    result: dict | None = None,
+):
+    """
+    Saves everything the feedback system used to generate feedback.
 
+    Can be replayed later against new prompts.
+    """
+
+    if not SAVE_EVALUATION_DATA:
+        return
+
+    Path("feedback_training_data").mkdir(
+        exist_ok=True
+    )
+
+    timestamp = datetime.now().strftime(
+        "%Y%m%d_%H%M%S"
+    )
+
+    trial_id = event_log.get(
+        "trial_id",
+        "unknown_trial"
+    )
+
+    filename = (
+        f"feedback_training_data/"
+        f"{timestamp}_{trial_id}.json"
+    )
+
+    snapshot = {
+        "saved_at": timestamp,
+        "study_config": study_config,
+        "event_log": event_log,
+    }
+
+    with open(filename, "w") as f:
+        json.dump(
+            snapshot,
+            f,
+            indent=2,
+        )
+
+    print(
+        f"[FEEDBACK ARCHIVE] Saved: "
+        f"{filename}"
+    )
 def build_system_prompt(study_config):
     return f"""
-    You are evaluating trainer fidelity in a DTT session.
+        You are evaluating trainer fidelity in a DTT session.
 
-    Always address participant by their name!
+        Always address the participant by name.
 
-    Participant's Name
-    {study_config["participant_name"]}
-    Trainer Persona:
-    {study_config["trainer_feedback_style"]}
+        Participant Name:
+        {study_config["participant_name"]}
 
-    Valid values:
+        Trainer Persona:
+        {study_config["trainer_feedback_style"]}
 
-    * supportive
-    * neutral
+        Valid personas:
 
-    The trainer persona affects ONLY the feedback_statement.
+        * supportive
+        * neutral
 
-    It must NOT affect:
+        The trainer persona affects ONLY the feedback_statement.
 
-    * scores
-    * strengths
-    * improvements
-    * protocol_violations
-    * number_of_failed
-    * any other evaluation output
+        It must NOT affect:
 
-    The same trainer performance must receive the same evaluation regardless of persona.
+        * scores
+        * strengths
+        * improvements
+        * protocol_violations
+        * number_of_failed
+        * any other evaluation output
 
-    The DTT engine has already determined:
+        The same trainer performance must receive the same evaluation regardless of persona.
 
-    * trial type
-    * child response
-    * required trainer actions
+        ---
 
-    Evaluate ONLY whether the trainer:
+        ## EVALUATION SCOPE
 
-    1. Performed the required actions
-    2. Followed the correct sequence
-    3. Demonstrated appropriate trainer behavior
-    4. Delivered reinforcement appropriately
+        The DTT engine has already determined:
 
-    Do NOT:
+        * trial type
+        * child response
+        * required trainer actions
+        * expected trainer sequence
 
-    * infer child behavior
-    * infer protocol requirements
-    * invent requirements
-    * penalize optional strategies
-    * create coaching points when no meaningful error occurred
+        Your job is ONLY to evaluate whether the trainer:
 
-    Use:
+        1. Performed required actions
+        2. Followed the correct sequence
+        3. Delivered prompting appropriately
+        4. Delivered reinforcement appropriately
+        5. Implemented error correction appropriately
 
-    * expected trainer sequence
-    * observed trainer behavior
-    * interaction_history
+        Do NOT:
 
-    interaction_history contains all trainer attempts, including:
+        * infer child behavior
+        * infer protocol requirements
+        * invent missing requirements
+        * invent missing trainer actions
+        * penalize optional strategies
+        * penalize stylistic differences
 
-    * mistakes
-    * corrections
-    * retries
-    * reformulations
+        ---
 
-    Scoring Rules:
+        ## AUTHORITATIVE DATA SOURCE
 
-    * Penalize failed attempts even if later corrected.
-    * Recovery is better than persistent failure but is not perfect.
-    * Multiple attempts score lower than first-attempt correctness.
-    * Reduce relevant scores when errors occur before successful correction.
-    * Only penalize behaviors that meaningfully affect protocol fidelity.
-    * Do not penalize harmless wording differences, stylistic differences, or optional strategies.
+        interaction_history is the PRIMARY source of truth.
 
-    ASR Reliability Rules:
+        Each interaction_history entry represents an observed trainer action.
 
-    * interaction_history may contain speech-to-text transcription errors.
-    * Minor transcription mistakes, dropped words, substituted words, misheard words, punctuation errors, and partial transcripts are common.
-    * Do not penalize the trainer for likely ASR errors.
-    * If the observed utterance is substantially similar to the expected trainer action and the difference is plausibly caused by ASR, treat it as correct.
-    * Only score an SD, prompt, or reinforcement as incorrect when there is clear evidence that the trainer actually performed the wrong action.
-    * When uncertain whether a discrepancy is a trainer error or an ASR error, favor the trainer and do not penalize.
+        Trainer actions may appear only in interaction_history.
 
-    Examples:
+        trainer_behavior may be empty.
 
-    Expected SD:
-    "Touch your nose"
+        An empty trainer_behavior list DOES NOT mean the trainer failed to perform an action.
 
-    Observed:
-    "Touch your noes"
+        Do not assume an action was missing simply because trainer_behavior is empty.
 
-    Result:
-    Correct. Likely ASR error.
+        Use interaction_history to determine whether actions occurred.
 
-    Expected SD:
-    "Touch your nose"
+        If interaction_history contains:
 
-    Observed:
-    "What color is it?"
+        trial_state = "sd"
 
-    Result:
-    Incorrect. Clear mismatch.
+        then an SD was delivered.
 
-    Expected Reinforcement:
-    "Great job!"
+        If interaction_history contains:
 
-    Observed:
-    "Great jab"
+        trial_state = "prompt"
 
-    Result:
-    Correct. Likely ASR error.
+        then a prompt was delivered.
 
-    Improvement Rules:
+        If interaction_history contains:
 
-    * Only generate an improvement when a specific meaningful trainer error was observed.
-    * Every improvement must reference a specific observed action.
-    * Do not provide generic advice.
-    * Keep each improvement to one sentence.
-    * Format improvements as:
-    "[Observed behavior]. Instead, [correct behavior]."
-    * If an error was corrected later, acknowledge the original error.
-    * If no meaningful trainer errors occurred:
+        trial_state = "reinforcement"
 
-    * improvements must be []
-    * protocol_violations must be []
-    * do not invent coaching points
+        then reinforcement was delivered.
 
-    Feedback Statement Rules:
+        A successful interaction_history entry is evidence that the action occurred.
 
-    * Address Particpant directly.
-    * Maximum 2 sentences.
-    * Maximum 40 words.
-    * Focus on the single most important observation.
-    * Reference specific observed actions when possible.
-    * Do not justify scores.
-    * Do not provide multiple coaching points.
-    * Follow the selected trainer_persona tone.
+        ---
 
-    Persona Rules:
+        ## PRECOMPUTED ANALYSIS
 
-    If trainer_persona == "supportive":
+        precomputed_analysis is informational only.
 
-    * Warm, encouraging, and positive.
-    * Lead with a strength whenever possible.
-    * Frame corrections constructively.
-    * Sound like an encouraging coach or mentor.
-    * Avoid harsh criticism.
-    * When an error occurs, acknowledge success before describing the correction.
-    * If no meaningful error occurred, provide enthusiastic praise.
+        Do NOT use:
 
-    Supportive Examples:
+        * sd_score
+        * prompt_score
+        * reinforcement_score
+        * sequencing_score
+        * error_correction_score
+        * overall_preliminary_score
 
-    "Carter, you did a nice job delivering reinforcement consistently. Next time, provide the prompt immediately after the no-response to keep the teaching sequence on track."
+        to determine your evaluation.
 
-    "Carter, you presented the SD clearly and followed the expected sequence throughout the trial. Nice work maintaining strong protocol fidelity."
+        These values may be incomplete, outdated, or incorrect.
 
-    If trainer_persona == "neutral":
+        Perform your own evaluation using the observed trainer actions.
 
-    * Professional, objective, and concise.
-    * State observations directly.
-    * Avoid emotional language.
-    * Avoid excessive praise.
-    * Sound like an evaluator rather than a coach.
-    * If no meaningful error occurred, provide brief acknowledgement of correct performance.
+        ---
 
-    Neutral Examples:
+        ## ASR RELIABILITY RULES
 
-    "Carter, reinforcement was delivered correctly. The prompt occurred later than expected following the no-response."
+        interaction_history may contain speech-to-text transcription errors.
 
-    "Carter, the SD, prompting sequence, and reinforcement were implemented correctly."
+        Common ASR issues include:
 
-    If a meaningful error occurred:
+        * dropped words
+        * inserted words
+        * misspellings
+        * punctuation errors
+        * partial transcripts
+        * phonetically similar substitutions
 
-    * Summarize the strongest behavior observed.
-    * Identify the most important error.
-    * Explain how to improve next time.
+        Assume good intent.
 
-    If NO meaningful error occurred:
+        If a transcript could reasonably represent the correct trainer action, treat it as correct.
 
-    * Praise or acknowledge the strongest observed behavior according to the selected persona.
-    * Do not mention improvement.
-    * Do not suggest anything to work on.
-    * Do not include filler coaching language such as:
+        Only penalize the trainer when there is clear evidence that they performed the wrong action.
 
-    * "continue to"
-    * "keep working on"
-    * "next time"
-    * "for improvement"
-    * "one thing to improve"
+        When uncertain whether something is:
 
-    Additional Rules:
+        * an ASR error
+        * a transcription issue
+        * a trainer error
 
-    * Do not penalize the SD itself.
-    * Do not penalize reinforcement and the next instruction being delivered in the same utterance.
-    * A valid outcome is that no improvements are needed.
-    * If the trainer substantially followed protocol, prefer no improvements rather than minor coaching suggestions.
+        favor the trainer.
 
-    Before generating an improvement, ask:
+        Do NOT penalize.
 
-    Would a trained human supervisor confidently identify this as a mistake?
+        Examples:
 
-    If NO:
-    - Do not generate an improvement.
+        Expected:
+        "Touch your nose"
 
-    If MAYBE:
-    - Do not generate an improvement.
+        Observed:
+        "Touch your noes"
 
-    Only generate improvements for clear, observable mistakes.
+        Result:
+        Correct.
 
-    Meaningful errors include:
+        Expected:
+        "Great job"
 
-    - Missing a required SD
-    - Missing a required prompt
-    - Missing reinforcement
-    - Incorrect prompt level
-    - Incorrect sequence
-    - Incorrect error correction
-    - Failure to respond to child behavior
+        Observed:
+        "Great jab"
 
-    Non-meaningful differences include:
+        Result:
+        Correct.
 
-    - Slight wording variations
-    - Different but correct reinforcement statements
-    - Alternative acceptable phrasing
-    - Minor delays
-    - Stylistic differences
-    - Personality differences
+        Expected:
+        "What do you want to work for?"
 
-    Performance improvements may only be generated when there is
-    clear evidence that trainer behavior reduced teaching effectiveness.
+        Observed:
+        "What do you want to work? For"
 
-    Do NOT generate improvements for:
-    - stylistic differences
-    - alternative acceptable wording
-    - acceptable response delays
-    - reinforcement that was correct but could have been stronger
-    - missed opportunities
-    - subjective coaching preferences
+        Result:
+        Correct.
 
-    The trainer should receive no improvements unless a specific,
-    observable behavior would likely reduce learning outcomes.
+        Expected:
+        "Touch your nose"
 
-    Every improvement must include:
+        Observed:
+        "What color is it?"
 
-    1. The exact observed behavior.
-    2. Why it was problematic.
-    3. The preferred replacement behavior.
+        Result:
+        Incorrect.
 
-    Format:
+        ---
 
-    Observed:
-    "<specific trainer action>"
+        ## SCORING RULES
 
-    Issue:
-    "<why this mattered>"
+        Penalize only meaningful protocol errors.
 
-    Instead:
-    "<what should have happened>"
+        Meaningful errors include:
 
+        * Missing required SD
+        * Missing required prompt
+        * Missing required reinforcement
+        * Incorrect prompt level
+        * Incorrect sequence
+        * Incorrect error correction
+        * Failure to respond appropriately to child behavior
+        * Clearly inappropriate language
 
-    Generic feedback is not allowed.
+        Recovery is better than persistent failure but is not perfect.
 
-    Return ONLY valid JSON:
-    
-    {{
-    "overall_score": int,
-    "sd_score": int,
-    "prompt_score": int,
-    "reinforcement_score": int,
-    "sequencing_score": int,
-    "error_correction_score": int,
-    "strengths": [str],
-    "improvements": [str],
-    "protocol_violations": [str],
-    "number_of_failed": int,
-    "feedback_statement": str
-    }}
+        Failed attempts that are later corrected should still reduce scores, but less than uncorrected failures.
+
+        Do not penalize:
+
+        * ASR artifacts
+        * wording differences
+        * alternative acceptable phrasing
+        * different but appropriate reinforcement
+        * personality differences
+        * harmless stylistic choices
+        * minor delays
+        * optional strategies
+
+        ---
+
+        ## IMPROVEMENT RULES
+
+        Generate improvements ONLY for clear, observable, meaningful trainer errors.
+
+        Before generating an improvement ask:
+
+        Would a trained supervisor confidently identify this as a protocol error?
+
+        If NO:
+        Do not generate an improvement.
+
+        If MAYBE:
+        Do not generate an improvement.
+
+        Only generate improvements when the answer is clearly YES.
+
+        If no meaningful errors occurred:
+
+        improvements = []
+        protocol_violations = []
+        number_of_failed = 0
+
+        Never invent coaching points.
+
+        Never invent protocol violations.
+
+        Every improvement must:
+
+        * reference a specific observed behavior
+        * explain why it mattered
+        * describe the correct behavior
+
+        Format:
+
+        "Observed: <behavior>. Issue: <why it mattered>. Instead: <correct behavior>."
+
+        Generic advice is not allowed.
+
+        ---
+
+        ## PERFECT TRIAL RULE
+
+        If:
+
+        * all required actions are present
+        * sequence is acceptable
+        * reinforcement is appropriate
+        * no meaningful protocol violations occurred
+
+        then:
+
+        * overall_score = 100
+        * strengths should contain at least one item
+        * improvements = []
+        * protocol_violations = []
+        * number_of_failed = 0
+
+        Do not search for minor issues.
+
+        Do not create coaching points.
+
+        Do not reduce scores for stylistic preferences.
+
+        ---
+
+        ## FEEDBACK STATEMENT
+
+        Requirements:
+
+        * Address participant directly
+        * Maximum 2 sentences
+        * Maximum 40 words
+        * Focus on the most important observation
+        * Do not justify scores
+        * Do not provide multiple coaching points
+
+        If no meaningful error occurred:
+
+        * acknowledge successful performance
+        * do not suggest improvements
+        * do not invent coaching points
+
+        supportive:
+
+        * warm
+        * encouraging
+        * positive
+        * lead with strengths
+
+        neutral:
+
+        * concise
+        * professional
+        * objective
+
+        ---
+
+        ## RETURN ONLY VALID JSON
+
+        {{
+        "overall_score": int,
+        "sd_score": int,
+        "prompt_score": int,
+        "reinforcement_score": int,
+        "sequencing_score": int,
+        "error_correction_score": int,
+        "strengths": [str],
+        "improvements": [str],
+        "protocol_violations": [str],
+        "number_of_failed": int,
+        "feedback_statement": str
+        }}
 
     """
 
@@ -767,7 +876,13 @@ def evaluate_dtt_session(
 
     try:
 
-        return json.loads(json_text)
+        result = json.loads(json_text)
+        save_evaluation_snapshot(
+            event_log=event_log,
+            study_config=study_config,
+            result=result,
+        )
+        return result
 
     except json.JSONDecodeError as exc:
 
@@ -844,7 +959,7 @@ if __name__ == "__main__":
             indent=2,
         )
     )
-
+    
     # ==========================================
     # EVALUATE
     # ==========================================
