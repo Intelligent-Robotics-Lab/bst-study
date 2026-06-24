@@ -7,7 +7,11 @@ from typing import Any
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
+from pathlib import Path
+from datetime import datetime
+import json
 
+SAVE_EVALUATION_DATA = False
 # =====================================================
 # IRL2LLM CONFIGURATION
 # =====================================================
@@ -442,7 +446,55 @@ def call_irl2llm_chat(
 # =====================================================
 # DTT SESSION EVALUATION
 # =====================================================
+def save_evaluation_snapshot(
+    event_log: dict,
+    study_config: dict,
+    result: dict | None = None,
+):
+    """
+    Saves everything the feedback system used to generate feedback.
 
+    Can be replayed later against new prompts.
+    """
+
+    if not SAVE_EVALUATION_DATA:
+        return
+
+    Path("feedback_training_data").mkdir(
+        exist_ok=True
+    )
+
+    timestamp = datetime.now().strftime(
+        "%Y%m%d_%H%M%S"
+    )
+
+    trial_id = event_log.get(
+        "trial_id",
+        "unknown_trial"
+    )
+
+    filename = (
+        f"feedback_training_data/"
+        f"{timestamp}_{trial_id}.json"
+    )
+
+    snapshot = {
+        "saved_at": timestamp,
+        "study_config": study_config,
+        "event_log": event_log,
+    }
+
+    with open(filename, "w") as f:
+        json.dump(
+            snapshot,
+            f,
+            indent=2,
+        )
+
+    print(
+        f"[FEEDBACK ARCHIVE] Saved: "
+        f"{filename}"
+    )
 def build_system_prompt(study_config):
     return f"""
 You are evaluating trainer performance during a DTT interaction.
@@ -865,7 +917,13 @@ def evaluate_dtt_session(
 
     try:
 
-        return json.loads(json_text)
+        result = json.loads(json_text)
+        save_evaluation_snapshot(
+            event_log=event_log,
+            study_config=study_config,
+            result=result,
+        )
+        return result
 
     except json.JSONDecodeError as exc:
 
@@ -942,7 +1000,7 @@ if __name__ == "__main__":
             indent=2,
         )
     )
-
+    
     # ==========================================
     # EVALUATE
     # ==========================================
