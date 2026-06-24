@@ -3,8 +3,8 @@ import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
 
 """This file controls all connection and disconnection for the Furhat. This also has functions that support the choosing of embodiments based upon the scripts."""
 
-FURHAT_TRAINER_IP = "141.210.88.11"
-FURHAT_KID_IP = "141.210.88.254"
+FURHAT_TRAINER_IP = "141.210.88.12"
+FURHAT_KID_IP = "141.210.88.202"
 
 _furhats = {}
 
