@@ -603,6 +603,8 @@ Examples of invalid reinforcement:
 
 Only generate a reinforcement error when there is clear evidence that reinforcement was missing, inappropriate, or replaced with a different instructional behavior.
 
+If uncertain whether an utterance functioned as reinforcement, favor the trainer and do not apply a penalty as it was likely an ASR error.
+
 ASR RELIABILITY
 
 interaction_history may contain transcription errors.
@@ -669,21 +671,27 @@ State fidelity error.
 
 HIGH PROBABILITY SD RULE
 
-High-probability SD states have multiple valid responses.
+High-probability SD states may have many valid responses.
 
 The evaluator may not have visibility into every acceptable high-probability SD.
 
-Do not assume a specific high-probability SD is required unless there is clear evidence that a particular SD was expected.
-
 When evaluating HIGH_PROBABILITY_SD states:
 
-* prioritize state fidelity over exact wording
-* allow reasonable variation in high-probability SD selection
-* do not penalize a high-probability SD for being different from an expected example if it is still appropriate for the HIGH_PROBABILITY_SD state
-* only penalize when the trainer delivers a behavior that belongs to a different trial state
+* prioritize state fidelity over SD selection
+* do not assume a specific high-probability SD is required
+* allow reasonable variation in high-probability SD choice
+* do not compare the observed SD against an expected example SD
+* any reasonable high-probability SD should be treated as correct for the state
 
+Only generate an error when there is clear evidence that the trainer delivered a behavior from a different trial state.
 
-If uncertain whether a high-probability SD was valid, favor the trainer and do not apply a penalty.
+Examples of behaviors from a different state:
+* reinforcement
+* prompting
+* error correction
+* target instructional SD delivery when a high-probability SD was expected
+
+If uncertain whether a high-probability SD was appropriate, favor the trainer and do not apply a penalty.
 
 TRANSCRIPT-ONLY EVALUATION
 

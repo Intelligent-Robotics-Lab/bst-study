@@ -38,31 +38,31 @@ async def speak_text(furhat, message):
 # "JAW_OPEN", "SMILE_OPEN", "SMILE_CLOSED", "EYEBROW_LARGER", "BLINK_LEFT", "BLINK_RIGHT", "BROW_IN_LEFT", "BROW_IN_RIGHT", "EYEBROW_UP", "EYEBROW_DOWN"
 face_param_mapping = {
     "Happy": {
-        "SMILE_CLOSED": 1.0,
-        "EYEBROW_UP": 0.75,
-        "BROW_IN_LEFT": 0.3,
-        "BROW_IN_RIGHT": 0.3,
+        "SMILE_CLOSED": 0.0,
+        "EYEBROW_UP": 0.0,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
         "JAW_OPEN": 0.0
     },
     "VeryHappy": {
-        "SMILE_OPEN": 0.75,
-        "EYEBROW_UP": 0.75,
+        "SMILE_OPEN": 0.0,
+        "EYEBROW_UP": 0.0,
         "BROW_IN_LEFT": 0.0,
         "BROW_IN_RIGHT": 0.0,
     },
     "Angry": {
-        "BROW_IN_LEFT": 1.0,
-        "BROW_IN_RIGHT": 1.0,
-        "EYEBROW_DOWN": 0.75,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
+        "EYEBROW_DOWN": 0.0,
         "SMILE_CLOSED": 0.0,
         "SMILE_OPEN": 0.0,
     },
     "Sad": {
-        "BROW_IN_LEFT": 1.0,
-        "BROW_IN_RIGHT": 1.0,
-        "EYEBROW_UP": 0.5,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
+        "EYEBROW_UP": 0.0,
         "SMILE_CLOSED": 0.0,
-        "FROWN_CLOSED": 1.0,
+        "FROWN_CLOSED": 0.0,
     },
     "Neutral": {
         "SMILE_CLOSED": 0.0,
@@ -72,26 +72,26 @@ face_param_mapping = {
         "JAW_OPEN": 0.0
     },
     "Surprised": {
-        "JAW_OPEN": 1.0,
-        "EYEBROW_UP": 1.25,
-        "BROW_IN_LEFT": 0.2,
-        "BROW_IN_RIGHT": 0.2,
+        "JAW_OPEN": 0.0,
+        "EYEBROW_UP": 0.0,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
     },
     "Fear": {
-        "JAW_OPEN": 0.8,
-        "EYEBROW_UP": 1.0,
-        "BROW_IN_LEFT": 0.6,
-        "BROW_IN_RIGHT": 0.6,
+        "JAW_OPEN": 0.0,
+        "EYEBROW_UP": 0.0,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
         "SMILE_OPEN": 0.0,
         "SMILE_CLOSED": 0.0
     },
     "Disgust": {
-        "BROW_IN_LEFT": 0.8,
-        "BROW_IN_RIGHT": 0.8,
+        "BROW_IN_LEFT": 0.0,
+        "BROW_IN_RIGHT": 0.0,
         "EYEBROW_UP": 0.0,
         "SMILE_CLOSED": 0.0,
         "SMILE_OPEN": 0.0,
-        "JAW_OPEN": 0.2
+        "JAW_OPEN": 0.0
     }
 }
 
