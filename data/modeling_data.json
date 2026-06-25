@@ -41,7 +41,7 @@
     },
 
     {
-      "section": "intro_watch",
+      "section": "intro",
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
@@ -55,7 +55,7 @@
     },
 
     {
-      "section": "intro_watch",
+      "section": "intro",
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
@@ -65,7 +65,7 @@
     },
 
     {
-      "section": "intro_watch",
+      "section": "intro",
       "type": "knowledge_check",
       "embodiment": "trainer",
       "question": {
@@ -92,7 +92,7 @@
     },
 
     {
-      "section": "intro_watch",
+      "section": "intro",
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
@@ -272,7 +272,7 @@
           "intensity": 1.5,
           "duration": 1.0,
           "repeats": 2,
-          "timing": "during"
+          "timing": "after"
         },
         {
           "channel": "gaze",
@@ -1150,7 +1150,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "You can also watch the screen which will provide you with helpful information about the interaction state. If at any point something seems incorrect, such as the wrong SD number on the screen, you can just tell me, restart, and we will start the interaction over."
+        "text": "You can also watch the screen which will provide you with helpful information about the interaction state. If at any point something seems incorrect, such as the wrong SD number shown on the monitor, you can just tell me, restart, and we will start the interaction over."
       },
       "nonverbals": []
     },

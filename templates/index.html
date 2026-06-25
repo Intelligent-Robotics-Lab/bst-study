@@ -205,7 +205,7 @@
         </div>
 
         <div class="card transcript-card">
-            <div class="label">Current Transcript</div>
+            <div class="label">Current Transcript (NOTE: Errors are possible and this is only for your reference)</div>
             <div id="transcript" class="value transcript">---</div>
         </div>
 
@@ -264,7 +264,7 @@
 
 <div id="instruction" class="container screen">
 
-    <h1>Instruction Trial</h1>
+    <h1>Instruction Phase</h1>
 
     <div class="phase-list">
         <div id="inst0" class="phase pending">
@@ -305,7 +305,7 @@
 
 <div id="modeling" class="container screen">
 
-    <h1>Modeling Trial</h1>
+    <h1>Modeling Phase</h1>
 
     <div class="phase-list">
         <div id="mod0" class="phase pending">
@@ -319,17 +319,17 @@
 
         <div id="mod2" class="phase pending">
             <div class="phase-circle"></div>
-            <div>Imitation</div>
+            <div>Imitative</div>
         </div>
 
         <div id="mod3" class="phase pending">
             <div class="phase-circle"></div>
-            <div>Reception</div>
+            <div>Receptive</div>
         </div>
 
         <div id="mod4" class="phase pending">
             <div class="phase-circle"></div>
-            <div>Tact and Labeling</div>
+            <div>Tacting and Labeling</div>
         </div>
 
         <div id="mod5" class="phase pending">
@@ -384,7 +384,7 @@ function updateInstructionPhases(currentPhase) {
 
 function updateModelingPhases(currentPhase) {
 
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 0; i <= 6; i++) {
 
         const phase = document.getElementById(`mod${i}`);
 

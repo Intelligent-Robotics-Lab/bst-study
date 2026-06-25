@@ -30,7 +30,7 @@ class ExpressionModule:
         return {
             "text": verbal.get("text"),
             "style": verbal.get("style", "neutral"),
-            "volume": verbal.get("volume", 60),
+            "volume": verbal.get("volume", 40),
             "audio": verbal.get("audio"),
             "interrupt": verbal.get("interrupt", False)
         }

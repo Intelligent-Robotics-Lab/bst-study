@@ -307,7 +307,8 @@ class BaseInteraction:
                 self.state = "LECTURE"
                 return "continue"
 
-            if "summary" in text:
+            # Added summer as well in the event of ASR errors
+            if "summary" in text or "summer" in text:
                 await self.say_text(expr, "Here is a summary.")
                 self.state = "LECTURE"
                 return "summary"
@@ -317,7 +318,7 @@ class BaseInteraction:
                 self.state = "LECTURE"
                 return "repeat_section"
 
-            if "repeat" in text or "again" in text:
+            if "statement" in text or "again" in text:
                 await self.say_text(expr, "Repeating that statement.")
                 self.state = "LECTURE"
                 return "repeat_step"
@@ -325,6 +326,7 @@ class BaseInteraction:
             # Only allow for clarification once, 2 total attempts before moving on
             if not clarification_used:
                 clarification_used = True
+                timeout = 0     # Reset timeout so the user gets a full 8 seconds the second time
                 await self.say_text(expr, "Sorry, I didn't understand. Please say continue, repeat, section, or summary.")
                 await self.prepare_for_input(agent)
                 continue
