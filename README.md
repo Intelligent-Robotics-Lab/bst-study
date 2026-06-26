@@ -1,6 +1,32 @@
 # BST Study Interaction Framework
 Study 1: Understanding perception of the robot's challenging and supportive behaviors through BST.
 
+## Outline
+
+1. [Overview](#overview)
+2. [Project Goals](#project-goals)
+3. [Repo Structure](#repo-structure)
+4. [Architecture](#architecture)
+5. [Quick Start](#quick-start)
+6. [Installation](#installation)
+7. [External Dependencies](#external-dependencies)
+8. [Configuration](#configuration)
+   - [Study Content](#study-content)
+   - [Agent Configuration](#agent-configuration)
+   - [Perception Configuration](#perception-configuration)
+9. [How to Run](#how-to-run)
+   - [Running the Full Study](#running-the-full-study)
+   - [Running Individual Modules](#running-individual-modules)
+   - [Expected Runtime Flow](#expected-runtime-flow)
+10. [Troubleshooting](#troubleshooting)
+    - [Common Issues:](#common-issues)
+    - [Robot Not Responding](#robot-not-responding)
+    - [Speech Recognition Not Working](#speech-recognition-not-working)
+    - [Packet Executes But Robot Does Not Move](#packet-executes-but-robot-does-not-move)
+11. [Additional Documentation](#additional-documentation)
+12. [Contributing](#contributing)
+13. [License](#license)
+
 ## Overview
 This project is a robot interaction framework for a behavioral skills training (BST) study. It combines perception, instructional content, and robot execution to run tutorial, instruction, modeling, and rehearsal phases on a Furhat social robot while reacting to participant responses.
 
@@ -42,6 +68,13 @@ bst-study/
 ├─ expression_module/            # Builds generic robot behavior packets
 │  └─ expression_module.py
 ├─ logic/                        # Study phase controllers and interaction flows
+│  └─ dtt_module/                # All supporting logic for the DTT rehearsal phases
+│     └─ commands/
+│     └─ handlers/
+│     └─ models/
+│     └─ services/
+│     └─ session/
+│     └─ state_machine/
 │  ├─ base_interaction.py
 │  ├─ bst.py
 │  ├─ dtt.py

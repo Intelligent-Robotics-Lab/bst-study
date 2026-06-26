@@ -9,12 +9,8 @@ MONITOR_FILE = os.path.join(
     "monitor_state.json"
 )
 
-
-
-
-
 def _serialize(value):
-
+    """Serializes a value for JSON storage. Handles special cases for Enums and sets."""
     if isinstance(value, Enum):
         return value.name
 
@@ -25,7 +21,7 @@ def _serialize(value):
 
 
 def update_monitor(**kwargs):
-
+    """Updates the monitor state JSON file with the provided keyword arguments."""
     print("[MONITOR UPDATE]", kwargs)
 
     try:

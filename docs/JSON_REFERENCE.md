@@ -1,5 +1,18 @@
 # JSON Reference Guide
 
+## Outline
+
+1. [Overview](#overview)
+2. [General Structure](#general-structure)
+3. [Field Definitions](#field-definitions)
+   - [section](#section)
+   - [type](#type)
+   - [embodiment](#embodiment)
+4. [Verbal Block](#verbal-block)
+5. [Nonverbal Block](#nonverbal-block)
+6. [Summary Block](#summary-block)
+7. [Child Behavior](#child-behavior)
+
 This document defines the structure, fields, and allowed values for all study content used in the BST Study Interaction Framework.
 
 All experimental behavior (tutorial, instruction, modeling, and DTT rehearsal) is fully data-driven through JSON files in the `data/` directory.
@@ -165,7 +178,7 @@ Used in instruction and modeling phases to reinforce learning. Only applicable i
 
 ---
 
-# Child Behavior (Modeling and Rehearsal Only)
+# Child Behavior
 
 Used when simulating a learner response during modeling. An example of the verbal and nonverbal sections put together is as follows:
 

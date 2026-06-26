@@ -1,5 +1,14 @@
 # 🤝 Contributing Guide
 
+## Outline
+
+1. [Core Principles](#core-principles)
+2. [Branch Naming](#branch-naming)
+3. [Development Workflow](#development-workflow)
+4. [Commit Changes](#commit-changes)
+5. [Push Changes](#push-changes)
+6. [Common Recovery Commands](#common-recovery-commands)
+
 Thank you for contributing to the BST Study Interaction Framework.
 
 This project follows a simple Git workflow based on short-lived feature branches, focused pull requests, and modular development practices. The goal is to keep the codebase maintainable, testable, and easy for future researchers to understand.
