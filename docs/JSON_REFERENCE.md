@@ -17,7 +17,7 @@ This document defines the structure, fields, and allowed values for all study co
 
 All experimental behavior (tutorial, instruction, modeling, and DTT rehearsal) is fully data-driven through JSON files in the `data/` directory.
 
-> **Note**: Some parameters are not used in the active version but left in for future improvements.
+> **Note**: Some parameters are not used in the active version but left in with the hopes of expansion in future versions.
 
 ---
 
@@ -139,9 +139,9 @@ Defines robot gestures, gaze, facial expressions, and other behaviors.
 
 ## Channels
 
-* face
-* head
-* gaze
+* face (expression-based)
+* head (gestures)
+* gaze (attention-target)
 * led
 
 ---
@@ -327,7 +327,7 @@ Only use:
 
 ### ❌ Hardcoding behavior in Python
 
-All robot behavior should be defined in JSON, not logic files.
+All robot behavior should be defined in JSON, not logic files (outside of short assistive remarks).
 
 ---
 
@@ -410,5 +410,5 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 
 For system-level architecture, reference:
 
-* `docs/ARCHITECTURE.md` (coming soon)
+* [Architecture Guide](ARCHITECTURE.md)
 * [Contributions Guide](CONTRIBUTING.md)

@@ -1,4 +1,4 @@
-# 🤝 Contributing Guide
+# Contributing Guide
 
 ## Outline
 
@@ -79,7 +79,7 @@ git pull origin main
 git checkout -b logic/feature/my-feature
 ```
 
-Important: Do not make development changes directly on `main`. Always create a new branch before modifying code, documentation, study content, or configuration files.
+ > **Important:** Do not make development changes directly on `main`. Always create a new branch before modifying code, documentation, study content, or configuration files.
 
 ## Check Status and Review Changes
 
@@ -136,7 +136,7 @@ git push
 
 If you need to recover from a mistake, the following commands may be useful.
 
-> **Note:** these commands are not exhaustive and other resources may be necessary.
+> **Note:** these commands are not exhaustive and other resources may be necessary for understanding.
 
 Discard local changes to a specific file:
 
@@ -214,6 +214,8 @@ Follow the existing system architecture when adding new functionality.
 ```text
 Perception → Logic → Expression Module → Agent Layer
 ```
+
+For more detailed information on this structure see: [Architecture Guide](docs/ARCHITECTURE.md)
 
 ## Logic Layer
 

@@ -64,14 +64,12 @@ Primary responsibilities:
 - Parse raw input into structured events.
 - Validate event payloads and required fields.
 - Forward normalized events to the logic layer.
-- Provide mocked input for offline or development testing.
 
 Typical event types:
 
 - `asr_update`
 - `gesture_update`
 - `emotion_update`
-- operator commands or manual triggers
 
 Key files:
 
@@ -79,14 +77,13 @@ Key files:
   - Handles event connection and incoming payload parsing.
   - Converts perception service messages into internal event structures.
 - `perception/sample_interaction.py`
-  - Simulates perception input for local testing.
-  - Useful for validating logic without a live perception server.
+  - Contains the logic that sends out perception updates such as ASR, emotion, etc. 
 - `perception/perception_requirements.txt`
   - Lists dependencies needed for perception-related services.
 
 Why it matters:
 
-The perception layer is the system�s input gateway. If it fails to normalize events consistently, the logic layer cannot apply the correct study rules.
+The perception layer is the system's input gateway. If it fails to normalize events consistently, the logic layer cannot apply the correct study rules.
 
 ### Logic
 
@@ -103,8 +100,10 @@ Primary responsibilities:
 Core modules:
 
 - `logic/base_interaction.py`
-  - Base class for phase controllers.
+  - Base class for phase controllers in instructional phase.
   - Contains generic utilities for state transitions, step execution, and content loading.
+- `logic/dtt_module/`
+  - Contains all phase controlling logic required to move through the rehearsal phase.
 - `logic/bst.py`
   - Main BST study orchestrator.
   - Coordinates tutorial, instruction, modeling, rehearsal, and assessment phases.
@@ -119,9 +118,9 @@ Core modules:
 - `logic/feedback.py`
   - Feedback generation and reinforcement decisions.
 - `logic/monitor.py`
-  - Tracks participant state and experimental monitoring data.
+  - Moves the mointor aid throughout the interaction to keep the user updated on current state and inputs.
 - `logic/sd_recognizer.py`
-  - Stimulus discrimination recognition logic used across phases.
+  - Discriminitive stimulus recognition logic used across the rehearsal phase.
 
 How it works:
 
@@ -186,9 +185,9 @@ Key files:
 - `agent_layer/Furhat/Exe/furhat_execute.py`
   - Executes commands on the Furhat runtime.
 - `agent_layer/Furhat/Lib/furhat_behavior_components.py`
-  - Defines Furhat-specific behavior primitives.
+  - Defines Furhat-specific behavior fucntions.
 - `agent_layer/Furhat/Lib/furhat_behavior_library.py`
-  - Provides reusable Furhat action sequences.
+  - Provides the generic behavior Furhat execution function
 - `agent_layer/Furhat/Lib/furhat_data_translate.py`
   - Maps generic packet fields to Furhat command structures.
 - `agent_layer/Furhat/Lib/furhat_manager.py`
@@ -237,6 +236,8 @@ Field semantics:
 Why it matters:
 
 This data model makes it easy to update the study script without code changes. New behaviors can be authored by editing JSON files and keeping the packet schema stable.
+
+See: [JSON Reference Guide](JSON_REFERENCE.md) for more.
 
 ---
 
@@ -287,9 +288,13 @@ Directory responsibilities:
 - `test/`
   - Unit and integration tests.
 
+See the main [README](README.md) for a full project structure.
+
 ---
 
 ## Extension points
+
+(Still being polished so mostly a placeholder of ideas for now)
 
 ### Add a new perception source
 
@@ -327,7 +332,7 @@ Expected environment:
 - Perception dependencies installed from `perception/perception_requirements.txt` (if needed)
 - Furhat robot reachable on the same network
 - Perception backend running and reachable
-- `OPENAI_KEY` available in `.env` if AI-based feedback is enabled
+- `OPENAI_KEY` available in `.env` for LLM-based feedback
 
 Startup steps:
 
@@ -344,6 +349,8 @@ Startup steps:
 
 ## Troubleshooting guide
 
+More information on common issues also available in the main [README](README.md) file.
+
 Troubleshooting is most effective when isolating the problem by layer.
 
 ### Perception issues
@@ -355,7 +362,7 @@ Troubleshooting is most effective when isolating the problem by layer.
 ### Logic issues
 
 - Symptoms: incorrect phase transitions, repeated behavior, failure to progress.
-- Check: state updates in `logic/base_interaction.py`, phase logic in `logic/*` controllers.
+- Check: state updates in `logic/base_interaction.py` (for instructional) and `logic/dtt_module/` (for rehearsal) phase logic in `logic/*` controllers.
 - Fix: trace the current controller state and event evaluation.
 
 ### Expression issues
@@ -371,3 +378,7 @@ Troubleshooting is most effective when isolating the problem by layer.
 - Fix: ensure the packet fields are supported by the robot embodiment and the runtime connection is healthy.
 
 When in doubt, follow the path: perception ? logic ? expression ? agent.
+
+If issues still persist, please open an issue here and it can be investigated.
+
+https://github.com/Intelligent-Robotics-Lab/bst-study/issues
