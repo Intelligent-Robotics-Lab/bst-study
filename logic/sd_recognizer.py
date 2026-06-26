@@ -3,7 +3,7 @@ import numpy as np
 
 
 class SDRecognizer:
-
+    """Recognizes discriminative stimuli (SDs) based on observed input using sentence embeddings and semantic similarity."""
     def __init__(self, trial_data, threshold=0.35):
         self.trial_data = trial_data
         self.model = SentenceTransformer("all-MiniLM-L6-v2")

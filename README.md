@@ -1,6 +1,32 @@
 # BST Study Interaction Framework
 Study 1: Understanding perception of the robot's challenging and supportive behaviors through BST.
 
+## Outline
+
+1. [Overview](#overview)
+2. [Project Goals](#project-goals)
+3. [Repo Structure](#repo-structure)
+4. [Architecture](#architecture)
+5. [Quick Start](#quick-start)
+6. [Installation](#installation)
+7. [External Dependencies](#external-dependencies)
+8. [Configuration](#configuration)
+   - [Study Content](#study-content)
+   - [Agent Configuration](#agent-configuration)
+   - [Perception Configuration](#perception-configuration)
+9. [How to Run](#how-to-run)
+   - [Running the Full Study](#running-the-full-study)
+   - [Running Individual Modules](#running-individual-modules)
+   - [Expected Runtime Flow](#expected-runtime-flow)
+10. [Troubleshooting](#troubleshooting)
+    - [Common Issues:](#common-issues)
+    - [Robot Not Responding](#robot-not-responding)
+    - [Speech Recognition Not Working](#speech-recognition-not-working)
+    - [Packet Executes But Robot Does Not Move](#packet-executes-but-robot-does-not-move)
+11. [Additional Documentation](#additional-documentation)
+12. [Contributing](#contributing)
+13. [License](#license)
+
 ## Overview
 This project is a robot interaction framework for a behavioral skills training (BST) study. It combines perception, instructional content, and robot execution to run tutorial, instruction, modeling, and rehearsal phases on a Furhat social robot while reacting to participant responses.
 
@@ -42,6 +68,13 @@ bst-study/
 ├─ expression_module/            # Builds generic robot behavior packets
 │  └─ expression_module.py
 ├─ logic/                        # Study phase controllers and interaction flows
+│  └─ dtt_module/                # All supporting logic for the DTT rehearsal phases
+│     └─ commands/
+│     └─ handlers/
+│     └─ models/
+│     └─ services/
+│     └─ session/
+│     └─ state_machine/
 │  ├─ base_interaction.py
 │  ├─ bst.py
 │  ├─ dtt.py
@@ -79,14 +112,14 @@ The framework follows a layered architecture:
 
 Perception → Logic → Expression Module → Agent Layer
 
-(Placeholder for system architecture diagram)
+For a more in depth evaluation of these topics see: [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 1. **Perception**
    - Receives live inputs from the user, including speech recognition, gesture detection, and emotion inference.
    - Routes events into the interaction pipeline and triggers robot responses when required.
 2. **Logic**
    - Controls the study progression through tutorial, instruction, modeling, and DTT phases.
-   - Uses `BaseInteraction` and its subclasses to manage step execution, navigation, and knowledge checks.
+   - Uses `BaseInteraction` and its subclasses to manage step execution, navigation, and knowledge checks for instructional phases and `dtt_module` for rehearsal.
 3. **Expression module**
    - Builds embodiment-independent behavior packets from step definitions.
    - Defines speech text, nonverbal events, and other robot cues in a generic format.
@@ -97,8 +130,8 @@ Perception → Logic → Expression Module → Agent Layer
 ## Quick Start
 Before launching, ensure:
 - The Furhat is powered on and connected to the same network as your local machine.
-- Furhat IPs are configured correctly.
-- The perception dashboard shows incoming events: http://141.210.88.210:8000/debug/live
+- Furhat IPs are configured correctly, see [configuration](#configuration) for more info.
+- The perception dashboard is running and shows incoming events: http://141.210.88.210:8000/debug/live
 - A valid OpenAI key exists in your .env file with the variable name `OPENAI_KEY`
 
 1. Create and activate a virtual environment:
@@ -160,15 +193,14 @@ Common files include:
 - trial_data.json
 - hp_trial_data.json
 
-For examples of supported parameters and valid values, refer to the various existing JSON files to compile full parameter lists.
+For examples of supported parameters and valid values, refer to the exisiting JSON files and the documentation here: [JSON_REFERENCE.md](docs/JSON_REFERENCE.md).
 
 ### Agent Configuration
 Robot settings are configured through
-- logic/bst.py
-- agent_layer/Furhat/Lib/furhat_manager.py
-- agent_layer/Furhat/Lib/furhat_data_translate.py
+- logic/bst.py (pick the agent embodiment)
+- agent_layer/Furhat/Lib/furhat_manager.py (set IP addresses)
 
-Notable configurable parameters include robot IP address and agent embodiment.
+Ensure `Furhat` and proper IP addresses are used. Remember that you must be connected to the same network on your local machine in order to run the program.
 
 ### Perception Configuration
 Perception settings are configured through:
@@ -182,6 +214,8 @@ The framework expects perception events such as
 - asr_update
 - gesture_update
 - emotion_update
+
+(Placeholder for documentation on how to connect to the ASR service)
 
 ## How to Run
 ### Running the Full Study
@@ -205,7 +239,7 @@ from logic.tutorial import Tutorial
 
 Tutorial(agent="Furhat").execute()
 ```
-For a simpler version you can simply comment out the undesired modules in the bst.py file.
+For a simpler version you can simply comment out the undesired modules in the `logic/bst.py` file.
 
 ### Expected Runtime Flow
 - The system starts in tutorial mode to orient the participant.
@@ -225,7 +259,7 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 
 ### Robot Not Responding
 - Verify the Furhat robot is powered on and connected to the same network.
-- Confirm the `AGENT_TYPE` is correct and that Furhat services are reachable via the web interface.
+- Confirm the `AGENT_TYPE` is correct and that Furhat services are reachable via the web interface (accessed by entering the desired IP in your search engine).
 - Check the robot IP address and the Furhat connection logs.
 - Make sure the agent layer is receiving packets from the expression module.
 
@@ -233,6 +267,7 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 - Confirm the perception server is running and reachable at http://141.210.88.210:8000/debug/live
 - Check that `perception/perception_client.py` points to the correct host and port.
 - Verify ASR events are emitted and forwarded to `SampleInteractionAgent`.
+- (Placeholder for a reference to future documenation on Perception)
 
 ### Packet Executes But Robot Does Not Move
 - Check the agent type wiring in `logic/base_interaction.py`.
@@ -242,7 +277,7 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 ## Additional Documentation
 
 - [Contributing Guide](docs/CONTRIBUTING.md)
-- Architecture Guide (Coming Soon)
+- [Architecture Guide](docs/ARCHITECTURE.md)
 - [JSON Reference](docs/JSON_REFERENCE.md)
 
 ## Contributing
@@ -250,4 +285,4 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for development guidelines, branching strategy, coding standards, and pull request expectations.
 
 ## License
-Placeholder
+(Placeholder for reference to one)

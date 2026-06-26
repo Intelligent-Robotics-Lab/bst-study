@@ -26,11 +26,10 @@ class ExpressionModule:
         if verbal is None:
             return None
 
-
         return {
             "text": verbal.get("text"),
             "style": verbal.get("style", "neutral"),
-            "volume": verbal.get("volume", 40),
+            "volume": verbal.get("volume", 60),
             "audio": verbal.get("audio"),
             "interrupt": verbal.get("interrupt", False)
         }
@@ -96,5 +95,3 @@ class ExpressionModule:
 
         for nv in packet["nonverbals"]:
             print("NONVERBAL:", nv["action"])
-
-

@@ -3,8 +3,10 @@ import agent_layer.Furhat.Lib.furhat_behavior_components as behavior
 
 """This file controls all connection and disconnection for the Furhat. This also has functions that support the choosing of embodiments based upon the scripts."""
 
-FURHAT_TRAINER_IP = "141.210.88.11"
-FURHAT_KID_IP = "141.210.88.254"
+# Trainer IP is .12 for ethernet connection and .11 for OU-Robot WiFi connection
+FURHAT_TRAINER_IP = "141.210.88.12"
+# Kid IP is .202 for ethernet connection and .254 for OU-Robot WiFi connection
+FURHAT_KID_IP = "141.210.88.202"
 
 _furhats = {}
 

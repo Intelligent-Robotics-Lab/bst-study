@@ -1,10 +1,23 @@
 # JSON Reference Guide
 
+## Outline
+
+1. [Overview](#overview)
+2. [General Structure](#general-structure)
+3. [Field Definitions](#field-definitions)
+   - [section](#section)
+   - [type](#type)
+   - [embodiment](#embodiment)
+4. [Verbal Block](#verbal-block)
+5. [Nonverbal Block](#nonverbal-block)
+6. [Summary Block](#summary-block)
+7. [Child Behavior](#child-behavior)
+
 This document defines the structure, fields, and allowed values for all study content used in the BST Study Interaction Framework.
 
 All experimental behavior (tutorial, instruction, modeling, and DTT rehearsal) is fully data-driven through JSON files in the `data/` directory.
 
-> **Note**: Some parameters are not used in the active version but left in for future improvements.
+> **Note**: Some parameters are not used in the active version but left in with the hopes of expansion in future versions.
 
 ---
 
@@ -126,9 +139,9 @@ Defines robot gestures, gaze, facial expressions, and other behaviors.
 
 ## Channels
 
-* face
-* head
-* gaze
+* face (expression-based)
+* head (gestures)
+* gaze (attention-target)
 * led
 
 ---
@@ -165,7 +178,7 @@ Used in instruction and modeling phases to reinforce learning. Only applicable i
 
 ---
 
-# Child Behavior (Modeling and Rehearsal Only)
+# Child Behavior
 
 Used when simulating a learner response during modeling. An example of the verbal and nonverbal sections put together is as follows:
 
@@ -314,7 +327,7 @@ Only use:
 
 ### ❌ Hardcoding behavior in Python
 
-All robot behavior should be defined in JSON, not logic files.
+All robot behavior should be defined in JSON, not logic files (outside of short assistive remarks).
 
 ---
 
@@ -397,5 +410,5 @@ https://github.com/Intelligent-Robotics-Lab/bst-study/issues
 
 For system-level architecture, reference:
 
-* `docs/ARCHITECTURE.md` (coming soon)
+* [Architecture Guide](ARCHITECTURE.md)
 * [Contributions Guide](CONTRIBUTING.md)
