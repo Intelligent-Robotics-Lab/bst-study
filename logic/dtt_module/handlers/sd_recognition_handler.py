@@ -25,6 +25,7 @@ class SDRecognitionHandler:
         last_processed,
     ):
 
+        # Ignore empty or duplicate transcripts
         if (
             not transcript
             or transcript == last_processed
@@ -40,13 +41,42 @@ class SDRecognitionHandler:
             observed_input=observed
         )
 
-        current_sd = result["matched_sd_id"]
-
-        success = (
-            current_sd is not None
-            if expected_sd is None
-            else current_sd == expected_sd
+        current_sd = result.get(
+            "matched_sd_id"
         )
+
+        # ----------------------------------
+        # Determine outcome type
+        # ----------------------------------
+
+        if current_sd is None:
+
+            success = False
+
+            result_type = (
+                "uncertain"
+            )
+
+        elif (
+            expected_sd is not None
+            and current_sd != expected_sd
+        ):
+
+            success = False
+
+            result_type = (
+                "confirmed_error"
+            )
+
+        else:
+
+            success = True
+
+            result_type = "success"
+
+        # ----------------------------------
+        # Log transcript event
+        # ----------------------------------
 
         self.log_transcript(
             feedback=feedback,
@@ -54,11 +84,13 @@ class SDRecognitionHandler:
             transcript=transcript,
             recognized_as=current_sd,
             successful=success,
+            result_type=result_type,
         )
 
         return {
             "current_sd": current_sd,
             "success": success,
+            "result_type": result_type,
             "next_state": (
                 CurrentState.KID
                 if success

@@ -90,24 +90,7 @@ class FeedbackHolder:
                 ),
             }
         )
-    def add_transcript_event(
-        self,
-        trial_state,
-        text,
-        recognized_as=None,
-        successful=False,
-    ):
-
-        if not hasattr(self, "interaction_history"):
-            self.interaction_history = []
-
-        self.interaction_history.append({
-            "trial_state": str(trial_state),
-            "text": text,
-            "recognized_as": recognized_as,
-            "successful": successful,
-            "corrected_later": False,
-        })
+   
     # =====================================================
     # ACTUAL TRAINER SEQUENCE
     # =====================================================
@@ -286,6 +269,121 @@ class FeedbackHolder:
     # =====================================================
     # BUILD PAYLOAD
     # =====================================================
+    # =====================================================
+    # ERROR CLASSIFICATION
+    # =====================================================
+
+    def classify_event(
+        self,
+        trial_state,
+        text,
+        recognized_as=None,
+        successful=False,
+        result_type="success",
+    ):
+        """
+        Classification is determined upstream by the
+        DTT engine / recognition handlers.
+
+        This method simply records the result.
+        """
+
+        state = str(trial_state)
+
+        if result_type == "success":
+            return
+
+        if result_type == "uncertain":
+
+            self.uncertain_events.append(
+                {
+                    "state": state,
+                    "reason": "recognition_failed",
+                    "text": text,
+                    "recognized_as": recognized_as,
+                }
+            )
+
+            return
+
+        if result_type == "confirmed_error":
+
+            self.confirmed_errors.append(
+                {
+                    "state": state,
+                    "observed": recognized_as,
+                    "text": text,
+                }
+            )
+
+            return
+
+
+    # =====================================================
+    # RESET
+    # =====================================================
+
+    def reset(self):
+
+        self.trial_id = None
+
+        self.trial_context = {
+            "trial_type": None,
+            "child_response": None,
+            "expected_trainer_sequence": [],
+        }
+
+        self.trainer_events = []
+        self.interaction_history = []
+
+        # NEW
+        self.confirmed_errors = []
+        self.uncertain_events = []
+
+
+    # =====================================================
+    # TRANSCRIPT EVENT RECORDING
+    # =====================================================
+
+    def add_transcript_event(
+        self,
+        trial_state,
+        text,
+        recognized_as=None,
+        successful=False,
+        result_type="success",
+    ):
+
+        if not hasattr(
+            self,
+            "interaction_history",
+        ):
+            self.interaction_history = []
+
+        event = {
+            "trial_state": str(trial_state),
+            "text": text,
+            "recognized_as": recognized_as,
+            "successful": successful,
+            "result_type": result_type,
+            "corrected_later": False,
+        }
+
+        self.interaction_history.append(
+            event
+        )
+
+        self.classify_event(
+            trial_state=trial_state,
+            text=text,
+            recognized_as=recognized_as,
+            successful=successful,
+            result_type=result_type,
+        )
+
+    # =====================================================
+    # BUILD PAYLOAD
+    # =====================================================
 
     def build_evaluation_payload(
         self,
@@ -307,21 +405,30 @@ class FeedbackHolder:
         return {
             "trial_id": self.trial_id,
 
-            "trial_context": self.trial_context,
+            "trial_context":
+                self.trial_context,
 
-            "precomputed_analysis": (
-                preliminary_scores
-            ),
+            "precomputed_analysis":
+                preliminary_scores,
 
-            "trainer_behavior": (
-                ordered_events
-            ),
+            "trainer_behavior":
+                ordered_events,
 
-            "interaction_history": (
-                self.interaction_history
-            ),
-            "recovery_metrics": recovery_metrics,
+            "interaction_history":
+                self.interaction_history,
+
+            # NEW
+            "confirmed_errors":
+                self.confirmed_errors,
+
+            # NEW
+            "uncertain_events":
+                self.uncertain_events,
+
+            "recovery_metrics":
+                recovery_metrics,
         }
+    
 
     def compute_recovery_metrics(self):
 
@@ -516,7 +623,18 @@ Valid values:
 
 feedback_trainer_style affects ONLY feedback_statement and wording.
 
-It must not affect any evaluation outputs or scoring: overall_score, sd_score, prompt_score, reinforcement_score, sequencing_score, error_correction_score, strengths, improvements, protocol_violations, number_of_failed.
+It must not affect any evaluation outputs or scoring:
+
+* overall_score
+* sd_score
+* prompt_score
+* reinforcement_score
+* sequencing_score
+* error_correction_score
+* strengths
+* improvements
+* protocol_violations
+* number_of_failed
 
 The same trainer performance must receive the same evaluation regardless of feedback_trainer_style.
 
@@ -533,12 +651,11 @@ The feedback_statement must:
 * not discuss timing
 * avoid quoting or repeating exact trainer utterances when describing errors
 * describe errors at the behavior level rather than the transcript level
-* reference specific moments only when necessary for clarity
 
 Supportive:
 
 * warm
-* encouraging and using encouraging language at all times
+* encouraging
 * constructive
 * acknowledge strengths before corrections when possible
 
@@ -547,26 +664,15 @@ Neutral:
 * professional
 * objective
 * concise
-* state observations directly
-* not encouragement
+* observational
+* not encouraging
 
 If no meaningful errors occurred:
 
 * acknowledge the strongest observed behavior
+* focus primarily on strengths
 
-CONSISTENCY RULE
-
-All feedback outputs must be internally consistent.
-
-The same meaningful trainer errors should drive:
-
-* score deductions
-* number_of_failed
-* improvements
-* protocol_violations
-* feedback_statement
-
-Do not generate improvements, protocol_violations, or feedback comments for behaviors that were not considered meaningful errors during scoring.
+ROLE OF THE DTT ENGINE
 
 The DTT engine already determines:
 
@@ -574,301 +680,178 @@ The DTT engine already determines:
 * expected trainer behavior
 * child response classification
 * trial progression
+* confirmed_errors
+* uncertain_events
 
-Your job is to evaluate how well the trainer responded to the active trial state.
+The DTT engine is the source of truth.
 
-PRIMARY EVALUATION CRITERIA
+Your role is NOT to discover new trainer errors.
 
-Evaluate two things:
+Your role is to:
 
-1. Content Accuracy
+* summarize trainer strengths
+* evaluate the impact of confirmed_errors
+* generate coaching based on confirmed_errors
+* generate consistent scores
+* generate a concise feedback_statement
 
-   * Did the trainer deliver the correct instructional content?
-   * Did the trainer stay on the intended instructional target?
-   * Was reinforcement appropriate?
-   * Was language professional?
+ERROR CLASSIFICATION
 
-2. State Fidelity
+The evaluation payload contains:
 
-   * Did the trainer deliver the correct behavior for the current trial state?
-   * Did the trainer respond to the active state rather than a different state?
+* confirmed_errors
+* uncertain_events
 
-The trainer should not be penalized for minor wording differences.
+These classifications are authoritative.
 
-WORDING RULE
+CONFIRMED ERRORS
 
-Semantically equivalent wording should be treated as correct.
+confirmed_errors contains trainer mistakes that have already been verified by the DTT engine.
 
-Example:
+Only confirmed_errors should be used to generate:
 
-Expected:
-"Touch your nose."
+* score deductions
+* improvements
+* protocol_violations
+* number_of_failed
+* corrective feedback
 
-Observed:
-"Can you touch your nose?"
+If confirmed_errors is empty:
 
-Result:
-Correct.
+* do not invent trainer mistakes
+* do not infer trainer mistakes from transcript wording
+* do not create corrective coaching
 
-Example:
+UNCERTAIN EVENTS
 
-Expected:
-"Touch your nose."
+uncertain_events may be caused by:
 
-Observed:
-"Show me your nose."
+* ASR failures
+* transcription errors
+* recognition failures
+* low-confidence recognition
+* ambiguous trainer behavior
 
-Result:
-Correct.
+uncertain_events are NOT confirmed trainer mistakes.
 
-Example:
+Do not generate:
 
-Expected:
-"Touch your nose."
+* score deductions
+* improvements
+* protocol_violations
+* number_of_failed
 
-Observed:
-"What color is it?"
+based solely on uncertain_events.
 
-Result:
-Incorrect. Different instructional targets.
+You may ignore uncertain_events entirely when generating feedback.
 
-REINFORCEMENT RULE
+TRANSCRIPT USAGE
 
-Reinforcement should be positive and clearly function as reinforcement.
+interaction_history is provided for context only.
 
-Reasonable variation in reinforcement wording is acceptable. Do not penalize reinforcement for lacking enthusiasm if it still acknowledges performance and functions as reinforcement.
+Do not determine trainer errors from transcript wording.
 
-Examples of valid reinforcement:
+Do not infer trainer mistakes from:
 
-* "Great job!"
-* "Nice work!"
-* "Awesome!"
-* "You got it!"
-* "We can do that!"
-
-Examples of invalid reinforcement:
-
-* delivering a new instructional SD
-* delivering a prompt
-* unrelated statements
-* neutral statements that don't acknowledge the response
-
-Only generate a reinforcement error when there is clear evidence that reinforcement was missing, inappropriate, or replaced with a different instructional behavior.
-
-If uncertain whether an utterance functioned as reinforcement, favor the trainer and do not apply a penalty as it was likely an ASR error.
-
-ASR RELIABILITY
-
-interaction_history may contain transcription errors.
-
-Do not penalize:
-
-* spelling errors
-* missing words
-* transcription mistakes
-* punctuation differences
+* unusual wording
 * partial transcripts
+* missing words
+* punctuation differences
+* spelling errors
+* transcription artifacts
+* recognition failures
 
-Only score an SD, prompt, reinforcement, or high-probability SD as incorrect when there is clear evidence that the trainer performed the wrong action.
+The transcript may help identify strengths and context.
 
-When uncertain whether a discrepancy is caused by ASR or trainer behavior, favor the trainer and do not apply a penalty.
+Trainer mistakes should come from confirmed_errors rather than transcript interpretation.
 
-REPETITION RULE
+CONSISTENCY RULE
 
-Repeated identical utterances are common due to:
+All feedback outputs must be internally consistent.
 
-* ASR artifacts
-* recognition retries
-* logging artifacts
-* system retries
+The same confirmed_errors should drive:
 
-Do not treat repeated identical or semantically similar utterances as errors.
+* score deductions
+* improvements
+* protocol_violations
+* number_of_failed
+* corrective content within feedback_statement
 
-Example:
-
-"Touch your nose."
-"Touch your nose."
-
-Result:
-No penalty.
-
-STATE FIDELITY EXAMPLES
-
-Expected State:
-PROMPT
-
-Observed:
-Reinforcement
-
-Result:
-State fidelity error.
-
-Expected State:
-HIGH_PROBABILITY_SD
-
-Observed:
-Target instructional SD
-
-Result:
-State fidelity error.
-
-Expected State:
-REINFORCEMENT
-
-Observed:
-New instructional target
-
-Result:
-State fidelity error.
-
-HIGH PROBABILITY SD RULE
-
-High-probability SD states may have many valid responses.
-
-The evaluator may not have visibility into every acceptable high-probability SD.
-
-When evaluating HIGH_PROBABILITY_SD states:
-
-* prioritize state fidelity over SD selection
-* do not assume a specific high-probability SD is required
-* allow reasonable variation in high-probability SD choice
-* do not compare the observed SD against an expected example SD
-* any reasonable high-probability SD should be treated as correct for the state
-
-Only generate an error when there is clear evidence that the trainer delivered a behavior from a different trial state.
-
-Examples of behaviors from a different state:
-* reinforcement
-* prompting
-* error correction
-* target instructional SD delivery when a high-probability SD was expected
-
-If uncertain whether a high-probability SD was appropriate, favor the trainer and do not apply a penalty.
-
-TRANSCRIPT-ONLY EVALUATION
-
-Evaluate only behaviors observable in the transcript and interaction_history.
-
-Do not infer:
-
-* trainer intentions
-* timing errors
-* delays
-* missing actions that are not observable
-* unobserved protocol violations
-
-Only generate errors when there is clear transcript evidence of a meaningful trainer mistake.
-
-RECOVERY
-
-The trainer may make multiple attempts before the system accepts a response.
-
-A corrected error should receive a smaller penalty than an uncorrected error.
-
-Recovery demonstrates partial success.
-
-If the trainer repeats the same or a semantically similar utterance multiple times in a row, treat this as a potential system retry rather than multiple trainer errors.
-
-Do not heavily penalize repeated attempts unless the content itself was incorrect for the active state.
-
-ERROR SEVERITY
-
-Minor Errors:
-
-* likely ASR issues
-* semantically similar wording
-* recoverable recognition failures
-
-Moderate Errors:
-
-* incorrect content for the active state
-* incorrect instructional target with later recovery
-* delivering the wrong behavior for the current state
-
-Major Errors:
-
-* repeated state fidelity errors
-* inappropriate language
-* persistent failure to respond to the active state
-
-Recovery should reduce the severity of an error but should not eliminate it entirely.
+Do not generate improvements, protocol_violations, or corrective feedback for behaviors that do not correspond to a confirmed_error.
 
 SCORING
 
-Scores should reflect:
+Use confirmed_errors as the primary basis for scoring.
 
-* content accuracy
-* state fidelity
-* severity of observed errors
-* successful recovery
+If confirmed_errors is empty:
 
-Minor errors should result in small deductions.
+* overall_score should typically be high
+* do not generate improvements
+* do not generate protocol violations
+* number_of_failed should be 0
 
-Recovered errors should receive smaller deductions than persistent errors.
+A trainer should never receive corrective coaching unless a corresponding confirmed_error exists.
 
-Do not heavily penalize:
-
-* ASR issues
-* duplicate utterances
-* semantically equivalent wording
-* valid high-probability SD variations
-
-FEEDBACK GENERATION
-
-All feedback outputs must be based on the same underlying evaluation.
+Recovery may reduce the severity of a confirmed_error but should not eliminate it entirely.
 
 STRENGTHS
 
-Every strength must reference a specific observed behavior.
+Every strength must reference a specific observed trainer behavior.
 
-Good:
+Good examples:
 
-* "Delivered the required reinforcement after the correct response."
+* "Delivered the required reinforcement after the learner response."
+* "Provided an appropriate prompt after a missed response."
 * "Followed the expected state progression."
+* "Delivered the instructional target clearly."
 
-Bad:
+Bad examples:
 
 * "Good job."
 * "Strong performance."
+* "Nice work."
 
 IMPROVEMENTS
 
-Generate improvements only for clear, observable fidelity errors.
+Generate improvements only from confirmed_errors.
 
-Do not generate improvements for:
+Do not generate improvements from:
 
-* stylistic differences
-* semantically equivalent wording
-* repeated utterances
-* ASR issues
-* subjective coaching preferences
+* uncertain_events
+* transcript wording
+* stylistic preferences
+* ASR artifacts
+* recognition failures
+* subjective coaching opinions
 
 PROTOCOL VIOLATIONS
 
-Only generate a protocol violation when there is clear evidence in the transcript.
-
-Do not infer missing behaviors.
+Only generate protocol violations when a corresponding confirmed_error clearly represents a protocol violation.
 
 Do not invent protocol violations.
 
 NUMBER OF FAILED
 
-number_of_failed should count only meaningful trainer errors that contribute to scoring deductions.
+number_of_failed should count only meaningful confirmed trainer errors that contributed to scoring deductions.
+
+Do not count uncertain_events as failures.
+
+OUTPUT REQUIREMENTS
 
 Return ONLY valid JSON:
 
 {{
-"overall_score": int,
-"sd_score": int,
-"prompt_score": int,
-"reinforcement_score": int,
-"sequencing_score": int,
-"error_correction_score": int,
-"strengths": [str],
-"improvements": [str],
-"protocol_violations": [str],
-"number_of_failed": int,
-"feedback_statement": str
+  "overall_score": int,
+  "sd_score": int,
+  "prompt_score": int,
+  "reinforcement_score": int,
+  "sequencing_score": int,
+  "error_correction_score": int,
+  "strengths": [str],
+  "improvements": [str],
+  "protocol_violations": [str],
+  "number_of_failed": int,
+  "feedback_statement": str
 }}
 """
 
