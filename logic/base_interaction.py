@@ -63,6 +63,13 @@ class BaseInteraction:
         finally:
             task.cancel()
 
+        # Instructional end-of-stage gates added in to coordinate with data collection client
+        stage = self.get_module_name()
+        
+        if stage in ("tutorial", "instruction", "modeling"):
+            await self.sync.stage_complete(stage)
+            await self.sync.wait_for_go_ahead(scope="stage", stage=stage, checkpoint="baseline")
+        
         print(f"\n[{self.get_module_name().upper()} COMPLETE]")
 
     # -------------------------

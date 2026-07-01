@@ -218,6 +218,7 @@ class DTT:
                 perception_agent=
                     self.perception,
                 agent=self.agent,
+                sync=self.sync,
             )
         )
 

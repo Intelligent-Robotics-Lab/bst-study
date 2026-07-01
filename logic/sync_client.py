@@ -1,27 +1,3 @@
-"""
-Telephone between the BST robot run and the data collection platform.
-
-Every method here sends one HTTP message to the platform's /sync/* endpoints.
-
-Two kinds of methods:
-
-  - "announce" methods (register, stage_complete, kid_response_complete,
-
-    feedback_delivered, complete): tell the platform something happened;
-
-    the announce methods that open gates cause the platform to start waiting
-
-    for a self-report.
-
-  - "wait" method (wait_for_go_ahead): poll the platform until it says the
-
-    gate is satisfied (self-report submitted, or operator overrode), so the
-
-    robot pauses at each measurement point.
-
-This module is the ONLY place in BST that talks to the data platform.
-"""
-
 import asyncio
 import httpx
  
