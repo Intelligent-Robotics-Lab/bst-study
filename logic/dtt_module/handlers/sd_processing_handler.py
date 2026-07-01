@@ -1,4 +1,7 @@
-from logic.dtt_module.models.enums import CurrentState, TrialState
+from logic.dtt_module.models.enums import (
+    CurrentState,
+    TrialState,
+)
 
 
 class SDProcessingHandler:
@@ -11,7 +14,9 @@ class SDProcessingHandler:
     ):
         self.interaction = interaction_manager
         self.perception_agent = perception_agent
-        self.log_transcript = log_transcript_callback
+        self.log_transcript = (
+            log_transcript_callback
+        )
 
     async def handle_completed_sd(
         self,
@@ -31,7 +36,9 @@ class SDProcessingHandler:
             text=text,
         )
 
-        self.perception_agent.state.latest_transcript = None
+        self.perception_agent.state.latest_transcript = (
+            None
+        )
 
         ctx.current_sd = None
         ctx.trial_sd = None
@@ -49,7 +56,10 @@ class SDProcessingHandler:
         trial_data,
     ):
 
-        print(f"[SD DETECTED] {ctx.current_sd}")
+        print(
+            f"[SD DETECTED] "
+            f"{ctx.current_sd}"
+        )
 
         feedback.reset()
 
@@ -58,9 +68,13 @@ class SDProcessingHandler:
             trial_state=TrialState.SD,
             transcript=transcript,
             recognized_as=ctx.current_sd,
-            successful=(ctx.current_sd is not None),
+            successful=(
+                ctx.current_sd
+                is not None
+            ),
         )
 
+        # Nothing recognized
         if ctx.current_sd is None:
 
             await self.interaction.set_led(
@@ -71,20 +85,66 @@ class SDProcessingHandler:
                 embodiment="kid",
             )
 
-            ctx.state = CurrentState.USER
-            ctx.trial_state = TrialState.SD
+            ctx.state = (
+                CurrentState.USER
+            )
+            ctx.trial_state = (
+                TrialState.SD
+            )
 
             return
 
-        feedback.trial_id = ctx.current_sd
+        # Safety check:
+        # current_sd should ONLY be
+        # one of the real trial SDs.
+        if (
+            ctx.current_sd
+            not in trial_data
+        ):
+            print(
+                "[WARNING] "
+                f"{ctx.current_sd} "
+                "is not a trial SD."
+            )
+
+            await self.interaction.set_led(
+                expr=expr,
+                color="#FF0000",
+                action="on",
+                flash=True,
+                embodiment="kid",
+            )
+
+            ctx.current_sd = None
+            ctx.trial_sd = None
+            ctx.state = (
+                CurrentState.USER
+            )
+            ctx.trial_state = (
+                TrialState.SD
+            )
+
+            return
+
+        feedback.trial_id = (
+            ctx.current_sd
+        )
 
         feedback.expected_sd = (
-            trial_data[ctx.current_sd]["sd"]
+            trial_data[
+                ctx.current_sd
+            ]["sd"]
         )
 
         feedback.correctness = (
-            trial_data[ctx.current_sd]["correctness"]
+            trial_data[
+                ctx.current_sd
+            ]["correctness"]
         )
 
-        ctx.state = CurrentState.KID
-        ctx.trial_state = TrialState.KID_BEHAVIOR_1
+        ctx.state = (
+            CurrentState.KID
+        )
+        ctx.trial_state = (
+            TrialState.KID_BEHAVIOR_1
+        )

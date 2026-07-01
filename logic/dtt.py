@@ -274,8 +274,10 @@ class DTT:
 
         with open("data/hp_trial_data.json", "r") as f:
             hp_trial_data = json.load(f)["hp_trial_data"]
+        with open("data/master_data.json", "r") as f:
+            master_data = json.load(f)["utterances"]
 
-        return trial_data, hp_trial_data
+        return trial_data, hp_trial_data, master_data
     
     def initialize_runtime(
         self,
@@ -321,7 +323,7 @@ class DTT:
 
         global DTT_IN_PROGRESS
 
-        trial_data, hp_trial_data = (
+        trial_data, hp_trial_data, master_data = (
             self.load_trial_data()
         )
 
@@ -331,8 +333,8 @@ class DTT:
             hp_recognizer,
             feedback,
         ) = self.initialize_runtime(
-            trial_data,
-            hp_trial_data,
+            master_data,
+            master_data,
         )
 
         await self.perception.start()

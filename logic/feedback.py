@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime
 import json
 
-SAVE_EVALUATION_DATA = False
+SAVE_EVALUATION_DATA = True
 # =====================================================
 # IRL2LLM CONFIGURATION
 # =====================================================
@@ -826,7 +826,7 @@ Do not generate improvements from:
 
 PROTOCOL VIOLATIONS
 
-Only generate protocol violations when a corresponding confirmed_error clearly represents a protocol violation.
+Only generate protocol violations when the expected type and the recognized type are different
 
 Do not invent protocol violations.
 

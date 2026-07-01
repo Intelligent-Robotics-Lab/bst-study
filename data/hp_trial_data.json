@@ -1,8 +1,8 @@
 {
     "hp_trial_data": {
-        "SD_1": {
+        "HP_SD_1": {
             "sd": "Shake your head",
-            "sd_type": "Reception",
+            "sd_type": "hp_sd",
             "correctness": "Correct",
             "challenge": null,
             "pb_response_type": null,
@@ -45,9 +45,9 @@
             
         },
 
-        "SD_2": {
+        "HP_SD_2": {
             "sd": "What are we working for",
-            "sd_type": "Manding",
+            "sd_type": "hp_sd",
             "correctness": "Correct",
             "challenge": null,
             "pb_response_type": null,
@@ -76,9 +76,9 @@
     
         },
   
-        "SD_3": {
+        "HP_SD_3": {
             "sd": "What color is the ball.",
-            "sd_type": "Tacting",
+            "sd_type": "hp_sd",
             "correctness": "Correct",
             "challenge": null,
             "pb_response_type": null,

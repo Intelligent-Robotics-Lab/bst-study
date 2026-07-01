@@ -13,7 +13,9 @@ class SDHandler:
         sd_processing_handler,
     ):
         self.interaction = interaction_manager
-        self.perception_agent = perception_agent
+        self.perception_agent = (
+            perception_agent
+        )
         self.sd_processing_handler = (
             sd_processing_handler
         )
@@ -35,42 +37,82 @@ class SDHandler:
         ctx.current_sd = None
 
         transcript = (
-            self.perception_agent.state.latest_transcript
+            self.perception_agent.state
+            .latest_transcript
         )
 
         emotion = (
-            self.perception_agent.state.latest_emotion
+            self.perception_agent.state
+            .latest_emotion
         )
 
         print(
-            f"[USER INPUT] transcript={transcript}"
+            f"[USER INPUT] "
+            f"transcript={transcript}"
         )
 
         if (
             not transcript
-            or transcript == ctx.last_processed
+            or transcript
+            == ctx.last_processed
         ):
             return
 
-        ctx.last_processed = transcript
+        ctx.last_processed = (
+            transcript
+        )
 
         observed = {
             "verbal_text": transcript,
             "emotion": emotion,
         }
 
-        result = sd_recognizer.recognize(
-            observed_input=observed
+        result = (
+            sd_recognizer.recognize(
+                observed_input=observed
+            )
         )
 
-        ctx.current_sd = (
-            result["matched_sd_id"]
+        recognized_id = result.get(
+            "matched_sd_id"
         )
 
-        ctx.trial_sd = ctx.current_sd
+        recognized_type = result.get(
+            "matched_type"
+        )
+
+        # Store for feedback later
+        ctx.recognized_id = (
+            recognized_id
+        )
+        ctx.recognized_type = (
+            recognized_type
+        )
+
+        print(
+            f"[RECOGNIZED] "
+            f"id={recognized_id}, "
+            f"type={recognized_type}"
+        )
+
+        # Only actual trial SDs should
+        # become current_sd.
+        if (
+            recognized_type == "sd"
+            and recognized_id in trial_data
+        ):
+            ctx.current_sd = (
+                recognized_id
+            )
+            ctx.trial_sd = (
+                recognized_id
+            )
+        else:
+            ctx.current_sd = None
+            ctx.trial_sd = None
 
         # ------------------------------------
-        # No SD Recognized
+        # No valid trial SD recognized
         # ------------------------------------
 
         if ctx.current_sd is None:
