@@ -26,7 +26,11 @@ class Tutorial(BaseInteraction):
 
         Iterates through tutorial steps and routes each step
         to the appropriate tutorial activity handler."""
-        
+
+        # Test debug for sync client
+        print(f"[Tutorial] sync id = {id(self.sync)}")
+        print(f"[Tutorial] session id = {self.study_config['session_id']}")
+
         # Set the monitor to indicate that we are in "phase 0" of instruction -> the tutorial
         update_monitor(screen="instruction", current_phase=0)
         await self.set_attention("kid", "down")

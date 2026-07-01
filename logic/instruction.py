@@ -32,6 +32,10 @@ class Instruction(BaseInteraction):
         instructional steps, handling knowledge checks, navigation
         requests, and section replay behavior."""
 
+        # Debug for sync client
+        print(f"[Instruction] sync id = {id(self.sync)}")
+        print(f"[Instruction] session id = {self.study_config['session_id']}")
+
         update_monitor(screen="instruction", current_phase=1)
         await self.set_attention("kid", "down")
 

@@ -85,10 +85,11 @@ DTT_IN_PROGRESS = True
 """This class contains the logic to perform the rehearsal and feedback phases (DTT) for BST"""
 class DTT:
 
-    def __init__(self, agent=None, study_config=None):
+    def __init__(self, agent=None, study_config=None, sync=None):
 
         self.agent = agent
         self.study_config = study_config
+        self.sync = sync
 
         # --------------------------------------------------
         # Managers
@@ -316,6 +317,10 @@ class DTT:
 
 
     async def main_dtt_loop(self):
+
+        # Debug sync client
+        print(f"[DTT] sync id = {id(self.sync)}")
+        print(f"[DTT] session id = {self.study_config['session_id']}")
 
         ctx = self.ctx
 

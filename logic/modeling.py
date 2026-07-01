@@ -34,6 +34,10 @@ class Modeling(BaseInteraction):
         instructional steps, handling knowledge checks, navigation
         requests, and section replay behavior."""
 
+        # Debug for sync client
+        print(f"[Modeling] sync id = {id(self.sync)}")
+        print(f"[Modeling] session id = {self.study_config['session_id']}")
+
         # Set the monitor to the first phase of modeling
         update_monitor(screen="modeling", current_phase=0)
         await self.set_attention("kid", "down")
