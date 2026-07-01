@@ -2,23 +2,23 @@
   "trial_sd": "Receptive Instruction",
   "trial_state": "FEEDBACK",
   "transcript": null,
-  "emotion": "neutral",
+  "emotion": "happy",
   "completed_sds": [
-    "Receptive Expression",
-    "Tacting and Labeling",
-    "Imitation",
     "Manding",
-    "Emotion Labeling"
+    "Emotion Labeling",
+    "Imitation",
+    "Tacting and Labeling",
+    "Receptive Expression"
   ],
   "trial_name": "Receptive Instruction",
   "trial_sd_number": 6,
   "completed_sd_numbers": [
-    4,
-    2,
-    3,
     1,
-    5
+    5,
+    3,
+    2,
+    4
   ],
-  "screen": "instruction",
+  "screen": "rehearsal",
   "current_phase": 0
 }
