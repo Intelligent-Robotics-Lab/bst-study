@@ -658,6 +658,7 @@ Supportive:
 * encouraging
 * constructive
 * acknowledge strengths before corrections when possible
+* use very posistive and encouraging language
 
 Neutral:
 
@@ -827,6 +828,8 @@ Do not generate improvements from:
 PROTOCOL VIOLATIONS
 
 Only generate protocol violations when the expected type and the recognized type are different
+
+If reinforcement state doesn't detect a reinforcement consider it a confirmed error
 
 Do not invent protocol violations.
 
