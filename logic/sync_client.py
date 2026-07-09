@@ -17,7 +17,7 @@ class SyncClient:
             f"{self.base}/register",
             json={"pb_order_group": pb_order_group,
                   "support_condition": support_condition},
-        )
+        ) 
 
         r.raise_for_status()
         return r.json()

@@ -1,0 +1,14 @@
+{
+  "steps": [
+    {
+      "section": "intro",
+      "type": "content",
+      "speech": "Welcome to the phase."
+    },
+    {
+      "section": "end",
+      "type": "content",
+      "speech": "The phase is complete."
+    }
+  ]
+}
