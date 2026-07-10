@@ -118,6 +118,27 @@ class FeedbackHandler:
 
         # Open the post-feedback handling for data collection
         await self.sync.feedback_delivered(loop_index, trial_name=ctx.trial_sd) # Opens the post-feedback
+
+        # Record this DTT trial and its interaction flow. Posted BEFORE the gate
+        # wait so the trial lands even if the operator is slow at the gate, and
+        # before the next trial's feedback.reset() clears interaction_history.
+        # Use ctx.trial_sd, never ctx.current_sd: current_sd is None by now and
+        # swaps to the high-probability SD during error correction.
+        trial_steps = feedback.to_trial_steps()
+        step_labels = {step["step_label"] for step in trial_steps}
+        await self.sync.log_trial(
+            loop_index=loop_index,
+            trial_name=ctx.trial_sd,
+            response_correctness=(
+                "no_response"
+                if trial_data[ctx.trial_sd]["correctness"] == "No Response"
+                else "correct"
+            ),
+            reinforcement_delivered="reinforcement" in step_labels,
+            error_correction_delivered="prompting" in step_labels,
+            steps=trial_steps,
+        )
+
         # Wait for the go ahead response to go to the next SD
         await self.sync.wait_for_go_ahead(scope="loop", loop_index=loop_index, checkpoint="post_feedback")
 

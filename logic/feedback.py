@@ -8,7 +8,7 @@ import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 SAVE_EVALUATION_DATA = False
@@ -107,6 +107,10 @@ class FeedbackHolder:
             "recognized_as": recognized_as,
             "successful": successful,
             "corrected_later": False,
+            # Wall clock for this attempt. Without it every step would reach the
+            # data platform stamped with the end-of-trial post time, and all
+            # intra-trial timing would be lost.
+            "time": time.time(),
         })
     # =====================================================
     # ACTUAL TRAINER SEQUENCE
@@ -322,6 +326,43 @@ class FeedbackHolder:
             ),
             "recovery_metrics": recovery_metrics,
         }
+
+    # =====================================================
+    # DATA PLATFORM: within-trial interaction flow
+    # =====================================================
+
+    def to_trial_steps(self) -> list[dict[str, Any]]:
+        """interaction_history -> the data platform's `steps` payload.
+
+        Only the trainer's attempts are recorded: the child's behaviour is
+        scripted, so it carries no information. A trial_state may repeat (e.g.
+        two hp_sd attempts, the first unrecognised) -- step_index orders them.
+
+        Sends nothing from study_config: research data holds participant IDs,
+        never names. Sends no precomputed_analysis: the operator must score
+        fidelity blind to any machine score.
+        """
+        steps: list[dict[str, Any]] = []
+        for i, event in enumerate(self.interaction_history, start=1):
+            step: dict[str, Any] = {
+                "step_index": i,
+                # "retry sd" -> "retry_sd"; the rest already match
+                "step_label": str(event["trial_state"]).replace(" ", "_"),
+                "actor": "user",  # the human trainer
+                "outcome": "recognized" if event.get("successful") else "not_recognized",
+                "detail": {
+                    "text": event.get("text"),
+                    "recognized_as": event.get("recognized_as"),
+                    "corrected_later": event.get("corrected_later", False),
+                },
+            }
+            when = event.get("time")
+            if when is not None:
+                step["timestamp_utc"] = datetime.fromtimestamp(
+                    when, timezone.utc
+                ).isoformat()
+            steps.append(step)
+        return steps
 
     def compute_recovery_metrics(self):
 
