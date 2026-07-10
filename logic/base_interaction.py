@@ -12,11 +12,12 @@ class BaseInteraction:
     Provides shared functionality for perception handling, navigation, knowledge checks, LED control, 
     speech output, and freeze-state management."""
 
-    def __init__(self, agent=None, study_config=None):
+    def __init__(self, agent=None, study_config=None, sync=None):
         """Initializes shared interaction state, perception tracking,
         speech control flags, LED status, and gesture-detection timers."""
         self.agent = agent
         self.study_config = study_config or {}
+        self.sync = sync
         self.state = "IDLE"
         self.is_speaking = False
         self.interrupted = False
@@ -62,6 +63,13 @@ class BaseInteraction:
         finally:
             task.cancel()
 
+        # Instructional end-of-stage gates added in to coordinate with data collection client
+        stage = self.get_module_name()
+        
+        if stage in ("tutorial", "instruction", "modeling"):
+            await self.sync.stage_complete(stage)
+            await self.sync.wait_for_go_ahead(scope="stage", stage=stage, checkpoint="baseline")
+        
         print(f"\n[{self.get_module_name().upper()} COMPLETE]")
 
     # -------------------------
