@@ -1,0 +1,122 @@
+def translate_packet_unreal(packet):
+    """Function to translate the data packets from the expression module into a usable format for the Furhat robot."""
+
+    speech = packet.get("speech") or {}
+    nonverbals = packet.get("nonverbals", [])
+    listening = packet.get("listening", False)
+    interrupt = packet.get("interrupt", False)
+
+    text = speech.get("text")
+    style = speech.get("style", "neutral")
+    volume = speech.get("volume", 50)
+    audio = speech.get("audio")
+
+    # Estimate speech duration
+    if text:
+        duration_text = max(len(text.split()) * 0.45, 1.0)
+    else:
+        duration_text = 0
+
+    # Default output format
+    output = {
+        "speech": {
+            "text": text,
+            "style": style,
+            "volume": volume,
+            "audio": audio,
+            "duration_text": duration_text,
+            "text_repeats": 1,
+            "interrupt": interrupt,
+        },
+
+        "nonverbals": {
+            "head": [],
+            "face": [],
+            "gaze": [],
+            "gesture": [],
+            "led": [],
+        },
+
+        "attention_target": None, # No longer has default to add in looking down capability
+        "listening": listening,
+    }
+
+    gaze_override = None
+
+    # Translate the nonverbals as necessary
+    for nv in nonverbals:
+        # Safety check
+        if not isinstance(nv, dict):
+            print(
+                "[WARN] Invalid nonverbal:",
+                nv
+            )
+            continue
+
+        channel = nv.get("channel")
+        action = nv.get("action")
+
+        entry = {
+            "action": action,
+            "intensity": nv.get(
+                "intensity",
+                1.0
+            ),
+            "duration": nv.get(
+                "duration",
+                1.0
+            ),
+            "repeats": nv.get(
+                "repeats",
+                1
+            ),
+            "timing": nv.get(
+                "timing",
+                "during"
+            ),
+            "keep_moving": nv.get(
+                "keep_moving",
+                False
+            ),
+        }
+
+        # Seperating head, face, and gaze sections
+        if channel == "head":
+            output["nonverbals"]["head"].append(entry)
+
+        elif channel == "face":
+            output["nonverbals"]["face"].append(entry)
+
+        elif channel == "gaze":
+            output["nonverbals"]["gaze"].append(entry)
+
+            if action in ("robot", "user", "neutral", "down"):
+                gaze_override = action
+
+
+        elif channel == "gesture":
+            output["nonverbals"]["gesture"].append(entry)
+
+        # LED control
+        elif channel == "led":
+            entry["color"] = nv.get("color", "#FFFFFF")
+
+            entry["brightness"] = nv.get("brightness", 1.0)
+
+            output["nonverbals"]["led"].append(entry)
+
+    # Attention override
+    if gaze_override is not None:
+        if gaze_override == "robot":
+            output["attention_target"] = ("robot")
+
+        elif gaze_override == "user":
+            output["attention_target"] = ("user")
+
+        elif gaze_override == "down":
+            output["attention_target"] = ("down")
+
+        else:
+            output["attention_target"] = ("neutral")
+
+    return output

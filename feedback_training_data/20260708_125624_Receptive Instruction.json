@@ -1,0 +1,91 @@
+{
+  "saved_at": "20260708_125624",
+  "study_config": {
+    "participant_name": "Connor",
+    "configuration": "1",
+    "trainer_feedback_style": "supportive"
+  },
+  "event_log": {
+    "trial_id": "Receptive Instruction",
+    "trial_context": {
+      "trial_type": null,
+      "child_response": null,
+      "expected_trainer_sequence": []
+    },
+    "precomputed_analysis": {
+      "sd_score": 0,
+      "prompt_score": 100,
+      "reinforcement_score": 100,
+      "sequencing_score": 100,
+      "error_correction_score": 100,
+      "overall_preliminary_score": 80,
+      "actual_sequence": []
+    },
+    "trainer_behavior": [],
+    "interaction_history": [
+      {
+        "trial_state": "sd",
+        "text": "Can you Nod your head. Yeah.",
+        "recognized_as": null,
+        "successful": true,
+        "result_type": null,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "prompting",
+        "text": "Can you nod your head?",
+        "recognized_as": "sd",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "Great job",
+        "recognized_as": "reinforcement",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      },
+      {
+        "trial_state": "hp_sd",
+        "text": "Shake Your head",
+        "recognized_as": "hp_sd",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "Awesome.",
+        "recognized_as": "reinforcement",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      },
+      {
+        "trial_state": "retry sd",
+        "text": "Nod your head. Good",
+        "recognized_as": "sd",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "Great job",
+        "recognized_as": "reinforcement",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      }
+    ],
+    "confirmed_errors": [],
+    "uncertain_events": [],
+    "recovery_metrics": {
+      "failed_attempts": 0,
+      "corrected_attempts": 0,
+      "recovery_ratio": 1.0
+    }
+  }
+}

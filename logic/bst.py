@@ -6,6 +6,7 @@ from logic.tutorial import Tutorial
 import agent_layer.Furhat.Lib.furhat_manager as FurhatManager
 from logic.sync_client import SyncClient
 from logic.launch_client import LaunchClient
+import agent_layer.Unreal.Lib.unreal_manager as UnrealManager
 
 AGENT_TYPE = "Furhat"
 PLATFORM_BASE = "http://141.210.88.210:8080"
@@ -43,6 +44,9 @@ async def BST():
     if AGENT_TYPE == "Furhat":
         _furhats = await FurhatManager.initialize_furhat()
         print("[CONNECTED TO FURHAT]")
+    if AGENT_TYPE == "Unreal":
+        await UnrealManager.initialize_unreal()
+
 
     try:
         await launch.ack("started")

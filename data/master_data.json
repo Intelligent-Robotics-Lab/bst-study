@@ -1,0 +1,81 @@
+{
+  "utterances": {
+    "Manding": {
+      "type": "sd",
+      "text": "What do you want to work for?"
+    },
+    "Receptive Instruction": {
+      "type": "sd",
+      "text": "Nod your head."
+    },
+    "Imitation": {
+      "type": "sd",
+      "text": "Can you do this?"
+    },
+    "Tacting and Labeling": {
+      "type": "sd",
+      "text": "What am I holding?"
+    },
+    "Emotion Labeling": {
+      "type": "sd",
+      "text": "How do I feel?"
+    },
+    "Receptive Expression": {
+      "type": "sd",
+      "text": "Show me your happy face."
+    },
+    "HP_SD_1": {
+      "type": "hp_sd",
+      "text": "Shake your head."
+    },
+    "HP_SD_2": {
+      "type": "hp_sd",
+      "text": "What are we working for."
+    },
+    "HP_SD_3": {
+      "type": "hp_sd",
+      "text": "What color is the ball."
+    },
+
+    "R_1": {
+      "type": "reinforcement",
+      "text": "Good job."
+    },
+    "R_2": {
+      "type": "reinforcement",
+      "text": "Great job."
+    },
+    "R_3": {
+      "type": "reinforcement",
+      "text": "Nice work."
+    },
+    "R_4": {
+      "type": "reinforcement",
+      "text": "Awesome."
+    },
+    "R_5": {
+      "type": "reinforcement",
+      "text": "That's right."
+    },
+    "R_6": {
+      "type": "reinforcement",
+      "text": "Perfect."
+    },
+    "R_7": {
+      "type": "reinforcement",
+      "text": "Excellent."
+    },
+    "R_8": {
+      "type": "reinforcement",
+      "text": "You got it."
+    },
+    "R_9": {
+      "type": "reinforcement",
+      "text": "Nice job."
+    },
+    "R_10": {
+      "type": "reinforcement",
+      "text": "Fantastic."
+    }
+  }
+}

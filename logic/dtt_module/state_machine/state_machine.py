@@ -82,6 +82,7 @@ class StateMachine:
                     ctx=ctx,
                     feedback=feedback,
                     trial_data=trial_data,
+                    reinforcement_recognizer=sd_recognizer,
                     expr=expr,
                 )
 
@@ -107,6 +108,7 @@ class StateMachine:
                     feedback=feedback,
                     hp_recognizer=hp_recognizer,
                     expr=expr,
+                    hp_trial_data=hp_trial_data
                 )
 
             elif (

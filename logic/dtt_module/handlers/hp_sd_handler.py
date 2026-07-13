@@ -14,8 +14,12 @@ class HPSDHandler:
         sd_recognition_handler,
         reset_inactivity_timer_callback,
     ):
-        self.interaction = interaction_manager
-        self.perception_agent = perception_agent
+        self.interaction = (
+            interaction_manager
+        )
+        self.perception_agent = (
+            perception_agent
+        )
         self.sd_recognition_handler = (
             sd_recognition_handler
         )
@@ -30,6 +34,7 @@ class HPSDHandler:
         hp_recognizer,
         feedback,
         expr,
+        hp_trial_data,
     ):
 
         await self.interaction.set_led(
@@ -66,13 +71,48 @@ class HPSDHandler:
                 result["last_processed"]
             )
 
-            ctx.current_sd = (
-                result["current_sd"]
+            recognized_id = result.get(
+                "recognized_id"
             )
 
-            if result["success"]:
+            recognized_type = result.get(
+                "recognized_type"
+            )
 
-                self.reset_inactivity_timer(ctx)
+            # Store for feedback later
+            ctx.recognized_id = (
+                recognized_id
+            )
+            ctx.recognized_type = (
+                recognized_type
+            )
+
+            print(
+                f"[HP RECOGNIZED] "
+                f"id={recognized_id}, "
+                f"type={recognized_type}"
+            )
+
+            # ONLY allow real HP SDs
+            # to become current_sd.
+            if (
+                recognized_type == "hp_sd"
+            ):
+                ctx.current_sd = (
+                    recognized_id
+                )
+            else:
+                ctx.current_sd = None
+
+            if (
+                result["success"]
+                and ctx.current_sd
+                is not None
+            ):
+
+                self.reset_inactivity_timer(
+                    ctx
+                )
 
                 ctx.state = (
                     result["next_state"]

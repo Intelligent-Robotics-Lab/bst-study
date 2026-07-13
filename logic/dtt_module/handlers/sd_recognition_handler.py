@@ -1,4 +1,6 @@
-from logic.dtt_module.models.enums import CurrentState
+from logic.dtt_module.models.enums import (
+    CurrentState,
+)
 
 
 class SDRecognitionHandler:
@@ -25,6 +27,7 @@ class SDRecognitionHandler:
         last_processed,
     ):
 
+        # Ignore empty or duplicate transcripts
         if (
             not transcript
             or transcript == last_processed
@@ -40,34 +43,84 @@ class SDRecognitionHandler:
             observed_input=observed
         )
 
-        current_sd = result["matched_sd_id"]
-
-        success = (
-            current_sd is not None
-            if expected_sd is None
-            else current_sd == expected_sd
+        # Exact thing matched in master_data.json
+        recognized_id = result.get(
+            "matched_sd_id"
         )
+
+        # sd, hp_sd, reinforcement, or None
+        recognized_type = result.get(
+            "matched_type"
+        )
+
+        # current_sd should ONLY contain
+        # actual trial SDs
+        if recognized_type == "sd":
+            current_sd = recognized_id
+        else:
+            current_sd = None
+
+        print(
+            f"Recognized: "
+            f"{recognized_id} "
+            f"({recognized_type})"
+        )
+
+        # ----------------------------
+        # Determine outcome type
+        # ----------------------------
+
+        if recognized_id is None:
+            success = False
+            result_type = "uncertain"
+
+        elif (
+            expected_sd is not None
+            and recognized_id != expected_sd
+        ):
+            success = False
+            result_type = "confirmed_error"
+
+        else:
+            success = True
+            result_type = "success"
+
+        # ----------------------------
+        # Log transcript event
+        # ----------------------------
 
         self.log_transcript(
             feedback=feedback,
             trial_state=trial_state,
             transcript=transcript,
-            recognized_as=current_sd,
+            recognized_as=recognized_id,
+            recognized_type=recognized_type,
             successful=success,
+            result_type=result_type,
         )
 
         return {
+            # Only actual SDs
             "current_sd": current_sd,
+
+            # For feedback
+            "recognized_id": recognized_id,
+            "recognized_type": recognized_type,
+
             "success": success,
+            "result_type": result_type,
+
             "next_state": (
                 CurrentState.KID
                 if success
                 else state
             ),
+
             "next_trial_state": (
                 next_trial_state
                 if success
                 else trial_state
             ),
+
             "last_processed": transcript,
         }

@@ -3,7 +3,7 @@ import json
 import logic
 from logic.feedback import evaluate_dtt_session
 
-TEST_CASE_DIR = "feedback_training_data/asr_errors"
+TEST_CASE_DIR = "feedback_training_data/wrong_sequence"
 
 for file in Path(TEST_CASE_DIR).rglob("*.json"):
 
