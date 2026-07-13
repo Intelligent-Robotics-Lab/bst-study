@@ -6,7 +6,7 @@ from logic.tutorial import Tutorial
 import agent_layer.Furhat.Lib.furhat_manager as FurhatManager
 import agent_layer.Unreal.Lib.unreal_manager as UnrealManager
 
-AGENT_TYPE = "Unreal"
+AGENT_TYPE = "Furhat"
 
 _furhats = None
 
