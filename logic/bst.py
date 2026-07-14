@@ -44,8 +44,8 @@ async def BST():
     if AGENT_TYPE == "Furhat":
         _furhats = await FurhatManager.initialize_furhat()
         print("[CONNECTED TO FURHAT]")
-    if AGENT_TYPE == "Unreal":
-        await UnrealManager.initialize_unreal()
+    # if AGENT_TYPE == "Unreal":
+    #     await UnrealManager.initialize_unreal()
 
 
     try:

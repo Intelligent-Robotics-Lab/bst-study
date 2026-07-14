@@ -99,7 +99,7 @@
       "mode": "pause",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Next, we are going to practice pausing the interaction. To pause the interaction, raise your hand for a few seconds and wait until my LEDs turn blue indicating they have received your request. You can also use the command word found on the top left of your content sheet as backup but should stick to the gesture when possible. Try it yourself now by raising your hand for a few seconds."
+        "text": "Next, we are going to practice pausing the interaction. To pause the interaction, raise your hand above your head for a few seconds and wait until my LEDs turn blue indicating they have received your request. You can also use the command word found on the top left of your content sheet as backup but should stick to the gesture when possible. Try it yourself now by raising your hand above your head for a few seconds."
       }
     },
 
@@ -127,7 +127,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "This is the end of the tutorial. You now know what the LED indicators mean and how to interact with me. We are ready to begin the training."
+        "text": "This is the end of the tutorial. You now know what the LED indicators mean and how to interact with me. We are ready to begin the training. Please fill out the short questionarre presented on the tablet shortly, and then we can move to the next stage."
       }
     }
 
