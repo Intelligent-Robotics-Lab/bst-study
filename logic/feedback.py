@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime
 import json
 
-SAVE_EVALUATION_DATA = True
+SAVE_EVALUATION_DATA = False
 # =====================================================
 # IRL2LLM CONFIGURATION
 # =====================================================
