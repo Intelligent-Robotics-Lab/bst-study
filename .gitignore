@@ -16,3 +16,6 @@ venv/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Generated feedback training data
+feedback_training_data/**/*.json
