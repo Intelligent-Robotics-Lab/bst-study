@@ -51,7 +51,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "In addition to these resources, there will be periodic questions to help your understanding. Be sure to stay focused so you can answer these questions as they come. Remember that you are not being tested but please participate to the best of your ability."
+        "text": "In addition to these resources, there will be periodic questions to help your understanding. Be sure to stay focused so you can answer these questions as they come. Please participate to the best of your ability."
       },
       "nonverbals": []
     },
@@ -581,7 +581,7 @@
       "type": "content",
       "embodiment": "trainer",
       "verbal": {
-        "text": "Now that you have an understanding of the process, you will observe these concepts demonstrated together through concrete examples."
+        "text": "Now that you have an understanding of the process, you will observe these concepts demonstrated together through concrete examples. Please answer the short questionaire, then we can move onto the modeling phase."
       },
       "summary": {
         "enabled": true,
