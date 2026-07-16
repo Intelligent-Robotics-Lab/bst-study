@@ -13,10 +13,10 @@ _furhats = {}
 async def initialize_furhat():
     """Connect both robots once at startup"""
     
-    print("Connecting trainer...")
+    print(f"Connecting trainer @ ip: {FURHAT_TRAINER_IP}")
     _furhats["trainer"] = await behavior.connect_furhat(FURHAT_TRAINER_IP)
 
-    print("Connecting kid...")
+    print(f"Connecting kid @ ip: {FURHAT_KID_IP}")
     _furhats["kid"] = await behavior.connect_furhat(FURHAT_KID_IP)
 
     print("Both Furhats connected.")

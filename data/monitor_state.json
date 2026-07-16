@@ -4,20 +4,20 @@
   "transcript": null,
   "emotion": "neutral",
   "completed_sds": [
-    "Manding",
-    "Tacting and Labeling",
     "Emotion Labeling",
+    "Tacting and Labeling",
     "Receptive Instruction",
-    "Imitation"
+    "Imitation",
+    "Manding"
   ],
   "trial_name": "Receptive Expression",
   "trial_sd_number": 6,
   "completed_sd_numbers": [
-    1,
-    4,
     5,
+    4,
     2,
-    3
+    3,
+    1
   ],
   "screen": "rehearsal",
   "current_phase": 0
