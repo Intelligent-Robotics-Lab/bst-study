@@ -22,7 +22,7 @@ class Instruction(BaseInteraction):
         return "instruction"
 
     def load_steps(self):
-        with open("data/test_data.json", "r") as f:
+        with open("data/instruction_data.json", "r") as f:
             return json.load(f)["steps"]
 
     # MAIN EXECUTE

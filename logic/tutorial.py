@@ -16,7 +16,7 @@ class Tutorial(BaseInteraction):
         return "tutorial"
 
     def load_steps(self):
-        with open("data/test_data.json", "r") as f:
+        with open("data/tutorial_data.json", "r") as f:
             return json.load(f)["steps"]
 
     # MAIN EXECUTION LOOP
