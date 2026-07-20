@@ -1,15 +1,19 @@
 {
-  "trial_sd": "Receptive Instruction",
+  "trial_sd": "Emotion Labeling",
   "trial_state": "SD",
-  "transcript": null,
-  "emotion": "fear",
+  "transcript": "You state Engage through this Style nicely Let's keep that Positive focus As we move ahead What I was really pay.",
+  "emotion": "neutral",
   "completed_sds": [
-    "Receptive Instruction"
+    "Emotion Labeling",
+    "Imitation",
+    "Manding"
   ],
-  "trial_name": "Receptive Instruction",
-  "trial_sd_number": 2,
+  "trial_name": "Emotion Labeling",
+  "trial_sd_number": 5,
   "completed_sd_numbers": [
-    2
+    5,
+    3,
+    1
   ],
   "screen": "instruction",
   "current_phase": 0

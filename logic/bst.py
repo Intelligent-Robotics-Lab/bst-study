@@ -30,13 +30,13 @@ async def BST():
 
 
     try:
-        await Tutorial(agent=AGENT_TYPE, study_config=study_config).execute()
+        #await Tutorial(agent=AGENT_TYPE, study_config=study_config).execute()
         print("Executed tutorial")
 
-        await Instruction(agent=AGENT_TYPE, study_config=study_config).execute()
+        #await Instruction(agent=AGENT_TYPE, study_config=study_config).execute()
         print("Executed instruction")
 
-        await Modeling(agent=AGENT_TYPE, study_config=study_config).execute()
+        #await Modeling(agent=AGENT_TYPE, study_config=study_config).execute()
         print("Executed modeling")
 
         await DTT(agent=AGENT_TYPE, study_config=study_config).execute()

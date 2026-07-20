@@ -1,0 +1,51 @@
+{
+  "saved_at": "20260720_162850",
+  "study_config": {
+    "participant_name": "Carter",
+    "configuration": "1",
+    "trainer_feedback_style": "neutral"
+  },
+  "event_log": {
+    "trial_id": "Manding",
+    "trial_context": {
+      "trial_type": null,
+      "child_response": null,
+      "expected_trainer_sequence": []
+    },
+    "precomputed_analysis": {
+      "sd_score": 0,
+      "prompt_score": 100,
+      "reinforcement_score": 100,
+      "sequencing_score": 100,
+      "error_correction_score": 100,
+      "overall_preliminary_score": 80,
+      "actual_sequence": []
+    },
+    "trainer_behavior": [],
+    "interaction_history": [
+      {
+        "trial_state": "sd",
+        "text": "What do you want to work? Four",
+        "recognized_as": null,
+        "successful": true,
+        "result_type": null,
+        "corrected_later": false
+      },
+      {
+        "trial_state": "reinforcement",
+        "text": "Nice job.",
+        "recognized_as": "reinforcement",
+        "successful": true,
+        "result_type": "success",
+        "corrected_later": false
+      }
+    ],
+    "confirmed_errors": [],
+    "uncertain_events": [],
+    "recovery_metrics": {
+      "failed_attempts": 0,
+      "corrected_attempts": 0,
+      "recovery_ratio": 1.0
+    }
+  }
+}
