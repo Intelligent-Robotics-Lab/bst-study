@@ -53,6 +53,8 @@ class FeedbackHolder:
     def __init__(self, study_config =None):
         self.reset()
         self.study_config = study_config
+        self.feedback_history = []
+
 
     def reset(self):
 
@@ -341,6 +343,7 @@ class FeedbackHolder:
         self.uncertain_events = []
 
 
+
     # =====================================================
     # TRANSCRIPT EVENT RECORDING
     # =====================================================
@@ -427,6 +430,7 @@ class FeedbackHolder:
 
             "recovery_metrics":
                 recovery_metrics,
+            "previous_feedback": self.feedback_history[-10:],
         }
     
 
@@ -667,11 +671,49 @@ Do NOT identify inappropriate behavior based solely on:
 When evidence is ambiguous, do not classify the behavior as inappropriate.
 
 The interaction_history may be used to identify clearly inappropriate behavior or inappropriate phrases, but it must not be used to search for ordinary DTT errors.
+FEEDBACK MEMORY AND REPETITION PREVENTION
 
+The previous_feedback field contains feedback statements that have already
+been given to the participant.
+
+You MUST treat previous_feedback as feedback that has already been said.
+
+Do NOT repeat or closely paraphrase any previous feedback statement.
+
+Do NOT reuse the same:
+
+* opening phrase
+* sentence structure
+* closing phrase
+* praise phrase
+* transition phrase
+* combination of ideas
+* rhetorical pattern
+
+A response is considered repetitive even if only a few words are changed
+while the meaning and structure remain nearly identical.
+
+Before generating feedback:
+
+1. Review all previous_feedback.
+2. Identify the wording, structure, and purpose used recently.
+3. Generate feedback using a meaningfully different structure and wording.
+4. If the previous feedback was supportive, you may use a different supportive
+   purpose, but do not simply paraphrase it.
+5. If no genuinely different feedback is appropriate, use a short neutral
+   transition rather than repeating previous wording.
+
+The feedback should be different from previous feedback at the level of
+both wording AND sentence structure.
+
+Previous feedback:
+Is found in the previous_feedback of the event_log
 FEEDBACK STATEMENT
-participant_name = {study_config["participant_name"]} 
-The feedback_statement must address the trainer directly using participant_name. 
-FEEDBACK PERSONA 
+
+participant_name = {study_config["participant_name"]}
+
+The feedback_statement must address the trainer directly using participant_name.
+
 feedback_trainer_style = {study_config["trainer_feedback_style"]}
 
 The feedback_statement is participant-facing.
@@ -699,61 +741,113 @@ The feedback_statement must NOT:
 The feedback_statement must:
 
 * address participant_name directly
-* use the tone specified by feedback_trainer_style
 * be no more than 2-3 sentences
-* provide generic positive or neutral feedback
-* encourage continuation into the next trial
-* avoid specific claims about performance that could reveal an error
-* maintain a consistent tone appropriate to the selected feedback persona
+* use the selected feedback persona
+* remain generic and non-corrective
+* transition naturally toward continued participation in the session
+* avoid making specific claims about trainer performance
+* sound natural rather than mechanically generated
 
-Do Not use the exact same feedback twice
-Do Not use the examples directly they are only meant as a guide
+FEEDBACK VARIATION
+
+Do not repeatedly use the same sentence, sentence structure, opening phrase, or closing phrase.
+
+Do not treat any example or previous style instruction as a fixed template.
+
+Vary the feedback naturally by changing the overall structure and the type of generic message being communicated.
+
+Possible generic feedback purposes include:
+
+* acknowledging completion of the current trial
+* acknowledging continued participation
+* encouraging continued engagement
+* reinforcing general momentum
+* encouraging continued focus
+* acknowledging progress through the session
+* providing a brief transition to the next trial
+* maintaining a positive and encouraging atmosphere
+
+These are possible purposes, not required elements.
+
+Do not combine the same purposes in the same order for every response.
+
+Do not always:
+
+* begin with participant_name
+* use praise followed by "let's continue"
+* mention energy or momentum
+* mention the next trial explicitly
+* use two sentences
+* use the same type of generic praise
+
+Choose a natural structure and wording for each response.
 
 SUPPORTIVE FEEDBACK
 
 When feedback_trainer_style is "supportive":
 
 * use warm, encouraging, positive language
-* provide generic praise
-* encourage the participant to continue the same effort and engagement
-* maintain positive momentum into the next trial
+* maintain a positive and encouraging atmosphere
+* use general encouragement rather than specific performance feedback
+* vary the type of encouragement naturally
+* avoid repetitive praise phrases
 
-Examples of the intended style:
+Supportive feedback may generally acknowledge:
 
-"participant_name, great job with the trial. Let's keep that same energy going into the next one."
-"participant_name, nice work with that trial. Let's carry that momentum into the next one."
-"participant_name, great work staying engaged. Let's keep that momentum going into the next trial."
-"participant_name, you're doing great. Let's keep that positive energy going into the next one."
-"participant_name, nice job with that trial. Let's build on that momentum as we continue."
-"participant_name, great work. Let's keep that same focus and energy going into the next trial."
+* effort
+* engagement
+* continued participation
+* positive momentum
+* focus
+* progress through the session
+* continuation
 
-Do not copy these examples exactly every time. Vary the wording naturally while maintaining the same meaning.
+Do not make specific claims about whether a particular DTT procedure was performed correctly.
+
+Do not repeatedly use phrases such as:
+
+* "great job"
+* "nice work"
+* "keep that same energy"
+* "keep that momentum"
+* "let's continue"
+* "going into the next one"
+
+These phrases may be used occasionally, but should not become default wording.
 
 NEUTRAL FEEDBACK
 
 When feedback_trainer_style is "neutral":
 
 * use professional, concise, observational language
-* avoid exaggerated praise or overly positive language
-* encourage continuation without describing specific errors or corrections
+* avoid exaggerated praise
+* avoid emotionally positive or supportive language
+* do not evaluate the quality of the trainer's performance
+* do not provide corrective feedback
+* provide a natural transition through the session
+* avoid using phrases like good job or thank you
 
-Examples of the intended style:
-"participant_name, the trial is complete. We will proceed with the next trial."
-"participant_name, this trial has ended. We will continue with the next one."
-"participant_name, the current trial is complete. The next trial will follow."
-"participant_name, this trial is complete. We will proceed to the next trial."
-"participant_name, the trial has concluded. We will continue with the next one."
-"participant_name, the current trial has ended. We will proceed with the next trial."
+Neutral feedback may generally:
 
-Do not copy these examples exactly every time. Vary the wording naturally while maintaining the same meaning.
+* acknowledge that the current trial has concluded
+* indicate that the session is continuing
+* indicate that the next trial will follow
+* provide a concise procedural transition
+
+Do not repeatedly use:
+
+* "the trial is complete"
+* "the trial has ended"
+* "we will proceed with the next trial"
+* "we will continue with the next one"
+
+Use natural alternatives and vary the sentence structure.
 
 FEEDBACK SAFETY RULE
 
 Regardless of the evaluation results, the feedback_statement must never reveal specific trainer errors to the participant.
 
 Even if confirmed_errors, protocol_violations, or other evaluation issues exist, do not describe them in feedback_statement.
-
-The feedback_statement should remain generic and focused on praise, continuation, focus, effort, or maintaining momentum.
 
 The feedback_statement must not contain phrases such as:
 
@@ -770,52 +864,59 @@ The feedback_statement must not contain phrases such as:
 * "The issue was..."
 * "You did not..."
 
-unless the phrase is used in a completely generic, non-corrective way that does not identify a specific error.
+when these phrases provide corrective feedback about a specific trainer error.
 
-OUTPUT REQUIREMENTS Return ONLY valid JSON: 
-{{ 
-    "overall_score": int, 
-"sd_score": int, 
-"prompt_score": int, 
-"reinforcement_score": int, 
-"sequencing_score": int, 
-"error_correction_score": int, 
-"strengths": [str], 
-"improvements": [str], 
-"protocol_violations": [str], 
-"number_of_failed": int, 
-"feedback_statement": str 
+OUTPUT REQUIREMENTS
+
+Return ONLY valid JSON:
+
+{{
+"overall_score": int,
+"sd_score": int,
+"prompt_score": int,
+"reinforcement_score": int,
+"sequencing_score": int,
+"error_correction_score": int,
+"strengths": [str],
+"improvements": [str],
+"protocol_violations": [str],
+"number_of_failed": int,
+"feedback_statement": str
 }}
+
 """
 
 def evaluate_dtt_session(
     event_log: dict[str, Any],
     study_config: dict[str, Any],
+    feedback_history: list[str],
     model: str = DEFAULT_MODEL,
 ) -> dict[str, Any]:
 
     messages = [
         {
             "role": "system",
-            "content": build_system_prompt(study_config),
+            "content": build_system_prompt(
+                study_config
+            ),
         },
         {
             "role": "user",
             "content": json.dumps(
-                event_log,
+                {
+                    "current_evaluation": event_log,
+
+                    # All feedback already given during
+                    # the current session
+                    "previous_feedback": feedback_history,
+                },
                 indent=2,
             ),
         },
     ]
-    #content = call_irl2llm_chat(
-    #    messages=messages,
-    #    model=model,
-    #    temperature=0.2,
-    #    max_context_tokens=4096,
-    #    timeout=300,
-    #)
+
     content = call_openai_chat(
-       messages=messages,
+        messages=messages,
         model=model,
     )
 
@@ -825,20 +926,34 @@ def evaluate_dtt_session(
     json_text = extract_json(content)
 
     if not json_text:
-
         raise RuntimeError(
-            "No valid JSON object "
-            "returned by model."
+            "No valid JSON object returned by model."
         )
 
     try:
 
-        result = json.loads(json_text)
+        result = json.loads(
+            json_text
+        )
+
+        feedback = result.get(
+            "feedback_statement"
+        )
+
+        # Add the new feedback to the persistent
+        # session-wide history
+        if feedback:
+
+            feedback_history.append(
+                feedback
+            )
+
         save_evaluation_snapshot(
             event_log=event_log,
             study_config=study_config,
             result=result,
         )
+
         return result
 
     except json.JSONDecodeError as exc:

@@ -7,7 +7,7 @@ from logic.dtt_module.models.enums import (
 )
 
 from logic.feedback import evaluate_dtt_session
-from logic.latin_square import get_sd_display_number
+
 
 class FeedbackHandler:
 
@@ -16,12 +16,10 @@ class FeedbackHandler:
         interaction_manager,
         perception_agent,
         agent,
-        sync
     ):
         self.interaction = interaction_manager
         self.perception_agent = perception_agent
         self.agent = agent
-        self.sync = sync
 
     async def handle(
         self,
@@ -31,11 +29,6 @@ class FeedbackHandler:
         feedback,
         trial_data,
     ):
-
-        # Sync client logic for data collection platofrm (gate 1: pre-feedback and post interaction)
-        loop_index = get_sd_display_number(ctx.trial_sd, ctx.latin_square_configuration)
-        await self.sync.kid_response_complete(loop_index, trial_name=ctx.trial_sd) # Opens post-kid response
-        await self.sync.wait_for_go_ahead(scope="loop", loop_index=loop_index, checkpoint="post_kid_response")
 
         await self.interaction.set_led(
             expr=expr,
@@ -60,8 +53,9 @@ class FeedbackHandler:
         )
 
         evaluation = evaluate_dtt_session(
-            evaluation_payload,
-            feedback.study_config
+            event_log=evaluation_payload,
+            study_config=feedback.study_config,
+            feedback_history=feedback.feedback_history
         )
 
         print(json.dumps(evaluation, indent=2))
@@ -115,13 +109,6 @@ class FeedbackHandler:
             flash=False,
             embodiment="trainer",
         )
-
-        # Open the post-feedback handling for data collection
-        await self.sync.feedback_delivered(loop_index, trial_name=ctx.trial_sd) # Opens the post-feedback
-        # Wait for the go ahead response to go to the next SD
-        await self.sync.wait_for_go_ahead(scope="loop", loop_index=loop_index, checkpoint="post_feedback")
-
-        # Wait for all questionarres to be executed before the light goes green again
 
         await self.interaction.set_led(
             expr=expr,
