@@ -53,8 +53,9 @@ class FeedbackHandler:
         )
 
         evaluation = evaluate_dtt_session(
-            evaluation_payload,
-            feedback.study_config
+            event_log=evaluation_payload,
+            study_config=feedback.study_config,
+            feedback_history=feedback.feedback_history
         )
 
         print(json.dumps(evaluation, indent=2))

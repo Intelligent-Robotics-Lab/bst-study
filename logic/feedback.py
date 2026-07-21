@@ -53,6 +53,8 @@ class FeedbackHolder:
     def __init__(self, study_config =None):
         self.reset()
         self.study_config = study_config
+        self.feedback_history = []
+
 
     def reset(self):
 
@@ -341,6 +343,7 @@ class FeedbackHolder:
         self.uncertain_events = []
 
 
+
     # =====================================================
     # TRANSCRIPT EVENT RECORDING
     # =====================================================
@@ -427,6 +430,7 @@ class FeedbackHolder:
 
             "recovery_metrics":
                 recovery_metrics,
+            "previous_feedback": self.feedback_history[-10:],
         }
     
 
@@ -667,7 +671,43 @@ Do NOT identify inappropriate behavior based solely on:
 When evidence is ambiguous, do not classify the behavior as inappropriate.
 
 The interaction_history may be used to identify clearly inappropriate behavior or inappropriate phrases, but it must not be used to search for ordinary DTT errors.
+FEEDBACK MEMORY AND REPETITION PREVENTION
 
+The previous_feedback field contains feedback statements that have already
+been given to the participant.
+
+You MUST treat previous_feedback as feedback that has already been said.
+
+Do NOT repeat or closely paraphrase any previous feedback statement.
+
+Do NOT reuse the same:
+
+* opening phrase
+* sentence structure
+* closing phrase
+* praise phrase
+* transition phrase
+* combination of ideas
+* rhetorical pattern
+
+A response is considered repetitive even if only a few words are changed
+while the meaning and structure remain nearly identical.
+
+Before generating feedback:
+
+1. Review all previous_feedback.
+2. Identify the wording, structure, and purpose used recently.
+3. Generate feedback using a meaningfully different structure and wording.
+4. If the previous feedback was supportive, you may use a different supportive
+   purpose, but do not simply paraphrase it.
+5. If no genuinely different feedback is appropriate, use a short neutral
+   transition rather than repeating previous wording.
+
+The feedback should be different from previous feedback at the level of
+both wording AND sentence structure.
+
+Previous feedback:
+Is found in the previous_feedback of the event_log
 FEEDBACK STATEMENT
 
 participant_name = {study_config["participant_name"]}
@@ -785,6 +825,7 @@ When feedback_trainer_style is "neutral":
 * do not evaluate the quality of the trainer's performance
 * do not provide corrective feedback
 * provide a natural transition through the session
+* avoid using phrases like good job or thank you
 
 Neutral feedback may generally:
 
@@ -848,31 +889,34 @@ Return ONLY valid JSON:
 def evaluate_dtt_session(
     event_log: dict[str, Any],
     study_config: dict[str, Any],
+    feedback_history: list[str],
     model: str = DEFAULT_MODEL,
 ) -> dict[str, Any]:
 
     messages = [
         {
             "role": "system",
-            "content": build_system_prompt(study_config),
+            "content": build_system_prompt(
+                study_config
+            ),
         },
         {
             "role": "user",
             "content": json.dumps(
-                event_log,
+                {
+                    "current_evaluation": event_log,
+
+                    # All feedback already given during
+                    # the current session
+                    "previous_feedback": feedback_history,
+                },
                 indent=2,
             ),
         },
     ]
-    #content = call_irl2llm_chat(
-    #    messages=messages,
-    #    model=model,
-    #    temperature=0.2,
-    #    max_context_tokens=4096,
-    #    timeout=300,
-    #)
+
     content = call_openai_chat(
-       messages=messages,
+        messages=messages,
         model=model,
     )
 
@@ -882,20 +926,34 @@ def evaluate_dtt_session(
     json_text = extract_json(content)
 
     if not json_text:
-
         raise RuntimeError(
-            "No valid JSON object "
-            "returned by model."
+            "No valid JSON object returned by model."
         )
 
     try:
 
-        result = json.loads(json_text)
+        result = json.loads(
+            json_text
+        )
+
+        feedback = result.get(
+            "feedback_statement"
+        )
+
+        # Add the new feedback to the persistent
+        # session-wide history
+        if feedback:
+
+            feedback_history.append(
+                feedback
+            )
+
         save_evaluation_snapshot(
             event_log=event_log,
             study_config=study_config,
             result=result,
         )
+
         return result
 
     except json.JSONDecodeError as exc:
