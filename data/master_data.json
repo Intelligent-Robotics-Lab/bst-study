@@ -6,7 +6,7 @@
     },
     "Receptive Instruction": {
       "type": "sd",
-      "text": "Nod your head."
+      "text": "Can you shake your head."
     },
     "Imitation": {
       "type": "sd",
@@ -26,7 +26,7 @@
     },
     "HP_SD_1": {
       "type": "hp_sd",
-      "text": "Shake your head."
+      "text": "can you nod your head."
     },
     "HP_SD_2": {
       "type": "hp_sd",

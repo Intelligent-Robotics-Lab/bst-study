@@ -1,7 +1,7 @@
 {
     "hp_trial_data": {
         "HP_SD_1": {
-            "sd": "Shake your head",
+            "sd": "Can you nod your head",
             "sd_type": "hp_sd",
             "correctness": "Correct",
             "challenge": null,
@@ -28,7 +28,7 @@
                       },
                       {
                         "channel": "head",
-                        "action": "Shake",
+                        "action": "Nod",
                         "intensity": 1.5,
                         "duration": 0.75,
                         "repeats": 3,
