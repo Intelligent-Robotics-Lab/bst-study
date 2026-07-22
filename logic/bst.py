@@ -51,13 +51,13 @@ async def BST():
     try:
         await launch.ack("started")
 
-        await Tutorial(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()
+        #await Tutorial(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()
         print("Executed tutorial")
 
-        await Instruction(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()
+        #await Instruction(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()
         print("Executed instruction")
 
-        await Modeling(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()
+        #await Modeling(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()
         print("Executed modeling")
 
         await DTT(agent=AGENT_TYPE, study_config=study_config, sync=sync).execute()

@@ -430,7 +430,6 @@ class FeedbackHolder:
 
             "recovery_metrics":
                 recovery_metrics,
-            "previous_feedback": self.feedback_history[-10:],
         }
     
 
