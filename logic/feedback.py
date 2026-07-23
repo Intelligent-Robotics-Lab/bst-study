@@ -10,6 +10,7 @@ from openai import OpenAI
 from pathlib import Path
 from datetime import datetime
 import json
+from logic.dtt_module.models.enums import TrialState
 
 SAVE_EVALUATION_DATA = True
 # =====================================================
@@ -285,7 +286,7 @@ class FeedbackHolder:
         Classification is determined upstream by the
         DTT engine / recognition handlers.
 
-        This method simply records the result.
+        Reinforcement events can never be confirmed errors.
         """
 
         state = str(trial_state)
@@ -293,12 +294,18 @@ class FeedbackHolder:
         if result_type == "success":
             return
 
-        if result_type == "uncertain":
-
+        if (
+            result_type == "uncertain"
+            or trial_state == TrialState.REINFORCEMENT
+        ):
             self.uncertain_events.append(
                 {
                     "state": state,
-                    "reason": "recognition_failed",
+                    "reason": (
+                        "reinforcement_event"
+                        if trial_state == TrialState.REINFORCEMENT
+                        else "recognition_failed"
+                    ),
                     "text": text,
                     "recognized_as": recognized_as,
                 }
@@ -306,7 +313,7 @@ class FeedbackHolder:
 
             return
 
-        if result_type == "confirmed_error":
+        if result_type == "confirmed_error" and not state == 'reinforcement':
 
             self.confirmed_errors.append(
                 {
@@ -663,10 +670,12 @@ Supportive:
 Neutral:
 
 * professional
-* objective
-* concise
+* objective - do not comment on overall performance only on correct instances and errors
+* concise - No more than 2 sentences
 * observational
 * not encouraging
+* avoid praise
+* use absolutely no supportive language
 
 If no meaningful errors occurred:
 

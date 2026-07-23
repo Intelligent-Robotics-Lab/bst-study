@@ -1,7 +1,7 @@
 from logic.dtt_module.models.enums import (
     CurrentState,
 )
-
+from logic.dtt_module.models.enums import TrialState
 
 class SDRecognitionHandler:
 
@@ -71,6 +71,14 @@ class SDRecognitionHandler:
         # ----------------------------
 
         if recognized_id is None:
+            success = False
+            result_type = "uncertain"
+
+        elif (
+            trial_state == TrialState.REINFORCEMENT
+        ):
+            # Do not confirm recognition errors during reinforcement.
+            # Reinforcement is not evaluated against expected_sd.
             success = False
             result_type = "uncertain"
 
